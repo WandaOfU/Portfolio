@@ -1,4 +1,4 @@
-# PDPortfolio
+# Portfolio
 
 Vladislav Sapelin's product design portfolio. Static site, no build step — plain HTML/CSS/JS.
 
@@ -13,7 +13,7 @@ Vladislav Sapelin's product design portfolio. Static site, no build step — pla
 
 1. Push this repo to `main`.
 2. On GitHub: **Settings → Pages → Source → Deploy from a branch → `main` / `/(root)`**.
-3. Site goes live at `https://wandaofu.github.io/PDPortfolio/` (usually within a minute or two).
+3. Site goes live at `https://wandaofu.github.io/Portfolio/` (usually within a minute or two).
 4. Optional custom domain: add a `CNAME` file with the domain, point its DNS at GitHub Pages, then set the domain in the same Pages settings screen. If you do this, update the URLs in `sitemap.xml`, `robots.txt`, and the `<link rel="canonical">` / `og:url` tags in each page's `<head>` to the new domain.
 
 ## After it's live
