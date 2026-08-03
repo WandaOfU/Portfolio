@@ -180,7 +180,7 @@ a { color: inherit; text-decoration: none; }
 }
 .name-line span {
   display: inline-block;
-  transition: color .5s ease-out;
+  transition: color .12s ease-out;
   will-change: color;
 }
 .name-middle {
@@ -273,22 +273,25 @@ a { color: inherit; text-decoration: none; }
   letter-spacing: var(--text-ticker-tracking);
   line-height: var(--text-ticker-leading);
   color: var(--muted); background: none; border: none; cursor: pointer; padding: 0 28px;
-  transition: color .3s ease;
+  transition: color .12s ease-out, transform .15s var(--ease-spring);
   position: relative;
 }
 .marquee-item[data-active] { color: var(--ink); }
 .marquee-item[data-active]::after {
   content: ''; position: absolute; left: 28px; right: 28px; bottom: -6px; height: 2px; background: var(--rust);
 }
+.marquee-item:active { transform: scale(.96); }
 .marquee-item:focus-visible { outline: 2px solid var(--rust); outline-offset: 4px; }
 .marquee-sep { color: var(--ink-a25); font-family: var(--font-mono); font-size: .875rem; }
 
 .marquee-detail {
   display: flex; flex-direction: column; align-items: center; gap: 16px;
   text-align: center; max-width: 480px; margin: 0 auto;
-  opacity: 1; transition: opacity .25s ease;
 }
-.marquee-detail.is-switching { opacity: 0; }
+/* Content swaps instantly (no artificial wait) — this is just a light polish
+   fade-IN, restarted via a JS reflow trick, never a delay gating the swap. */
+.marquee-detail.is-entering { animation: marquee-detail-in .18s ease-out; }
+@keyframes marquee-detail-in { from { opacity: .3; } to { opacity: 1; } }
 .marquee-hint { text-align: center; color: var(--muted); }
 
 .case-preview {

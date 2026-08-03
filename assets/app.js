@@ -120,14 +120,14 @@
       items.forEach((el) => el.toggleAttribute('data-active', el === closestEl));
       if (closestCaseIndex === activeIndex) return;
       activeIndex = closestCaseIndex;
-      if (reduceMotion) {
-        detail.innerHTML = caseInnerHTML(CASES[activeIndex]);
-      } else {
-        detail.classList.add('is-switching');
-        setTimeout(() => {
-          detail.innerHTML = caseInnerHTML(CASES[activeIndex]);
-          detail.classList.remove('is-switching');
-        }, 150);
+      // Content updates the instant activation changes — no artificial wait.
+      // While a gesture is actively dragging, skip the fade too: a live scrub
+      // wants continuous 1:1 feedback, not a transition racing to catch up.
+      detail.innerHTML = caseInnerHTML(CASES[activeIndex]);
+      if (!reduceMotion && !dragging) {
+        detail.classList.remove('is-entering');
+        void detail.offsetWidth; // restart the animation even on rapid successive changes
+        detail.classList.add('is-entering');
       }
     }
   }
