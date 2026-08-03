@@ -42,6 +42,49 @@
   --font-serif: 'Lora Italic', Georgia, serif;
   --font-mono: 'Roboto Mono', ui-monospace, monospace;
   --ease-spring: cubic-bezier(.22, 1, .36, 1);
+
+  /*
+    Type scale: tracking and leading move opposite to size, not a fixed
+    value reused everywhere. Bigger steps get tighter (more negative)
+    tracking and tighter leading; smaller steps get looser leading and
+    slightly *positive* tracking, since letters that small need the extra
+    air to stay legible. Sizes are in rem so a user's browser text-size
+    setting still scales the whole page.
+  */
+  --text-display-size: clamp(3rem, 11vw, 9.75rem);   /* 48px -> 156px, the wordmark */
+  --text-display-leading: .88;
+  --text-display-tracking: -.065em;
+
+  --text-heading-size: clamp(1.5rem, 3.4vw, 2.125rem); /* 24px -> 34px, case/section titles */
+  --text-heading-leading: 1.08;
+  --text-heading-tracking: -.012em;
+
+  --text-subheading-size: clamp(1.125rem, 2vw, 1.25rem); /* 18px -> 20px, job/school titles */
+  --text-subheading-leading: 1.3;
+  --text-subheading-tracking: -.004em;
+
+  --text-body-size: 1rem;      /* 16px, the tagline */
+  --text-body-leading: 1.6;
+  --text-body-tracking: .01em;
+
+  --text-caption-size: .75rem;  /* 12px, descriptions & role lines */
+  --text-caption-leading: 1.5;
+  --text-caption-tracking: .04em;
+
+  --text-label-size: .6875rem;  /* 11px, nav/buttons/dates/footer */
+  --text-label-leading: 1.4;
+  --text-label-tracking: .05em;
+}
+
+@media (max-width: 700px) {
+  :root {
+    /* at the small end of the display clamp, full desktop tightening
+       would crowd the letterforms — Apple's rule is size-specific, so
+       the smaller instance gets its own, less aggressive tracking */
+    --text-display-leading: .95;
+    --text-display-tracking: -.03em;
+    --text-heading-tracking: -.005em;
+  }
 }
 
 * { box-sizing: border-box; }
@@ -53,6 +96,7 @@ html, body {
   color: var(--ink);
   font-family: var(--font-mono);
   -webkit-font-smoothing: antialiased;
+  font-optical-sizing: auto;
 }
 
 body {
@@ -81,9 +125,10 @@ a { color: inherit; text-decoration: none; }
 
 .mono {
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: var(--text-label-size);
   font-weight: 500;
-  letter-spacing: .03em;
+  letter-spacing: var(--text-label-tracking);
+  line-height: var(--text-label-leading);
   text-transform: uppercase;
 }
 
@@ -119,9 +164,9 @@ a { color: inherit; text-decoration: none; }
 .name-line {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: clamp(48px, 12.5vw, 156px);
-  letter-spacing: -0.06em;
-  line-height: 1em;
+  font-size: var(--text-display-size);
+  letter-spacing: var(--text-display-tracking);
+  line-height: var(--text-display-leading);
   white-space: nowrap;
   display: flex;
   cursor: crosshair;
@@ -143,7 +188,7 @@ a { color: inherit; text-decoration: none; }
 .paren {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: clamp(40px, 9vw, 110px);
+  font-size: clamp(2.5rem, 8vw, 6.875rem);
   color: var(--ink);
   line-height: 1;
 }
@@ -156,10 +201,10 @@ a { color: inherit; text-decoration: none; }
 }
 .tagline {
   font-family: var(--font-mono);
-  font-size: 16px;
+  font-size: var(--text-body-size);
   font-weight: 400;
-  letter-spacing: -0.01em;
-  line-height: 1.6em;
+  letter-spacing: var(--text-body-tracking);
+  line-height: var(--text-body-leading);
   text-transform: uppercase;
   text-align: center;
   color: var(--ink);
@@ -241,16 +286,17 @@ a { color: inherit; text-decoration: none; }
   font-family: var(--font-serif);
   font-style: italic;
   font-weight: 600;
-  font-size: clamp(24px, 3.4vw, 34px);
-  line-height: 1.1;
+  font-size: var(--text-heading-size);
+  letter-spacing: var(--text-heading-tracking);
+  line-height: var(--text-heading-leading);
   color: var(--ink);
   margin: 0;
 }
 .case-desc {
   font-family: var(--font-mono);
-  font-size: 12px;
-  letter-spacing: .02em;
-  line-height: 1.4em;
+  font-size: var(--text-caption-size);
+  letter-spacing: var(--text-caption-tracking);
+  line-height: var(--text-caption-leading);
   text-transform: uppercase;
   color: var(--ink);
   margin: 0;
@@ -264,8 +310,9 @@ a { color: inherit; text-decoration: none; }
   border: 1px solid var(--rust);
   border-radius: 17px;
   color: var(--rust);
-  font-size: 11px;
-  letter-spacing: .03em;
+  font-size: var(--text-label-size);
+  letter-spacing: var(--text-label-tracking);
+  line-height: var(--text-label-leading);
   background: none;
   font-family: var(--font-mono);
   cursor: pointer;
@@ -301,7 +348,13 @@ a { color: inherit; text-decoration: none; }
 .carousel-btn[data-active="true"] { background: var(--rust-dark); opacity: 1; }
 .carousel-btn:active { transform: scale(.92); }
 .carousel-btn svg { width: 16px; height: 16px; }
-.carousel-count { min-width: 64px; text-align: center; font-size: 11px; letter-spacing: .03em; }
+.carousel-count {
+  min-width: 64px;
+  text-align: center;
+  font-size: var(--text-label-size);
+  letter-spacing: var(--text-label-tracking);
+  line-height: var(--text-label-leading);
+}
 
 /* ---------- ABOUT ---------- */
 .about-content {
@@ -315,7 +368,9 @@ a { color: inherit; text-decoration: none; }
   font-family: var(--font-serif);
   font-style: italic;
   font-weight: 600;
-  font-size: clamp(24px, 3.4vw, 34px);
+  font-size: var(--text-heading-size);
+  letter-spacing: var(--text-heading-tracking);
+  line-height: var(--text-heading-leading);
   color: var(--ink);
   margin: 0 0 20px;
 }
@@ -331,12 +386,27 @@ a { color: inherit; text-decoration: none; }
   font-family: var(--font-serif);
   font-style: italic;
   font-weight: 600;
-  font-size: 20px;
+  font-size: var(--text-subheading-size);
+  letter-spacing: var(--text-subheading-tracking);
+  line-height: var(--text-subheading-leading);
   color: var(--ink);
   margin: 0;
 }
-.about-row-top .date { font-size: 11px; letter-spacing: .03em; color: var(--muted); white-space: nowrap; }
-.about-row .role { margin-top: 6px; font-size: 12px; letter-spacing: .02em; color: var(--muted); text-transform: uppercase; }
+.about-row-top .date {
+  font-size: var(--text-label-size);
+  letter-spacing: var(--text-label-tracking);
+  line-height: var(--text-label-leading);
+  color: var(--muted);
+  white-space: nowrap;
+}
+.about-row .role {
+  margin-top: 6px;
+  font-size: var(--text-caption-size);
+  letter-spacing: var(--text-caption-tracking);
+  line-height: var(--text-caption-leading);
+  color: var(--muted);
+  text-transform: uppercase;
+}
 
 @media (prefers-reduced-motion: reduce) {
   .shell { animation: page-fade .2s ease forwards; transform: none; }
@@ -354,8 +424,9 @@ a { color: inherit; text-decoration: none; }
   color: var(--white);
   padding: 12px 20px;
   border-radius: 999px;
-  font-size: 11px;
-  letter-spacing: .03em;
+  font-size: var(--text-label-size);
+  letter-spacing: var(--text-label-tracking);
+  line-height: var(--text-label-leading);
   text-transform: uppercase;
   opacity: 0;
   pointer-events: none;
