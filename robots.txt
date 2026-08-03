@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://vladsapelin.com/sitemap.xml
+Sitemap: https://wandaofu.github.io/Portfolio/sitemap.xml

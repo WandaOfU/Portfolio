@@ -13,8 +13,8 @@ Vladislav Sapelin's product design portfolio. Static site, no build step — pla
 
 1. Push this repo to `main`.
 2. On GitHub: **Settings → Pages → Source → Deploy from a branch → `main` / `/(root)`**.
-3. Custom domain: `vladsapelin.com` (see `CNAME`). DNS must point A records at GitHub Pages' IPs (185.199.108.153, .109.153, .110.153, .111.153) and set the domain under Settings → Pages → Custom domain.
-4. Site is live at `https://vladsapelin.com/`.
+3. Site goes live at `https://wandaofu.github.io/Portfolio/` (usually within a minute or two).
+4. Optional custom domain: add a `CNAME` file with the domain, point its DNS at GitHub Pages, then set the domain in the same Pages settings screen. If you do this, update the URLs in `sitemap.xml`, `robots.txt`, and the `<link rel="canonical">` / `og:url` tags in each page's `<head>` to the new domain.
 
 ## After it's live
 
