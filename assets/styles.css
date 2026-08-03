@@ -322,6 +322,13 @@ a { color: inherit; text-decoration: none; }
   text-transform: uppercase;
   color: var(--ink);
   margin: 0;
+  /* Reserve room for two lines even when a case's description is short
+     (e.g. Cloud.ru's one-liner) — otherwise the detail panel's height
+     changes per case, and everything below it visibly jumps while scrubbing. */
+  min-height: calc(var(--text-caption-leading) * var(--text-caption-size) * 2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .open-case {
   align-self: flex-start;
