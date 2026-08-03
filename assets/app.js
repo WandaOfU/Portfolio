@@ -55,79 +55,190 @@
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => toast.classList.remove('show'), 1800);
   }
-  document.querySelectorAll('.open-case').forEach(btn => btn.addEventListener('click', showToast));
-
-  /* ---------- projects carousel ---------- */
-  const track = document.getElementById('carousel-track');
-  if (!track) return;
-
-  const cards = [...track.children];
-  const countEl = document.getElementById('carousel-count');
-  const btnPrev = document.getElementById('btn-prev');
-  const btnNext = document.getElementById('btn-next');
-
-  let active = 0;
-  let dragStartX = 0, dragCurrentX = 0, dragging = false, dragVelocity = 0, lastDragT = 0, lastDragX = 0;
-
-  function layout(withMotion = true) {
-    cards.forEach((el, i) => {
-      const offset = i - active;
-      const x = offset * 60 + (dragging ? dragCurrentX - dragStartX : 0);
-      const scale = i === active ? 1 : 0.86;
-      const opacity = i === active ? 1 : 0.45;
-      const z = i === active ? 10 : 10 - Math.abs(offset);
-      el.style.transition = (withMotion && !dragging && !reduceMotion) ? 'transform .5s var(--ease-spring), opacity .5s ease' : 'none';
-      el.style.transform = `translateX(${x}px) scale(${scale})`;
-      el.style.opacity = opacity;
-      el.style.zIndex = z;
-      el.style.pointerEvents = i === active ? 'auto' : 'none';
-    });
-    countEl.textContent = `${String(active + 1).padStart(2, '0')} / ${String(cards.length).padStart(2, '0')}`;
-    btnPrev.dataset.active = active > 0 ? 'true' : 'false';
-    btnNext.dataset.active = active < cards.length - 1 ? 'true' : 'false';
-  }
-
-  function goTo(i) {
-    active = Math.max(0, Math.min(cards.length - 1, i));
-    layout();
-  }
-
-  btnPrev.addEventListener('click', () => goTo(active - 1));
-  btnNext.addEventListener('click', () => goTo(active + 1));
-
-  track.addEventListener('pointerdown', (e) => {
-    dragging = true;
-    track.classList.add('grabbing');
-    dragStartX = e.clientX;
-    dragCurrentX = e.clientX;
-    lastDragX = e.clientX;
-    lastDragT = performance.now();
-    dragVelocity = 0;
-    track.setPointerCapture(e.pointerId);
+  // Delegated: the marquee's detail panel swaps its "open case" button in and
+  // out of the DOM as the active case changes, so a direct listener wouldn't
+  // survive that. Listening on the document catches every instance, present
+  // now or added later.
+  document.addEventListener('click', (e) => {
+    if (e.target.closest('.open-case')) showToast();
   });
-  track.addEventListener('pointermove', (e) => {
+
+  /* ---------- projects marquee ---------- */
+  const wrap = document.getElementById('marquee-wrap');
+  if (!wrap) return;
+
+  const CASES = [
+    { category: 'WORKPLACE / UX', title: 'T—BANK WORKPLACE', desc: 'One connected system for desks, services, rooms, and everyday decisions.' },
+    { category: 'FINTECH / PRODUCT', title: 'VTB POLITE REFUSALS', desc: 'A microservice that helps people communicate clearly when saying no is difficult.' },
+    { category: 'FINTECH / PRODUCT', title: 'VTB POLITE REFUSALS', desc: 'A microservice that helps people communicate clearly when saying no is difficult.' },
+    { category: 'FINTECH / PRODUCT', title: 'CLOUD.RU WORKS', desc: 'Cloud services, pipelines etc' },
+  ];
+  function caseInnerHTML(c) {
+    return `
+      <div class="case-preview"></div>
+      <div class="case-category mono"><span class="bar"></span>${c.category}</div>
+      <h2 class="case-title">${c.title}</h2>
+      <p class="case-desc">${c.desc}</p>
+      <button class="open-case" type="button">OPEN CASE ↗</button>
+    `;
+  }
+
+  const track = document.getElementById('marquee-track');
+  const detail = document.getElementById('marquee-detail');
+  const items = [...track.querySelectorAll('.marquee-item')];
+  const setEl = track.querySelector('.marquee-set');
+
+  let setWidth = 0;
+  let scrollX = 0;
+  let velocity = 0; // px/sec
+  let dragging = false;
+  let lastX = 0, lastT = 0;
+  let ambientPausedUntil = 0;
+  let activeIndex = -1;
+  let activeEl = null;
+  let lastTick = performance.now();
+
+  function applyTransform() { track.style.transform = `translateX(${-scrollX}px)`; }
+
+  function wrapScroll() {
+    if (scrollX > setWidth * 1.5) scrollX -= setWidth;
+    else if (scrollX < setWidth * 0.5) scrollX += setWidth;
+  }
+
+  function updateActive() {
+    const wr = wrap.getBoundingClientRect();
+    const anchor = wr.left + wr.width / 2;
+    let closestEl = null, closestDist = Infinity;
+    items.forEach((el) => {
+      const r = el.getBoundingClientRect();
+      const d = Math.abs((r.left + r.width / 2) - anchor);
+      if (d < closestDist) { closestDist = d; closestEl = el; }
+    });
+    if (closestEl !== activeEl) {
+      activeEl = closestEl;
+      const closestCaseIndex = Number(closestEl.dataset.index);
+      items.forEach((el) => el.toggleAttribute('data-active', el === closestEl));
+      if (closestCaseIndex === activeIndex) return;
+      activeIndex = closestCaseIndex;
+      if (reduceMotion) {
+        detail.innerHTML = caseInnerHTML(CASES[activeIndex]);
+      } else {
+        detail.classList.add('is-switching');
+        setTimeout(() => {
+          detail.innerHTML = caseInnerHTML(CASES[activeIndex]);
+          detail.classList.remove('is-switching');
+        }, 150);
+      }
+    }
+  }
+
+  function nearestOffset() {
+    const wr = wrap.getBoundingClientRect();
+    const anchor = wr.left + wr.width / 2;
+    let best = 0, bestDist = Infinity;
+    items.forEach((el) => {
+      const r = el.getBoundingClientRect();
+      const d = (r.left + r.width / 2) - anchor;
+      if (Math.abs(d) < bestDist) { bestDist = Math.abs(d); best = d; }
+    });
+    return best;
+  }
+
+  function animateBy(delta) {
+    if (reduceMotion) {
+      scrollX += delta;
+      wrapScroll();
+      applyTransform();
+      updateActive();
+      return;
+    }
+    const start = scrollX;
+    const target = scrollX + delta;
+    const startT = performance.now();
+    const dur = 320;
+    function step(now) {
+      const t = Math.min(1, (now - startT) / dur);
+      const eased = 1 - Math.pow(1 - t, 3);
+      scrollX = start + (target - start) * eased;
+      wrapScroll();
+      applyTransform();
+      updateActive();
+      if (t < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  function tick(now) {
+    const dt = Math.min(0.05, (now - lastTick) / 1000);
+    lastTick = now;
+    if (!dragging) {
+      if (Math.abs(velocity) > 2) {
+        scrollX += velocity * dt;
+        velocity *= Math.pow(0.05, dt);
+        wrapScroll();
+        applyTransform();
+        updateActive();
+        if (Math.abs(velocity) <= 2) { velocity = 0; animateBy(nearestOffset()); }
+      } else if (!reduceMotion && now > ambientPausedUntil) {
+        scrollX += 14 * dt; // slow ambient drift, px/sec
+        wrapScroll();
+        applyTransform();
+        updateActive();
+      }
+    }
+    requestAnimationFrame(tick);
+  }
+
+  wrap.addEventListener('pointerdown', (e) => {
+    dragging = true; velocity = 0;
+    wrap.classList.add('grabbing');
+    lastX = e.clientX; lastT = performance.now();
+    wrap.setPointerCapture(e.pointerId);
+    ambientPausedUntil = performance.now() + 2500;
+  });
+  wrap.addEventListener('pointermove', (e) => {
     if (!dragging) return;
-    dragCurrentX = e.clientX;
+    const dx = e.clientX - lastX;
     const now = performance.now();
-    const dt = now - lastDragT;
-    if (dt > 0) dragVelocity = (e.clientX - lastDragX) / dt * 1000;
-    lastDragX = e.clientX;
-    lastDragT = now;
-    layout(false);
+    const dt = now - lastT;
+    if (dt > 0) velocity = (-dx / dt) * 1000;
+    scrollX -= dx;
+    lastX = e.clientX; lastT = now;
+    wrapScroll();
+    applyTransform();
+    updateActive();
   });
   function endDrag() {
     if (!dragging) return;
     dragging = false;
-    track.classList.remove('grabbing');
-    const delta = dragCurrentX - dragStartX;
-    const projected = delta + dragVelocity * 0.15;
-    if (projected < -60) goTo(active + 1);
-    else if (projected > 60) goTo(active - 1);
-    else layout();
+    wrap.classList.remove('grabbing');
+    ambientPausedUntil = performance.now() + 2500;
+    if (Math.abs(velocity) < 40 || reduceMotion) { velocity = 0; animateBy(nearestOffset()); }
   }
-  track.addEventListener('pointerup', endDrag);
-  track.addEventListener('pointercancel', endDrag);
+  wrap.addEventListener('pointerup', endDrag);
+  wrap.addEventListener('pointercancel', endDrag);
 
-  window.addEventListener('resize', () => layout(false));
-  layout(false);
+  items.forEach((el) => {
+    el.addEventListener('click', () => {
+      if (dragging) return;
+      const wr = wrap.getBoundingClientRect();
+      const anchor = wr.left + wr.width / 2;
+      const r = el.getBoundingClientRect();
+      ambientPausedUntil = performance.now() + 2500;
+      animateBy((r.left + r.width / 2) - anchor);
+    });
+  });
+
+  setWidth = setEl.getBoundingClientRect().width;
+  scrollX = setWidth;
+  applyTransform();
+  updateActive();
+  lastTick = performance.now();
+  requestAnimationFrame(tick);
+  window.addEventListener('resize', () => {
+    const newSetWidth = setEl.getBoundingClientRect().width;
+    scrollX = scrollX - setWidth + newSetWidth; // keep visual position stable across the resize
+    setWidth = newSetWidth;
+    applyTransform();
+  });
 })();
