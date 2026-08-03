@@ -189,12 +189,25 @@
     requestAnimationFrame(tick);
   }
 
+  let pressedItem = null;
+  let pressStartX = 0;
+  let pressMaxMove = 0;
+
   wrap.addEventListener('pointerdown', (e) => {
     dragging = true; velocity = 0;
     wrap.classList.add('grabbing');
     lastX = e.clientX; lastT = performance.now();
     wrap.setPointerCapture(e.pointerId);
     ambientPausedUntil = performance.now() + 2500;
+    // Track what was actually pressed and how far the pointer travels before
+    // release. Once pointer capture is engaged on `wrap`, the browser can
+    // suppress the native `click` on the child button entirely — even a few
+    // px of ordinary hand jitter is enough — so a plain click listener on
+    // each item can silently never fire. Below the hysteresis threshold this
+    // is a tap on that specific item, not a drag; above it, it's a real scrub.
+    pressedItem = e.target.closest('.marquee-item');
+    pressStartX = e.clientX;
+    pressMaxMove = 0;
   });
   wrap.addEventListener('pointermove', (e) => {
     if (!dragging) return;
@@ -204,28 +217,41 @@
     if (dt > 0) velocity = (-dx / dt) * 1000;
     scrollX -= dx;
     lastX = e.clientX; lastT = now;
+    pressMaxMove = Math.max(pressMaxMove, Math.abs(e.clientX - pressStartX));
     wrapScroll();
     applyTransform();
     updateActive();
   });
+  function jumpToItem(el) {
+    const wr = wrap.getBoundingClientRect();
+    const anchor = wr.left + wr.width / 2;
+    const r = el.getBoundingClientRect();
+    ambientPausedUntil = performance.now() + 2500;
+    animateBy((r.left + r.width / 2) - anchor);
+  }
   function endDrag() {
     if (!dragging) return;
     dragging = false;
     wrap.classList.remove('grabbing');
     ambientPausedUntil = performance.now() + 2500;
+    if (pressMaxMove < 10 && pressedItem) {
+      velocity = 0;
+      jumpToItem(pressedItem);
+      return;
+    }
     if (Math.abs(velocity) < 40 || reduceMotion) { velocity = 0; animateBy(nearestOffset()); }
   }
   wrap.addEventListener('pointerup', endDrag);
   wrap.addEventListener('pointercancel', endDrag);
 
   items.forEach((el) => {
+    // Kept for keyboard activation (Tab + Enter/Space) — that path fires a
+    // real `click` with no pointer sequence at all, so `dragging` is false
+    // and this runs cleanly. For pointer/touch input the tap is already
+    // handled above in endDrag(), before this can double-fire.
     el.addEventListener('click', () => {
       if (dragging) return;
-      const wr = wrap.getBoundingClientRect();
-      const anchor = wr.left + wr.width / 2;
-      const r = el.getBoundingClientRect();
-      ambientPausedUntil = performance.now() + 2500;
-      animateBy((r.left + r.width / 2) - anchor);
+      jumpToItem(el);
     });
   });
 
