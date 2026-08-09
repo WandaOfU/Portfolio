@@ -36,7 +36,10 @@
   --ink-a10: rgba(2, 16, 36, .08);
   --rust: #a6342e;
   --rust-dark: #9c4a2e;
-  --muted: #767e89;
+  /* Ash. Darkened from #767e89, which sat at 3.54:1 on --bg and failed WCAG
+     AA for the 11-12px roles that use it (dates, role lines, case categories,
+     the drag hint). Same hue and saturation, lower lightness: 4.71:1. */
+  --muted: #636a73;
   --white: #ffffff;
   --font-display: 'Inter Display', 'Helvetica Neue', Arial, sans-serif;
   --font-serif: 'Lora Italic', Georgia, serif;

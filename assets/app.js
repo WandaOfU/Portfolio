@@ -2,42 +2,74 @@
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* ---------- giant name: build letters + crosshair hover color ---------- */
-  function buildName(el, text) {
-    el.innerHTML = '';
-    [...text].forEach(ch => {
+  // Splits the wordmark already in the markup rather than repeating the text
+  // here, so the HTML stays the single source of truth (and still renders if
+  // this script never runs).
+  function splitLetters(el) {
+    const text = el.textContent.trim();
+    const frag = document.createDocumentFragment();
+    for (const ch of text) {
       const span = document.createElement('span');
       span.textContent = ch;
-      span.style.color = 'var(--ink)';
-      el.appendChild(span);
-    });
+      frag.appendChild(span);
+    }
+    el.textContent = '';
+    el.appendChild(frag);
   }
   const nameTop = document.getElementById('name-top');
   const nameBottom = document.getElementById('name-bottom');
 
   if (nameTop && nameBottom) {
-    buildName(nameTop, 'VLADISLAV');
-    buildName(nameBottom, 'SAPELIN');
+    splitLetters(nameTop);
+    splitLetters(nameBottom);
 
     if (!reduceMotion) {
       const inkRGB = [2, 16, 36];
       const rustRGB = [166, 52, 46];
+      const RADIUS = 220;
+      const letters = [...nameTop.children, ...nameBottom.children];
+      const painted = new Array(letters.length);
+      let centers = [];
       let rafPending = false;
       let lastX = -9999, lastY = -9999;
 
-      function paintLetters(x, y) {
-        [...nameTop.children, ...nameBottom.children].forEach(span => {
+      // The letters only move when the line reflows, so measure once instead
+      // of reading 16 rects every frame — that read forced a synchronous
+      // layout on each pointer move. Centers are kept in document space so
+      // scrolling doesn't invalidate them.
+      function measure() {
+        centers = letters.map((span) => {
           const r = span.getBoundingClientRect();
-          const cx = r.left + r.width / 2;
-          const cy = r.top + r.height / 2;
-          const dist = Math.hypot(x - cx, y - cy);
-          const intensity = Math.max(0, 1 - dist / 220);
-          const mix = inkRGB.map((c, i) => Math.round(c + (rustRGB[i] - c) * intensity));
-          span.style.color = `rgb(${mix[0]}, ${mix[1]}, ${mix[2]})`;
+          return {
+            x: r.left + r.width / 2 + window.scrollX,
+            y: r.top + r.height / 2 + window.scrollY,
+          };
         });
       }
 
+      function paintLetters(x, y) {
+        for (let i = 0; i < letters.length; i++) {
+          const c = centers[i];
+          const intensity = Math.max(0, 1 - Math.hypot(x - c.x, y - c.y) / RADIUS);
+          const mix = inkRGB.map((ch, k) => Math.round(ch + (rustRGB[k] - ch) * intensity));
+          const next = `rgb(${mix[0]}, ${mix[1]}, ${mix[2]})`;
+          // A pointer moving far from the wordmark leaves most letters at ink;
+          // skip writing a colour that is already set.
+          if (painted[i] === next) continue;
+          painted[i] = next;
+          letters[i].style.color = next;
+        }
+      }
+
+      measure();
+      // The wordmark is set in a webfont that swaps in after first paint, and
+      // its metrics shift every letter — remeasure once it actually lands.
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
+      window.addEventListener('resize', measure);
+
       window.addEventListener('pointermove', (e) => {
-        lastX = e.clientX; lastY = e.clientY;
+        lastX = e.clientX + window.scrollX;
+        lastY = e.clientY + window.scrollY;
         if (!rafPending) {
           rafPending = true;
           requestAnimationFrame(() => { paintLetters(lastX, lastY); rafPending = false; });

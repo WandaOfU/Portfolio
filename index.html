@@ -22,18 +22,21 @@
 <body>
 <div class="shell" id="view-home">
   <h1 class="sr-only">Vladislav Sapelin — Product Designer</h1>
-  <div class="name-block">
+  <main class="name-block">
     <div class="name-line" id="name-top" aria-hidden="true">VLADISLAV</div>
     <div class="name-middle">
       <span class="paren" aria-hidden="true">(</span>
-      <img class="photo" src="assets/photo.jpg" alt="Portrait of Vladislav Sapelin" width="128" height="128">
+      <img class="photo"
+           src="assets/photo-256.jpg"
+           srcset="assets/photo-128.jpg 1x, assets/photo-256.jpg 2x, assets/photo-384.jpg 3x"
+           alt="Portrait of Vladislav Sapelin" width="128" height="128" decoding="async">
       <span class="paren" aria-hidden="true">)</span>
       <p class="tagline">I design digital<br>products that bridge<br>user needs and<br>business goals</p>
     </div>
     <div class="name-line" id="name-bottom" aria-hidden="true">SAPELIN</div>
-  </div>
+  </main>
 
-  <nav class="home-nav mono">
+  <nav class="home-nav mono" aria-label="Sections">
     <a href="projects/" class="link-hover">Projects</a>
     <a href="about/" class="link-hover">About</a>
   </nav>
@@ -41,9 +44,9 @@
   <footer class="contact-panel mono">
     <span class="cooperate">Will be glad to cooperate</span>
     <div class="contact-links">
-      <a class="link-hover" href="https://hh.ru/resume/724d9d0aff0cb8b9020039ed1f536366475148?customDomain=1&overRideDomainAreaId=1" target="_blank" rel="noopener">(headhunter)</a>
-      <a class="link-hover" href="https://t.me/lost_endeavor" target="_blank" rel="noopener">(telegram)</a>
-      <a class="link-hover" href="https://max.ru/u/f9LHodD0cOKz_2MBXrxkmh6xZxcI2phFs7wMvhHILqs_xgJOVcT8Y4USMwQ" target="_blank" rel="noopener">(max)</a>
+      <a class="link-hover" href="https://hh.ru/resume/724d9d0aff0cb8b9020039ed1f536366475148?customDomain=1&overRideDomainAreaId=1" target="_blank" rel="noopener" aria-label="Resume on HeadHunter, opens in a new tab">(headhunter)</a>
+      <a class="link-hover" href="https://t.me/lost_endeavor" target="_blank" rel="noopener" aria-label="Message on Telegram, opens in a new tab">(telegram)</a>
+      <a class="link-hover" href="https://max.ru/u/f9LHodD0cOKz_2MBXrxkmh6xZxcI2phFs7wMvhHILqs_xgJOVcT8Y4USMwQ" target="_blank" rel="noopener" aria-label="Message on MAX, opens in a new tab">(max)</a>
     </div>
     <span class="contact-year">2026</span>
   </footer>
