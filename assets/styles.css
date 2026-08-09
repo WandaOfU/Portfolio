@@ -55,6 +55,11 @@
   --text-display-leading: .88;
   --text-display-tracking: -.065em;
 
+  /* 40px -> 110px, the parentheses bracketing the portrait. Deliberately a
+     step under the wordmark: they frame the photo without competing with the
+     name above and below it. */
+  --text-paren-size: clamp(2.5rem, 8vw, 6.875rem);
+
   --text-heading-size: clamp(1.5rem, 3.4vw, 2.125rem); /* 24px -> 34px, case/section titles */
   --text-heading-leading: 1.08;
   --text-heading-tracking: -.012em;
@@ -78,6 +83,8 @@
   --text-ticker-size: clamp(1.75rem, 4vw, 2.75rem); /* 28px -> 44px, the projects marquee */
   --text-ticker-leading: 1.1;
   --text-ticker-tracking: -.015em;
+
+  --text-separator-size: .875rem; /* 14px, the marquee's "/" dividers */
 }
 
 @media (max-width: 700px) {
@@ -140,6 +147,21 @@ a { color: inherit; text-decoration: none; }
 .link-hover { transition: color .25s var(--ease-spring); }
 .link-hover:hover, .link-hover:focus-visible { color: var(--rust); }
 
+/* Carries the page's heading for search engines and screen readers where the
+   visible lettering is decorative (the home wordmark is split into per-letter
+   spans and marked aria-hidden). */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
 /* ---------- header (projects/about) ---------- */
 .page-header {
   max-width: 800px;
@@ -156,7 +178,9 @@ a { color: inherit; text-decoration: none; }
   background: var(--ink-a25);
   flex: none;
 }
-.page-header .title { color: var(--ink); }
+/* An h1 for document structure, but the header's .mono chrome is the intended
+   look — drop the UA heading size, weight, and margins rather than restyling. */
+.page-header .title { color: var(--ink); font: inherit; margin: 0; }
 
 /* ---------- HOME ---------- */
 .name-block {
@@ -193,7 +217,7 @@ a { color: inherit; text-decoration: none; }
 .paren {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: clamp(2.5rem, 8vw, 6.875rem);
+  font-size: var(--text-paren-size);
   color: var(--ink);
   line-height: 1;
 }
@@ -282,7 +306,7 @@ a { color: inherit; text-decoration: none; }
 }
 .marquee-item:active { transform: scale(.96); }
 .marquee-item:focus-visible { outline: 2px solid var(--rust); outline-offset: 4px; }
-.marquee-sep { color: var(--ink-a25); font-family: var(--font-mono); font-size: .875rem; }
+.marquee-sep { color: var(--ink-a25); font-family: var(--font-mono); font-size: var(--text-separator-size); }
 
 .marquee-detail {
   display: flex; flex-direction: column; align-items: center; gap: 16px;
