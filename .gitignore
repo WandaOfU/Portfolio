@@ -1,0 +1,7 @@
+# macOS
+.DS_Store
+
+# Local design-tooling config (Impeccable detector waivers).
+# Not site content — this repo's root is the published Pages root, so anything
+# committed here is served at https://wandaofu.github.io/Portfolio/.
+.impeccable/

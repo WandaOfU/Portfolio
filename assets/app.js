@@ -48,12 +48,20 @@
 
   /* ---------- open case toast ---------- */
   const toast = document.getElementById('toast');
+  const TOAST_MESSAGE = 'Case study coming soon';
   let toastTimer;
   function showToast() {
     if (!toast) return;
+    // The message is written on each show rather than sitting in the markup:
+    // a role="status" region announces content that *arrives*, so text already
+    // present at load would never be read out.
+    toast.textContent = TOAST_MESSAGE;
     toast.classList.add('show');
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => toast.classList.remove('show'), 1800);
+    toastTimer = setTimeout(() => {
+      toast.classList.remove('show');
+      toast.textContent = '';
+    }, 1800);
   }
   // Delegated: the marquee's detail panel swaps its "open case" button in and
   // out of the DOM as the active case changes, so a direct listener wouldn't
@@ -87,12 +95,23 @@
   const items = [...track.querySelectorAll('.marquee-item')];
   const setEl = track.querySelector('.marquee-set');
 
+  // The track repeats one set three times so the scroll can wrap seamlessly.
+  // That repetition is purely visual: left alone it turns three projects into
+  // nine tab stops and makes a screen reader announce the same list of work
+  // three times over. Only the first copy stays in the accessibility tree and
+  // the tab order — the clones keep working for pointer drags and taps.
+  [...track.querySelectorAll('.marquee-set')].slice(1).forEach((clone) => {
+    clone.setAttribute('aria-hidden', 'true');
+    clone.querySelectorAll('.marquee-item').forEach((btn) => { btn.tabIndex = -1; });
+  });
+
   let setWidth = 0;
   let scrollX = 0;
   let velocity = 0; // px/sec
   let dragging = false;
   let lastX = 0, lastT = 0;
   let ambientPausedUntil = 0;
+  let holdDrift = false;
   let activeIndex = -1;
   let activeEl = null;
   let lastTick = performance.now();
@@ -178,7 +197,7 @@
         applyTransform();
         updateActive();
         if (Math.abs(velocity) <= 2) { velocity = 0; animateBy(nearestOffset()); }
-      } else if (!reduceMotion && now > ambientPausedUntil) {
+      } else if (!reduceMotion && !holdDrift && now > ambientPausedUntil) {
         scrollX += 14 * dt; // slow ambient drift, px/sec
         wrapScroll();
         applyTransform();
@@ -242,6 +261,23 @@
   }
   wrap.addEventListener('pointerup', endDrag);
   wrap.addEventListener('pointercancel', endDrag);
+
+  // Reading a title shouldn't mean chasing it. Pointing at the marquee or
+  // tabbing into it holds the ambient drift; leaving lets it resume after a
+  // beat. This also gives the continuous motion the pause mechanism it
+  // otherwise lacks for anyone who needs one.
+  // Mouse and pen only: a touch pointer enters on tap and is destroyed on
+  // release, so holding on it risks stalling the drift for good on a phone —
+  // where a tap already pauses things through endDrag.
+  wrap.addEventListener('pointerenter', (e) => {
+    if (e.pointerType !== 'touch') holdDrift = true;
+  });
+  wrap.addEventListener('pointerleave', () => {
+    holdDrift = false;
+    ambientPausedUntil = performance.now() + 600;
+  });
+  wrap.addEventListener('focusin', () => { holdDrift = true; });
+  wrap.addEventListener('focusout', () => { holdDrift = false; });
 
   items.forEach((el) => {
     // Kept for keyboard activation (Tab + Enter/Space) — that path fires a

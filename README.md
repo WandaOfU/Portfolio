@@ -5,7 +5,7 @@ Vladislav Sapelin's product design portfolio. Static site, no build step — pla
 ## Structure
 
 - `index.html` — home
-- `projects/index.html` — case study carousel
+- `projects/index.html` — case study marquee (drag to scrub, click a title to jump)
 - `about/index.html` — jobs & education
 - `assets/` — shared stylesheet, script, fonts (self-hosted, no external font requests), and photo
 
