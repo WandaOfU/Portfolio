@@ -266,9 +266,18 @@ a { color: inherit; text-decoration: none; }
 }
 
 .home-nav { display: flex; gap: 28px; margin-top: 8px; }
-/* Absorbs less of the shared padding than the other chrome links, preserving
-   the 4px of breathing room this nav already had. */
-.home-nav a { margin: -8px 0; }
+/* The home page's only two routes into the work, so they take the body step
+   rather than the 11px label chrome the nav carries elsewhere. Still mono and
+   still uppercase — the same voice, one size up.
+   The margin absorbs less of the shared padding than the other chrome links,
+   preserving the 4px of breathing room this nav already had. */
+.home-nav a {
+  font-size: var(--text-body-size);
+  font-weight: 400;
+  letter-spacing: var(--text-body-tracking);
+  line-height: var(--text-body-leading);
+  margin: -8px 0;
+}
 
 /* ---------- footer contact panel ---------- */
 .contact-panel {
