@@ -70,7 +70,6 @@
   const CASES = [
     { category: 'WORKPLACE / UX', title: 'T—BANK WORKPLACE', desc: 'One connected system for desks, services, rooms, and everyday decisions.' },
     { category: 'FINTECH / PRODUCT', title: 'VTB POLITE REFUSALS', desc: 'A microservice that helps people communicate clearly when saying no is difficult.' },
-    { category: 'FINTECH / PRODUCT', title: 'VTB POLITE REFUSALS', desc: 'A microservice that helps people communicate clearly when saying no is difficult.' },
     { category: 'FINTECH / PRODUCT', title: 'CLOUD.RU WORKS', desc: 'Cloud services, pipelines etc' },
   ];
   function caseInnerHTML(c) {
