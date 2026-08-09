@@ -34,6 +34,7 @@
   --ink: #021024;
   --ink-a25: rgba(2, 16, 36, .25);
   --ink-a10: rgba(2, 16, 36, .08);
+  --ink-a04: rgba(2, 16, 36, .04);
   --rust: #a6342e;
   --rust-dark: #9c4a2e;
   /* Ash. Darkened from #767e89, which sat at 3.54:1 on --bg and failed WCAG
@@ -345,8 +346,11 @@ a { color: inherit; text-decoration: none; }
   width: 100%;
   height: 140px;
   border-radius: 23px;
-  background-color: #e4e5e8;
-  background-image: repeating-linear-gradient(135deg, rgba(2,16,36,.08) 0 2px, transparent 2px 22px);
+  /* Was the literal #e4e5e8, which is exactly ink at 4% over the page —
+     expressed through the ink-alpha scale instead so the placeholder sits in
+     the system rather than beside it. Renders identically. */
+  background-color: var(--ink-a04);
+  background-image: repeating-linear-gradient(135deg, var(--ink-a10) 0 2px, transparent 2px 22px);
   flex: none;
 }
 .case-category { display: flex; align-items: center; gap: 8px; color: var(--muted); }
