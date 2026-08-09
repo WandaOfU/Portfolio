@@ -37,6 +37,7 @@
   --ink-a04: rgba(2, 16, 36, .04);
   --rust: #a6342e;
   --rust-dark: #9c4a2e;
+  --rust-a06: rgba(166, 52, 46, .06);
   /* Ash. Darkened from #767e89, which sat at 3.54:1 on --bg and failed WCAG
      AA for the 11-12px roles that use it (dates, role lines, case categories,
      the drag hint). Same hue and saturation, lower lightness: 4.71:1. */
@@ -341,9 +342,13 @@ a { color: inherit; text-decoration: none; }
 .marquee-item:focus-visible { outline: 2px solid var(--rust); outline-offset: 4px; }
 .marquee-sep { color: var(--ink-a25); font-family: var(--font-mono); font-size: var(--text-separator-size); }
 
+/* One left spine: the preview's edge, the category rule, the title, the
+   description and the button all start at the same x. Children stretch to the
+   panel width by default, so only the button opts out (align-self below) and
+   hugs its own label. */
 .marquee-detail {
-  display: flex; flex-direction: column; align-items: center; gap: 16px;
-  text-align: center; max-width: 480px; margin: 0 auto;
+  display: flex; flex-direction: column; gap: 16px;
+  text-align: left; max-width: 480px; margin: 0 auto;
 }
 /* Content swaps instantly (no artificial wait) — this is just a light polish
    fade-IN, restarted via a JS reflow trick, never a delay gating the swap. */
@@ -382,15 +387,19 @@ a { color: inherit; text-decoration: none; }
   text-transform: uppercase;
   color: var(--ink);
   margin: 0;
-  /* Reserve room for two lines even when a case's description is short
-     (e.g. Cloud.ru's one-liner) — otherwise the detail panel's height
-     changes per case, and everything below it visibly jumps while scrubbing. */
+  /* Reserve room for two lines even when a case's description is short —
+     otherwise the detail panel's height changes per case, and everything
+     below it visibly jumps while scrubbing. Text sits at the top of that
+     reserved box so every case's first line lands on the same baseline. */
   min-height: calc(var(--text-caption-leading) * var(--text-caption-size) * 2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  /* Narrowest measure that still wraps all three descriptions to exactly two
+     lines; tighter and the longest one spills to three and overflows the box
+     reserved above. Keep case descriptions under ~100 characters. */
+  max-width: 52ch;
 }
 .open-case {
+  /* The one child that doesn't stretch — it hugs its label and starts on the
+     same left spine as everything above it. */
   align-self: flex-start;
   display: inline-flex;
   align-items: center;
@@ -408,7 +417,22 @@ a { color: inherit; text-decoration: none; }
   transition: transform .2s var(--ease-spring), background-color .2s ease;
 }
 .open-case:active { transform: scale(.96); }
-.open-case:hover { background-color: rgba(166,52,46,.06); }
+.open-case:hover { background-color: var(--rust-a06); }
+/* Drawn rather than the ↗ character: a glyph's weight and angle come from
+   whatever font resolves, which never matches the 1px rules used elsewhere. */
+.open-case .arrow {
+  width: 10px;
+  height: 10px;
+  flex: none;
+  transition: transform .2s var(--ease-spring);
+}
+.open-case:hover .arrow, .open-case:focus-visible .arrow { transform: translate(1px, -1px); }
+@media (prefers-reduced-motion: reduce) {
+  .open-case .arrow, .open-case:hover .arrow, .open-case:focus-visible .arrow {
+    transition: none;
+    transform: none;
+  }
+}
 
 /* ---------- ABOUT ---------- */
 .about-content {

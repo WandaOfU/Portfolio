@@ -110,15 +110,17 @@
   const CASES = [
     { category: 'WORKPLACE / UX', title: 'T—BANK WORKPLACE', desc: 'One connected system for desks, services, rooms, and everyday decisions.' },
     { category: 'FINTECH / PRODUCT', title: 'VTB POLITE REFUSALS', desc: 'A microservice that helps people communicate clearly when saying no is difficult.' },
-    { category: 'FINTECH / PRODUCT', title: 'CLOUD.RU WORKS', desc: 'Cloud services, pipelines etc' },
+    { category: 'CLOUD / PLATFORM', title: 'CLOUD.RU WORKS', desc: 'Platform surfaces for cloud services, pipelines, and the people running them.' },
   ];
+  // 1px strokes on a 10px box, matching the hairline rules used elsewhere.
+  const ARROW_SVG = '<svg class="arrow" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true" focusable="false"><path d="M1.6 8.4 8.4 1.6"/><path d="M3.6 1.6h4.8v4.8"/></svg>';
   function caseInnerHTML(c) {
     return `
       <div class="case-preview"></div>
       <div class="case-category mono"><span class="bar"></span>${c.category}</div>
       <h2 class="case-title">${c.title}</h2>
       <p class="case-desc">${c.desc}</p>
-      <button class="open-case" type="button">OPEN CASE ↗</button>
+      <button class="open-case" type="button">OPEN CASE ${ARROW_SVG}</button>
     `;
   }
 
