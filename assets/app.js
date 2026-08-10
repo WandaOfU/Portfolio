@@ -111,9 +111,9 @@
   // `href` marks a case that has a written study; the rest still fall back to
   // the toast until their material exists.
   const CASES = [
-    { category: 'RECOGNITION PLATFORM / PRODUCT', title: 'AWARDME', desc: 'Skill badges an organisation issues, and public pages that make them portable.', href: '../cases/awardme/' },
-    { category: 'CLOUD TOOLING / CONCEPT', title: 'WORKFLOW STUDIO', desc: 'Describe an engineering task in plain language; an agent assembles the pipeline.', href: '../cases/workflow-studio/' },
-    { category: 'DEVELOPER PLATFORM / REDESIGN', title: 'YANDEX ASK & LEARN', desc: 'A developer Q&A platform rebuilt around people, reputation and findable tags.', href: '../cases/yandex-ask-learn/' },
+    { category: 'RECOGNITION PLATFORM / PRODUCT', title: 'AWARDME', desc: 'Skill badges an organisation issues, and public pages that make them portable.', href: '../cases/awardme/', thumb: '../assets/cases/awardme-badge-900.jpg' },
+    { category: 'CLOUD TOOLING / CONCEPT', title: 'WORKFLOW STUDIO', desc: 'Describe an engineering task in plain language; an agent assembles the pipeline.', href: '../cases/workflow-studio/', thumb: '../assets/cases/workflow-home-900.jpg' },
+    { category: 'DEVELOPER PLATFORM / REDESIGN', title: 'YANDEX ASK & LEARN', desc: 'A developer Q&A platform rebuilt around people, reputation and findable tags.', href: '../cases/yandex-ask-learn/', thumb: '../assets/cases/ydx-tagmodal-after-900.jpg' },
     { category: 'WORKPLACE / UX', title: 'T—BANK WORKPLACE', desc: 'One connected system for desks, services, rooms, and everyday decisions.' },
     { category: 'FINTECH / PRODUCT', title: 'VTB POLITE REFUSALS', desc: 'A microservice that helps people communicate clearly when saying no is difficult.' },
   ];
@@ -123,8 +123,13 @@
     const action = c.href
       ? `<a class="open-case" href="${c.href}">OPEN CASE ${ARROW_SVG}</a>`
       : `<button class="open-case" type="button">OPEN CASE ${ARROW_SVG}</button>`;
+    // A case with a written study shows its own work; the hatch stays only for
+    // the ones that genuinely have nothing behind them yet.
+    const preview = c.thumb
+      ? `<div class="case-preview has-thumb"><img src="${c.thumb}" alt="" loading="lazy" decoding="async"></div>`
+      : `<div class="case-preview"></div>`;
     return `
-      <div class="case-preview"></div>
+      ${preview}
       <div class="case-category mono"><span class="bar"></span>${c.category}</div>
       <h2 class="case-title">${c.title}</h2>
       <p class="case-desc">${c.desc}</p>

@@ -367,6 +367,17 @@ a { color: inherit; text-decoration: none; }
   background-image: repeating-linear-gradient(135deg, var(--ink-a10) 0 2px, transparent 2px 22px);
   flex: none;
 }
+/* A case that has real work shows it. The hatch is only ever a stand-in. */
+.case-preview.has-thumb { background-image: none; overflow: hidden; }
+.case-preview.has-thumb img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  /* Screens are top-heavy — the header and first content row identify the
+     product; the bottom is usually empty canvas. */
+  object-position: top center;
+}
 .case-category { display: flex; align-items: center; gap: 8px; color: var(--muted); }
 .case-category .bar { width: 14px; height: 1px; background: var(--muted); }
 .case-title {
