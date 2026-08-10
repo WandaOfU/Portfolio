@@ -113,6 +113,7 @@
   const CASES = [
     { category: 'RECOGNITION PLATFORM / PRODUCT', title: 'AWARDME', desc: 'Skill badges an organisation issues, and public pages that make them portable.', href: '../cases/awardme/' },
     { category: 'CLOUD TOOLING / CONCEPT', title: 'WORKFLOW STUDIO', desc: 'Describe an engineering task in plain language; an agent assembles the pipeline.', href: '../cases/workflow-studio/' },
+    { category: 'DEVELOPER PLATFORM / REDESIGN', title: 'YANDEX ASK & LEARN', desc: 'A developer Q&A platform rebuilt around people, reputation and findable tags.', href: '../cases/yandex-ask-learn/' },
     { category: 'WORKPLACE / UX', title: 'T—BANK WORKPLACE', desc: 'One connected system for desks, services, rooms, and everyday decisions.' },
     { category: 'FINTECH / PRODUCT', title: 'VTB POLITE REFUSALS', desc: 'A microservice that helps people communicate clearly when saying no is difficult.' },
   ];
