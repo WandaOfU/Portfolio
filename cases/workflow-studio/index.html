@@ -55,7 +55,25 @@
              sizes="(max-width: 840px) 100vw, 800px"
              alt="Workflow Studio canvas while the AI agent works: the user's request sits in a left panel, the agent reports it is thinking through the steps, and the canvas awaits the generated workflow."
              width="1440" height="800" loading="lazy" decoding="async">
-        <figcaption class="case-caption">Agent canvas. The request stays visible while the agent works, and the same workflow can be read as a diagram or as YAML — the generated result is inspectable, not a black box.</figcaption>
+        <figcaption class="case-caption">Agent canvas. The request stays visible while the agent works, and the same workflow can be read as a diagram or as YAML, so the generated result stays inspectable rather than opaque.</figcaption>
+      </figure>
+
+      <figure class="case-shot">
+        <img src="../../assets/cases/workflow-result-dev-900.jpg"
+             srcset="../../assets/cases/workflow-result-dev-900.jpg 900w, ../../assets/cases/workflow-result-dev-1800.jpg 1800w"
+             sizes="(max-width: 840px) 100vw, 800px"
+             alt="The generated workflow for a dev environment: a trigger node followed by SNAT, Subnet, a Kubernetes cluster, a Kubernetes node pool and PostgreSQL, connected left to right on the canvas."
+             width="1800" height="1000" loading="lazy" decoding="async">
+        <figcaption class="case-caption">The prompt resolved. “Create a Dev environment on Kubernetes and PostgreSQL” becomes six typed steps in dependency order: networking, then cluster, then database. Each one lands as an editable node rather than a block of generated config.</figcaption>
+      </figure>
+
+      <figure class="case-shot">
+        <img src="../../assets/cases/workflow-result-api-900.jpg"
+             srcset="../../assets/cases/workflow-result-api-900.jpg 900w, ../../assets/cases/workflow-result-api-1800.jpg 1800w"
+             sizes="(max-width: 840px) 100vw, 800px"
+             alt="A generated workflow that branches: a trigger leads to an API Gateway node, which fans out to three parallel container service nodes."
+             width="1800" height="1000" loading="lazy" decoding="async">
+        <figcaption class="case-caption">Branching, not just a chain. An API gateway fans out to three container services in parallel, so what the agent proposes carries real topology, and stays a diagram the engineer can rearrange.</figcaption>
       </figure>
 
       <figure class="case-shot">
@@ -64,7 +82,7 @@
              sizes="(max-width: 840px) 100vw, 800px"
              alt="Workflow Studio saved scenarios list, a table of workflows with author, updated date and created date columns."
              width="1440" height="808" loading="lazy" decoding="async">
-        <figcaption class="case-caption">Saved scenarios. Once generated, a workflow becomes an ordinary listed object — author, updated, created — so the agent entry point doesn't fork the information architecture.</figcaption>
+        <figcaption class="case-caption">Saved scenarios. Once generated, a workflow becomes an ordinary listed object with author, updated and created columns, so the agent entry point doesn't fork the information architecture.</figcaption>
       </figure>
     </div>
 

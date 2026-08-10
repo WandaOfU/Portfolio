@@ -446,10 +446,15 @@ a { color: inherit; text-decoration: none; }
 }
 
 /* ---------- CASE STUDY ---------- */
+/* The shell centres its children, so a flex child shrinks to its content's
+   preferred width — the prose and caption measures were pulling the whole
+   column in to ~720px. Stretching it holds the 800px the rest of the site
+   uses, and the ch-based measures still cap the text inside it. */
 .case {
   width: 100%;
   max-width: 800px;
   margin: 0 auto;
+  align-self: stretch;
   display: flex;
   flex-direction: column;
   gap: 64px;
@@ -492,7 +497,9 @@ a { color: inherit; text-decoration: none; }
 .case-meta dd { margin: 0; color: var(--ink); }
 
 .case-shots { display: flex; flex-direction: column; gap: 56px; }
-.case-shot { display: flex; flex-direction: column; gap: 14px; }
+/* figure carries a UA margin of 1em 40px — left alone it insets every
+   screenshot 40px and breaks the left spine against the prose beside it. */
+.case-shot { display: flex; flex-direction: column; gap: 14px; margin: 0; }
 .case-shot img {
   width: 100%;
   height: auto;
