@@ -99,28 +99,35 @@
   // out of the DOM as the active case changes, so a direct listener wouldn't
   // survive that. Listening on the document catches every instance, present
   // now or added later.
+  // Only the <button> form has nothing to open — the <a> form navigates.
   document.addEventListener('click', (e) => {
-    if (e.target.closest('.open-case')) showToast();
+    if (e.target.closest('button.open-case')) showToast();
   });
 
   /* ---------- projects marquee ---------- */
   const wrap = document.getElementById('marquee-wrap');
   if (!wrap) return;
 
+  // `href` marks a case that has a written study; the rest still fall back to
+  // the toast until their material exists.
   const CASES = [
+    { category: 'RECOGNITION PLATFORM / PRODUCT', title: 'AWARDME', desc: 'Skill badges an organisation issues, and public pages that make them portable.', href: '../cases/awardme/' },
+    { category: 'CLOUD TOOLING / CONCEPT', title: 'WORKFLOW STUDIO', desc: 'Describe an engineering task in plain language; an agent assembles the pipeline.', href: '../cases/workflow-studio/' },
     { category: 'WORKPLACE / UX', title: 'T—BANK WORKPLACE', desc: 'One connected system for desks, services, rooms, and everyday decisions.' },
     { category: 'FINTECH / PRODUCT', title: 'VTB POLITE REFUSALS', desc: 'A microservice that helps people communicate clearly when saying no is difficult.' },
-    { category: 'CLOUD / PLATFORM', title: 'CLOUD.RU WORKS', desc: 'Platform surfaces for cloud services, pipelines, and the people running them.' },
   ];
   // 1px strokes on a 10px box, matching the hairline rules used elsewhere.
   const ARROW_SVG = '<svg class="arrow" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true" focusable="false"><path d="M1.6 8.4 8.4 1.6"/><path d="M3.6 1.6h4.8v4.8"/></svg>';
   function caseInnerHTML(c) {
+    const action = c.href
+      ? `<a class="open-case" href="${c.href}">OPEN CASE ${ARROW_SVG}</a>`
+      : `<button class="open-case" type="button">OPEN CASE ${ARROW_SVG}</button>`;
     return `
       <div class="case-preview"></div>
       <div class="case-category mono"><span class="bar"></span>${c.category}</div>
       <h2 class="case-title">${c.title}</h2>
       <p class="case-desc">${c.desc}</p>
-      <button class="open-case" type="button">OPEN CASE ${ARROW_SVG}</button>
+      ${action}
     `;
   }
 
