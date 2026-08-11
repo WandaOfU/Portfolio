@@ -78,31 +78,64 @@
     }
   }
 
-  /* ---------- open case toast ---------- */
-  const toast = document.getElementById('toast');
-  const TOAST_MESSAGE = 'Case study coming soon';
-  let toastTimer;
-  function showToast() {
-    if (!toast) return;
-    // The message is written on each show rather than sitting in the markup:
-    // a role="status" region announces content that *arrives*, so text already
-    // present at load would never be read out.
-    toast.textContent = TOAST_MESSAGE;
-    toast.classList.add('show');
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => {
-      toast.classList.remove('show');
-      toast.textContent = '';
-    }, 1800);
+  /* ---------- case screens: click to enlarge ---------- */
+  const shots = [...document.querySelectorAll('.case-shot img')];
+  if (shots.length) {
+    const box = document.createElement('div');
+    box.className = 'lightbox';
+    box.hidden = true;
+    box.innerHTML = '<button class="lightbox-close" type="button" aria-label="Close">'
+      + '<svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">'
+      + '<path d="M1 1l8 8M9 1l-8 8"/></svg></button>';
+    document.body.appendChild(box);
+    // Built rather than written into the markup: an <img> with no src is a
+    // broken-image box if it ever renders, and this one has no source until
+    // something is opened.
+    const bigImg = document.createElement('img');
+    box.appendChild(bigImg);
+    const closeBtn = box.querySelector('.lightbox-close');
+    let lastFocus = null;
+
+    const close = () => {
+      box.classList.remove('show');
+      const done = () => { box.hidden = true; bigImg.removeAttribute('src'); };
+      if (reduceMotion) done(); else setTimeout(done, 200);
+      document.body.style.overflow = '';
+      if (lastFocus) lastFocus.focus();
+    };
+
+    const open = (img) => {
+      // Take the largest candidate the srcset offers rather than the rendered
+      // src, which is the 900px version sized for the column.
+      const set = img.getAttribute('srcset') || '';
+      const largest = set.split(',').map((s) => s.trim().split(/\s+/))
+        .filter((p) => p.length === 2)
+        .sort((a, b) => parseInt(b[1]) - parseInt(a[1]))[0];
+      bigImg.src = largest ? largest[0] : img.currentSrc || img.src;
+      bigImg.alt = img.alt || '';
+      lastFocus = document.activeElement;
+      box.hidden = false;
+      document.body.style.overflow = 'hidden';
+      requestAnimationFrame(() => box.classList.add('show'));
+      closeBtn.focus();
+    };
+
+    shots.forEach((img) => {
+      img.addEventListener('click', () => open(img));
+    });
+    box.addEventListener('click', (e) => {
+      // Anywhere outside the image closes, including the image itself — at
+      // this size there is nothing to do but dismiss.
+      if (e.target !== box && !e.target.closest('.lightbox-close') && e.target !== bigImg) return;
+      close();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (box.hidden) return;
+      if (e.key === 'Escape') close();
+      // Only one control inside, so keep focus on it.
+      if (e.key === 'Tab') { e.preventDefault(); closeBtn.focus(); }
+    });
   }
-  // Delegated: the marquee's detail panel swaps its "open case" button in and
-  // out of the DOM as the active case changes, so a direct listener wouldn't
-  // survive that. Listening on the document catches every instance, present
-  // now or added later.
-  // Only the <button> form has nothing to open — the <a> form navigates.
-  document.addEventListener('click', (e) => {
-    if (e.target.closest('button.open-case')) showToast();
-  });
 
   /* ---------- case study section tabs ---------- */
   const toc = document.querySelector('.case-toc');
@@ -166,37 +199,7 @@
   const wrap = document.getElementById('marquee-wrap');
   if (!wrap) return;
 
-  // `href` marks a case that has a written study; the rest still fall back to
-  // the toast until their material exists.
-  const CASES = [
-    { category: 'RECOGNITION PLATFORM / PRODUCT', title: 'AWARDME', desc: 'Skill badges an organisation issues, and public pages that make them portable.', href: '../cases/awardme/', thumb: '../assets/cases/awardme-badge-900.jpg' },
-    { category: 'CLOUD TOOLING / CONCEPT', title: 'WORKFLOW STUDIO', desc: 'Describe an engineering task in plain language; an agent assembles the pipeline.', href: '../cases/workflow-studio/', thumb: '../assets/cases/workflow-home-900.jpg' },
-    { category: 'DEVELOPER PLATFORM / REDESIGN', title: 'YANDEX ASK & LEARN', desc: 'A developer Q&A platform rebuilt around people, reputation and findable tags.', href: '../cases/yandex-ask-learn/', thumb: '../assets/cases/ydx-tagmodal-after-900.jpg' },
-    { category: 'WORKPLACE / UX', title: 'T—BANK WORKPLACE', desc: 'One connected system for desks, services, rooms, and everyday decisions.' },
-    { category: 'FINTECH / PRODUCT', title: 'VTB POLITE REFUSALS', desc: 'A microservice that helps people communicate clearly when saying no is difficult.' },
-  ];
-  // 1px strokes on a 10px box, matching the hairline rules used elsewhere.
-  const ARROW_SVG = '<svg class="arrow" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true" focusable="false"><path d="M1.6 8.4 8.4 1.6"/><path d="M3.6 1.6h4.8v4.8"/></svg>';
-  function caseInnerHTML(c) {
-    const action = c.href
-      ? `<a class="open-case" href="${c.href}">OPEN CASE ${ARROW_SVG}</a>`
-      : `<button class="open-case" type="button">OPEN CASE ${ARROW_SVG}</button>`;
-    // A case with a written study shows its own work; the hatch stays only for
-    // the ones that genuinely have nothing behind them yet.
-    const preview = c.thumb
-      ? `<div class="case-preview has-thumb"><img src="${c.thumb}" alt="" loading="lazy" decoding="async"></div>`
-      : `<div class="case-preview"></div>`;
-    return `
-      ${preview}
-      <div class="case-category mono"><span class="bar"></span>${c.category}</div>
-      <h2 class="case-title">${c.title}</h2>
-      <p class="case-desc">${c.desc}</p>
-      ${action}
-    `;
-  }
-
   const track = document.getElementById('marquee-track');
-  const detail = document.getElementById('marquee-detail');
   const items = [...track.querySelectorAll('.marquee-item')];
   const setEl = track.querySelector('.marquee-set');
 
@@ -239,19 +242,8 @@
     });
     if (closestEl !== activeEl) {
       activeEl = closestEl;
-      const closestCaseIndex = Number(closestEl.dataset.index);
       items.forEach((el) => el.toggleAttribute('data-active', el === closestEl));
-      if (closestCaseIndex === activeIndex) return;
-      activeIndex = closestCaseIndex;
-      // Content updates the instant activation changes — no artificial wait.
-      // While a gesture is actively dragging, skip the fade too: a live scrub
-      // wants continuous 1:1 feedback, not a transition racing to catch up.
-      detail.innerHTML = caseInnerHTML(CASES[activeIndex]);
-      if (!reduceMotion && !dragging) {
-        detail.classList.remove('is-entering');
-        void detail.offsetWidth; // restart the animation even on rapid successive changes
-        detail.classList.add('is-entering');
-      }
+      activeIndex = Number(closestEl.dataset.index);
     }
   }
 
@@ -302,11 +294,6 @@
         applyTransform();
         updateActive();
         if (Math.abs(velocity) <= 2) { velocity = 0; animateBy(nearestOffset()); }
-      } else if (!reduceMotion && !holdDrift && now > ambientPausedUntil) {
-        scrollX += 14 * dt; // slow ambient drift, px/sec
-        wrapScroll();
-        applyTransform();
-        updateActive();
       }
     }
     requestAnimationFrame(tick);
@@ -345,12 +332,20 @@
     applyTransform();
     updateActive();
   });
+  // The marquee is an index, not a viewer: centring the title is the lesser
+  // half of the job — the point is to land the reader on that project's card.
+  function revealCard(el) {
+    const card = document.getElementById('card-' + el.dataset.index);
+    if (!card) return;
+    card.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'center' });
+  }
   function jumpToItem(el) {
     const wr = wrap.getBoundingClientRect();
     const anchor = wr.left + wr.width / 2;
     const r = el.getBoundingClientRect();
     ambientPausedUntil = performance.now() + 2500;
     animateBy((r.left + r.width / 2) - anchor);
+    revealCard(el);
   }
   function endDrag() {
     if (!dragging) return;
