@@ -99,6 +99,14 @@
 
 * { box-sizing: border-box; }
 
+/* Jumping to a section drops the reader somewhere with no sense of how far they
+   moved; the scroll carries that. Motion answering a click, which is the only
+   kind this system allows. Declared under no-preference rather than overridden
+   later, so a reduced-motion setting never has to undo it. */
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
+
 html, body {
   margin: 0;
   padding: 0;
