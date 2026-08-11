@@ -84,12 +84,6 @@
   --text-label-size: .6875rem;  /* 11px, nav/buttons/dates/footer */
   --text-label-leading: 1.4;
   --text-label-tracking: .05em;
-
-  --text-ticker-size: clamp(1.75rem, 4vw, 2.75rem); /* 28px -> 44px, the projects marquee */
-  --text-ticker-leading: 1.1;
-  --text-ticker-tracking: -.015em;
-
-  --text-separator-size: .875rem; /* 14px, the marquee's "/" dividers */
 }
 
 @media (max-width: 700px) {
@@ -152,10 +146,8 @@ a { color: inherit; text-decoration: none; }
 .link-hover { transition: color .25s var(--ease-spring); }
 .link-hover:hover, .link-hover:focus-visible { color: var(--rust); }
 /* Colour alone can't carry focus — it reads identically to hover, and a
-   keyboard user has no way to tell where they are. Same ring the marquee
-   items already use, so the whole page announces focus one way. */
-.link-hover:focus-visible,
-.open-case:focus-visible {
+   keyboard user has no way to tell where they are. One ring, everywhere. */
+.link-hover:focus-visible {
   outline: 2px solid var(--rust);
   outline-offset: 4px;
 }
@@ -269,14 +261,14 @@ a { color: inherit; text-decoration: none; }
 /* ---------- work grid (home + projects) ---------- */
 /* The wordmark used to be the whole first screen. Work now sits directly under
    it, because a visitor who never clicks should still see what the work is. */
-.home-work, .projects-grid {
+.home-work {
   width: 100%;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 28px 24px;
 }
 @media (max-width: 900px) {
-  .home-work, .projects-grid { grid-template-columns: 1fr; gap: 32px; }
+  .home-work { grid-template-columns: 1fr; gap: 32px; }
 }
 
 .work-card {
@@ -361,88 +353,38 @@ a { color: inherit; text-decoration: none; }
   .contact-year { text-align: left; }
 }
 
-/* ---------- PROJECTS ---------- */
-#view-projects, #view-about { width: 100%; align-items: center; }
-
-.v-marquee { width: 100%; max-width: 800px; display: flex; flex-direction: column; gap: 40px; }
-
-.marquee-wrap { position: relative; width: 100%; height: 100px; overflow: hidden; cursor: grab; touch-action: pan-y; }
-.marquee-wrap.grabbing { cursor: grabbing; }
-.marquee-wrap::before, .marquee-wrap::after {
-  content: ''; position: absolute; top: 0; bottom: 0; width: 80px; z-index: 2; pointer-events: none;
-}
-.marquee-wrap::before { left: 0; background: linear-gradient(90deg, var(--bg), transparent); }
-.marquee-wrap::after { right: 0; background: linear-gradient(270deg, var(--bg), transparent); }
-.marquee-tick {
-  position: absolute; left: 50%; top: 0; bottom: 0; width: 1px; background: var(--rust);
-  z-index: 3; pointer-events: none;
-}
-.marquee-tick::before {
-  content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
-  width: 6px; height: 6px; border-radius: 50%; background: var(--rust);
-}
-.marquee-track {
-  position: absolute; top: 0; left: 0; height: 100%;
-  display: flex; align-items: center; white-space: nowrap;
-  will-change: transform;
-}
-.marquee-set { display: flex; align-items: center; }
-.marquee-item {
-  font-family: var(--font-serif); font-style: italic; font-weight: 600;
-  font-size: var(--text-ticker-size);
-  letter-spacing: var(--text-ticker-tracking);
-  line-height: var(--text-ticker-leading);
-  color: var(--muted); background: none; border: none; cursor: pointer; padding: 0 28px;
-  transition: color .12s ease-out, transform .15s var(--ease-spring);
-  position: relative;
-}
-.marquee-item[data-active] { color: var(--ink); }
-.marquee-item[data-active]::after {
-  content: ''; position: absolute; left: 28px; right: 28px; bottom: -6px; height: 2px; background: var(--rust);
-}
-.marquee-item:active { transform: scale(.96); }
-.marquee-item:focus-visible { outline: 2px solid var(--rust); outline-offset: 4px; }
-.marquee-sep { color: var(--ink-a25); font-family: var(--font-mono); font-size: var(--text-separator-size); }
-
-/* One left spine: the preview's edge, the category rule, the title, the
-   description and the button all start at the same x. Children stretch to the
-   panel width by default, so only the button opts out (align-self below) and
-   hugs its own label. */
-.marquee-detail {
-  display: flex; flex-direction: column; gap: 16px;
-  text-align: left; max-width: 480px; margin: 0 auto;
-}
-/* Content swaps instantly (no artificial wait) — this is just a light polish
-   fade-IN, restarted via a JS reflow trick, never a delay gating the swap. */
-.marquee-detail.is-entering { animation: marquee-detail-in .18s ease-out; }
-@keyframes marquee-detail-in { from { opacity: .3; } to { opacity: 1; } }
-.marquee-hint { text-align: center; color: var(--muted); }
-
-.case-preview {
+/* ---------- PROJECTS INDEX ---------- */
+/* The home page teases three cases in a row; this page is the full index, so
+   each entry gets a wide screen and a line saying what the project is. Two
+   pages showing identical cards would give the second one nothing to do. */
+.index {
   width: 100%;
-  height: 140px;
-  border-radius: 23px;
-  /* Was the literal #e4e5e8, which is exactly ink at 4% over the page —
-     expressed through the ink-alpha scale instead so the placeholder sits in
-     the system rather than beside it. Renders identically. */
-  background-color: var(--ink-a04);
-  background-image: repeating-linear-gradient(135deg, var(--ink-a10) 0 2px, transparent 2px 22px);
-  flex: none;
+  max-width: 800px;
+  margin: 0 auto;
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  gap: 72px;
 }
-/* A case that has real work shows it. The hatch is only ever a stand-in. */
-.case-preview.has-thumb { background-image: none; overflow: hidden; }
-.case-preview.has-thumb img {
+.index-item {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: transform .3s var(--ease-spring);
+}
+.index-item img {
   width: 100%;
-  height: 100%;
-  display: block;
+  height: auto;
+  aspect-ratio: 16 / 9;
   object-fit: cover;
-  /* Screens are top-heavy — the header and first content row identify the
-     product; the bottom is usually empty canvas. */
   object-position: top center;
+  border-radius: 23px;
+  background-color: var(--ink-a04);
+  display: block;
+  margin-bottom: 4px;
 }
-.case-category { display: flex; align-items: center; gap: 8px; color: var(--muted); }
-.case-category .bar { width: 14px; height: 1px; background: var(--muted); }
-.case-title {
+.index-cat { color: var(--muted); }
+.index-title {
   font-family: var(--font-serif);
   font-style: italic;
   font-weight: 600;
@@ -450,61 +392,28 @@ a { color: inherit; text-decoration: none; }
   letter-spacing: var(--text-heading-tracking);
   line-height: var(--text-heading-leading);
   color: var(--ink);
-  margin: 0;
+  transition: color .25s var(--ease-spring);
 }
-.case-desc {
+.index-desc {
   font-family: var(--font-mono);
   font-size: var(--text-caption-size);
   letter-spacing: var(--text-caption-tracking);
-  line-height: var(--text-caption-leading);
-  text-transform: uppercase;
-  color: var(--ink);
+  line-height: 1.7;
+  color: var(--muted);
+  max-width: 62ch;
+}
+.index-item:hover { transform: translateY(-4px); }
+.index-item:hover .index-title,
+.index-item:focus-visible .index-title { color: var(--rust); }
+.index-item:focus-visible { outline: 2px solid var(--rust); outline-offset: 8px; }
+.index-note {
   margin: 0;
-  /* Reserve room for two lines even when a case's description is short —
-     otherwise the detail panel's height changes per case, and everything
-     below it visibly jumps while scrubbing. Text sits at the top of that
-     reserved box so every case's first line lands on the same baseline. */
-  min-height: calc(var(--text-caption-leading) * var(--text-caption-size) * 2);
-  /* Narrowest measure that still wraps all three descriptions to exactly two
-     lines; tighter and the longest one spills to three and overflows the box
-     reserved above. Keep case descriptions under ~100 characters. */
-  max-width: 52ch;
+  padding-top: 28px;
+  border-top: 1px solid var(--ink-a10);
+  color: var(--muted);
 }
-.open-case {
-  /* The one child that doesn't stretch — it hugs its label and starts on the
-     same left spine as everything above it. */
-  align-self: flex-start;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 16px;
-  border: 1px solid var(--rust);
-  border-radius: 17px;
-  color: var(--rust);
-  font-size: var(--text-label-size);
-  letter-spacing: var(--text-label-tracking);
-  line-height: var(--text-label-leading);
-  background: none;
-  font-family: var(--font-mono);
-  cursor: pointer;
-  transition: transform .2s var(--ease-spring), background-color .2s ease;
-}
-.open-case:active { transform: scale(.96); }
-.open-case:hover { background-color: var(--rust-a06); }
-/* Drawn rather than the ↗ character: a glyph's weight and angle come from
-   whatever font resolves, which never matches the 1px rules used elsewhere. */
-.open-case .arrow {
-  width: 10px;
-  height: 10px;
-  flex: none;
-  transition: transform .2s var(--ease-spring);
-}
-.open-case:hover .arrow, .open-case:focus-visible .arrow { transform: translate(1px, -1px); }
 @media (prefers-reduced-motion: reduce) {
-  .open-case .arrow, .open-case:hover .arrow, .open-case:focus-visible .arrow {
-    transition: none;
-    transform: none;
-  }
+  .index-item, .index-item:hover { transform: none; transition: none; }
 }
 
 /* ---------- CASE STUDY ---------- */
@@ -615,7 +524,7 @@ a { color: inherit; text-decoration: none; }
   width: min(1400px, 100%);
   height: auto;
   margin: auto;
-  /* Same panel radius as .case-preview and the figures it enlarges — this is
+  /* Same panel radius as the figures it enlarges — this is
      the same media object, just bigger. */
   border-radius: 23px;
   cursor: zoom-out;
@@ -672,8 +581,7 @@ a { color: inherit; text-decoration: none; }
 }
 .case-toc a:hover { color: var(--ink); }
 .case-toc a[aria-current="true"] { color: var(--ink); }
-/* Same 2px rust underline the marquee uses for its active title, so "you are
-   here" reads identically in both places. */
+/* A 2px rust underline, the same weight the system uses for any active mark. */
 .case-toc a[aria-current="true"]::after {
   content: '';
   position: absolute;
@@ -685,7 +593,7 @@ a { color: inherit; text-decoration: none; }
 
 /* Below the breakpoint there is no width to wrap into, so the bar becomes a
    single scrolling row and its ends fade instead of clipping mid-label —
-   the same edge treatment the marquee uses. The mask stops are opacity, not
+   fading rather than clipping mid-label. The mask stops are opacity, not
    paint, so the No Pure Black Rule does not apply to them. */
 @media (max-width: 700px) {
   .case-toc {
