@@ -164,7 +164,12 @@
           else visible.delete(e.target);
         });
         const first = sections.find((s) => visible.has(s));
-        if (first) setCurrent(first.id);
+        if (first) { setCurrent(first.id); return; }
+        // Nothing in the band. At the top of the page the first section still
+        // sits below it, and keeping the previous mark leaves a stale tab lit —
+        // so fall back to the last section the reader has actually passed.
+        const passed = sections.filter((s) => s.getBoundingClientRect().top < 100);
+        setCurrent((passed[passed.length - 1] || sections[0]).id);
       }, { rootMargin: '-72px 0px -55% 0px', threshold: 0 });
 
       sections.forEach((s) => io.observe(s));
