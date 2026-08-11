@@ -137,17 +137,19 @@
       sections.forEach((s) => io.observe(s));
       setCurrent(sections[0].id);
 
-      // Keep the active tab in view when the bar itself scrolls sideways.
-      const scrollTabIntoView = (a) => {
+      // Keep the active tab in view only where the bar actually scrolls — it
+      // wraps at reading width, so on most pages there is nothing to move.
+      // Instant, never smooth: a sideways animation running underneath a
+      // vertical scroll is what made this feel laggy in the first place.
+      const obsCurrent = new MutationObserver(() => {
+        if (toc.scrollWidth <= toc.clientWidth) return;
+        const a = toc.querySelector('a[aria-current="true"]');
+        if (!a) return;
         const r = a.getBoundingClientRect();
         const t = toc.getBoundingClientRect();
         if (r.left < t.left + 12 || r.right > t.right - 12) {
-          toc.scrollTo({ left: a.offsetLeft - toc.clientWidth / 2 + a.offsetWidth / 2, behavior: reduceMotion ? 'auto' : 'smooth' });
+          toc.scrollTo({ left: a.offsetLeft - toc.clientWidth / 2 + a.offsetWidth / 2, behavior: 'auto' });
         }
-      };
-      const obsCurrent = new MutationObserver(() => {
-        const a = toc.querySelector('a[aria-current="true"]');
-        if (a) scrollTabIntoView(a);
       });
       links.forEach((a) => obsCurrent.observe(a, { attributes: true, attributeFilter: ['aria-current'] }));
     }

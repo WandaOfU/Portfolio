@@ -531,25 +531,21 @@ a { color: inherit; text-decoration: none; }
   top: 0;
   z-index: 5;
   display: flex;
-  gap: 4px;
+  /* Wraps rather than scrolls at reading width: a bar that overflows by a few
+     pixels turns every section change into a sideways nudge, which reads as
+     lag against the vertical scroll. Wrapping keeps every tab reachable
+     without moving anything. */
+  flex-wrap: wrap;
+  gap: 2px;
   margin: 0 -4px;
   padding: 14px 4px;
   background: var(--bg);
   border-bottom: 1px solid var(--ink-a10);
-  overflow-x: auto;
-  scrollbar-width: none;
-  /* The nav scrolls sideways on narrow screens; let the ends bleed rather than
-     clip mid-label, matching the marquee's edge treatment. The stops are mask
-     opacity, not paint — opaque means "show" — so this is not a colour and the
-     No Pure Black Rule does not apply. Written as `black` rather than `#000`
-     so nobody copies a hex the palette forbids. */
-  mask-image: linear-gradient(90deg, transparent 0, black 12px, black calc(100% - 12px), transparent 100%);
 }
-.case-toc::-webkit-scrollbar { display: none; }
 .case-toc a {
   position: relative;
   flex: none;
-  padding: 8px 12px;
+  padding: 8px 10px;
   color: var(--muted);
   white-space: nowrap;
   transition: color .25s var(--ease-spring);
@@ -561,11 +557,25 @@ a { color: inherit; text-decoration: none; }
 .case-toc a[aria-current="true"]::after {
   content: '';
   position: absolute;
-  left: 12px; right: 12px; bottom: 2px;
+  left: 10px; right: 10px; bottom: 2px;
   height: 2px;
   background: var(--rust);
 }
 .case-toc a:focus-visible { outline: 2px solid var(--rust); outline-offset: -2px; }
+
+/* Below the breakpoint there is no width to wrap into, so the bar becomes a
+   single scrolling row and its ends fade instead of clipping mid-label —
+   the same edge treatment the marquee uses. The mask stops are opacity, not
+   paint, so the No Pure Black Rule does not apply to them. */
+@media (max-width: 700px) {
+  .case-toc {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    mask-image: linear-gradient(90deg, transparent 0, black 12px, black calc(100% - 12px), transparent 100%);
+  }
+  .case-toc::-webkit-scrollbar { display: none; }
+}
 
 /* Long-form sections. Headings stay English so the structure is navigable at a
    glance; the body keeps the language it was written in. */
