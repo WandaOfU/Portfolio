@@ -141,7 +141,14 @@
       // wraps at reading width, so on most pages there is nothing to move.
       // Instant, never smooth: a sideways animation running underneath a
       // vertical scroll is what made this feel laggy in the first place.
+      // The mono face swaps in after first paint and the fallback is wider, so
+      // the bar can briefly overflow and get nudged against metrics that are
+      // about to change. Hold the auto-scroll until the real font has landed.
+      let fontsReady = !document.fonts;
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { fontsReady = true; });
+
       const obsCurrent = new MutationObserver(() => {
+        if (!fontsReady) return;
         if (toc.scrollWidth <= toc.clientWidth) return;
         const a = toc.querySelector('a[aria-current="true"]');
         if (!a) return;
