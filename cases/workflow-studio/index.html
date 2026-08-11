@@ -39,52 +39,98 @@
       <div><dt>Year</dt><dd>2025</dd></div>
     </dl>
 
-    <div class="case-shots">
-      <figure class="case-shot">
+    <nav class="case-toc mono" aria-label="Product areas">
+      <a href="#entry" class="link-hover">Entry</a>
+      <a href="#agent" class="link-hover">Agent</a>
+      <a href="#result" class="link-hover">Generated workflow</a>
+      <a href="#catalog" class="link-hover">Step catalog</a>
+      <a href="#scenarios" class="link-hover">Scenarios</a>
+    </nav>
+
+    <section class="case-section" id="entry">
+      <h3 class="case-sh">Entry point</h3>
+      <p class="case-prose">An empty canvas is the worst first screen a builder can offer: it asks for the answer before the user has stated the problem. Replacing it with a prompt field inverts that. You describe the task, and the system does the decomposition.</p>
+      <p class="case-prose">The domain chips and template cards below exist for the other half of the audience. Someone who already knows the shape of their pipeline should not have to write a sentence to get to it, so the two entry modes sit on the same screen at the same level rather than behind a mode switch.</p>
+      <div class="case-shots">
+        <figure class="case-shot">
         <img src="../../assets/cases/workflow-home-900.jpg"
              srcset="../../assets/cases/workflow-home-900.jpg 900w, ../../assets/cases/workflow-home-1440.jpg 1440w"
              sizes="(max-width: 840px) 100vw, 800px"
              alt="Workflow Studio home screen with a prompt field reading 'describe your task and our AI agent will solve it', domain chips for inference, CI/CD, cloud events and containers, and template cards."
              width="1440" height="800" loading="lazy" decoding="async">
         <figcaption class="case-caption">Entry point. A prompt field replaces the empty canvas, with domain chips and ready-made templates for anyone who would rather start from a known shape than a blank one.</figcaption>
-      </figure>
-
-      <figure class="case-shot">
+        </figure>
+      </div>
+    </section>
+    <section class="case-section" id="agent">
+      <h3 class="case-sh">Agent canvas</h3>
+      <p class="case-prose">While the agent works, the original request stays pinned in the left panel. That is a deliberate anchor: generated output is only judgeable against what was asked, and a user who has lost sight of their own prompt cannot tell a good result from a plausible one.</p>
+      <p class="case-prose">The YAML and Visual toggle sits in the same bar as zoom and fit. Treating the code view as a peer of the diagram, rather than an export buried in a menu, is what makes the result inspectable instead of opaque.</p>
+      <div class="case-shots">
+        <figure class="case-shot">
         <img src="../../assets/cases/workflow-agent-900.jpg"
              srcset="../../assets/cases/workflow-agent-900.jpg 900w, ../../assets/cases/workflow-agent-1440.jpg 1440w"
              sizes="(max-width: 840px) 100vw, 800px"
              alt="Workflow Studio canvas while the AI agent works: the user's request sits in a left panel, the agent reports it is thinking through the steps, and the canvas awaits the generated workflow."
              width="1440" height="800" loading="lazy" decoding="async">
         <figcaption class="case-caption">Agent canvas. The request stays visible while the agent works, and the same workflow can be read as a diagram or as YAML, so the generated result stays inspectable rather than opaque.</figcaption>
-      </figure>
-
-      <figure class="case-shot">
+        </figure>
+      </div>
+    </section>
+    <section class="case-section" id="result">
+      <h3 class="case-sh">Generated workflow</h3>
+      <p class="case-prose">The output is not a script but a graph of typed nodes, each carrying its service identity. That choice decides everything downstream: a graph can be rearranged, partially rerun and diffed, and a generated block of config cannot.</p>
+      <p class="case-prose">Dependency order is expressed spatially rather than stated. Networking resolves before the cluster, the cluster before the database, and the second example shows the agent is not limited to a chain: an API gateway fans out to three parallel services, so the proposal carries real topology.</p>
+      <div class="case-shots">
+        <figure class="case-shot">
         <img src="../../assets/cases/workflow-result-dev-900.jpg"
              srcset="../../assets/cases/workflow-result-dev-900.jpg 900w, ../../assets/cases/workflow-result-dev-1800.jpg 1800w"
              sizes="(max-width: 840px) 100vw, 800px"
              alt="The generated workflow for a dev environment: a trigger node followed by SNAT, Subnet, a Kubernetes cluster, a Kubernetes node pool and PostgreSQL, connected left to right on the canvas."
              width="1800" height="1000" loading="lazy" decoding="async">
         <figcaption class="case-caption">The prompt resolved. “Create a Dev environment on Kubernetes and PostgreSQL” becomes six typed steps in dependency order: networking, then cluster, then database. Each one lands as an editable node rather than a block of generated config.</figcaption>
-      </figure>
-
-      <figure class="case-shot">
+        </figure>
+        <figure class="case-shot">
         <img src="../../assets/cases/workflow-result-api-900.jpg"
              srcset="../../assets/cases/workflow-result-api-900.jpg 900w, ../../assets/cases/workflow-result-api-1800.jpg 1800w"
              sizes="(max-width: 840px) 100vw, 800px"
              alt="A generated workflow that branches: a trigger leads to an API Gateway node, which fans out to three parallel container service nodes."
              width="1800" height="1000" loading="lazy" decoding="async">
         <figcaption class="case-caption">Branching, not just a chain. An API gateway fans out to three container services in parallel, so what the agent proposes carries real topology, and stays a diagram the engineer can rearrange.</figcaption>
-      </figure>
+        </figure>
+      </div>
+    </section>
+    <section class="case-section" id="catalog">
+      <h3 class="case-sh">Step catalog</h3>
+      <p class="case-prose">The agent is one way in; the catalog is the other. Steps are grouped by domain — utilities, AI Factory, containers, applications, infrastructure, networking, disks, databases, data platform — and every group carries a plain-language line under it, because a name like AI Factory tells an engineer nothing about whether their model serving belongs there.</p>
+      <p class="case-prose">It opens as a drawer rather than a page, so the canvas stays visible behind it. Choosing a step is an act performed against a workflow you can still see, not a detour into a separate builder.</p>
+      <div class="case-shots">
+        <figure class="case-shot">
+          <img src="../../assets/cases/workflow-catalog-900.jpg"
+               srcset="../../assets/cases/workflow-catalog-900.jpg 900w, ../../assets/cases/workflow-catalog-1800.jpg 1800w"
+               sizes="(max-width: 840px) 100vw, 800px"
+               alt="Workflow Studio step catalog opening as a right-hand drawer, listing domains such as utilities, AI Factory, containers, applications, infrastructure, networking, disks, databases and data platform, each with a one-line description."
+               width="1800" height="1000" loading="lazy" decoding="async">
+          <figcaption class="case-caption">Every domain carries a plain-language line. A category name an engineer has to guess at is a category that gets skipped.</figcaption>
+        </figure>
+      </div>
+    </section>
 
-      <figure class="case-shot">
+    <section class="case-section" id="scenarios">
+      <h3 class="case-sh">Saved scenarios</h3>
+      <p class="case-prose">Once generated, a workflow becomes an ordinary listed object with author, updated and created columns. This is the quiet decision that keeps the feature from fragmenting the product: the agent is an entry point, not a parallel universe with its own storage and its own list.</p>
+      <p class="case-prose">Anything created by prompt lands in the same place as anything built by hand, and is managed with the same controls.</p>
+      <div class="case-shots">
+        <figure class="case-shot">
         <img src="../../assets/cases/workflow-scenarios-900.jpg"
              srcset="../../assets/cases/workflow-scenarios-900.jpg 900w, ../../assets/cases/workflow-scenarios-1440.jpg 1440w"
              sizes="(max-width: 840px) 100vw, 800px"
              alt="Workflow Studio saved scenarios list, a table of workflows with author, updated date and created date columns."
              width="1440" height="808" loading="lazy" decoding="async">
         <figcaption class="case-caption">Saved scenarios. Once generated, a workflow becomes an ordinary listed object with author, updated and created columns, so the agent entry point doesn't fork the information architecture.</figcaption>
-      </figure>
-    </div>
+        </figure>
+      </div>
+    </section>
 
     <p class="case-note mono">Concept work. Selected screens from a 14-screen exploration.</p>
   </main>

@@ -40,13 +40,25 @@
       <div><dt>Year</dt><dd>2024</dd></div>
     </dl>
 
-    <section class="case-section">
+    <nav class="case-toc mono" aria-label="Case sections">
+      <a href="#problem" class="link-hover">Problem</a>
+      <a href="#before" class="link-hover">Before</a>
+      <a href="#jtbd" class="link-hover">JTBD</a>
+      <a href="#hypotheses" class="link-hover">Hypotheses</a>
+      <a href="#tags" class="link-hover">Tag system</a>
+      <a href="#card" class="link-hover">Question card</a>
+      <a href="#thread" class="link-hover">Question page</a>
+      <a href="#creation" class="link-hover">Creation</a>
+      <a href="#process" class="link-hover">Process</a>
+    </nav>
+
+    <section class="case-section" id="problem">
       <h3 class="case-sh">The problem</h3>
       <p class="case-prose" lang="ru">В&nbsp;старом интерфейсе почти не&nbsp;было механик, рассчитанных на&nbsp;людей и&nbsp;общение между ними. Без&nbsp;социальных функций и&nbsp;рекомендаций пользователям было сложно следить за&nbsp;интересными темами. Новички подолгу ждали ответов, а&nbsp;опытные специалисты не&nbsp;видели причин подключаться к&nbsp;нужным обсуждениям.</p>
       <p class="case-prose" lang="ru">Тег-система тоже мешала работе: теги нельзя было редактировать, объединять и&nbsp;сортировать. Из-за этого контент было трудно упорядочивать и&nbsp;находить.</p>
     </section>
 
-    <section class="case-section">
+    <section class="case-section" id="before">
       <h3 class="case-sh">Before</h3>
       <div class="case-shots">
         <figure class="case-shot">
@@ -68,7 +80,7 @@
       </div>
     </section>
 
-    <section class="case-section">
+    <section class="case-section" id="jtbd">
       <h3 class="case-sh">Jobs to be done</h3>
       <dl class="case-pairs" lang="ru">
         <div>
@@ -94,7 +106,7 @@
       </dl>
     </section>
 
-    <section class="case-section">
+    <section class="case-section" id="hypotheses">
       <h3 class="case-sh">Hypotheses</h3>
       <dl class="case-pairs" lang="ru">
         <div>
@@ -116,7 +128,7 @@
       </dl>
     </section>
 
-    <section class="case-section">
+    <section class="case-section" id="tags">
       <h3 class="case-sh">The rebuilt tag system</h3>
       <p class="case-prose" lang="ru">Теги получили категории, поиск, сортировку и&nbsp;понятные действия&nbsp;— создание, редактирование, объединение и&nbsp;удаление. Контент стало проще упорядочивать и&nbsp;находить.</p>
       <div class="case-shots">
@@ -139,7 +151,7 @@
       </div>
     </section>
 
-    <section class="case-section">
+    <section class="case-section" id="card">
       <h3 class="case-sh">Question card</h3>
       <ul class="case-list" lang="ru">
         <li>Вопрос, метаданные и&nbsp;счётчики получили ясную иерархию&nbsp;— карточку проще просмотреть по&nbsp;диагонали.</li>
@@ -152,7 +164,22 @@
       </ul>
     </section>
 
-    <section class="case-section">
+    <section class="case-section" id="thread">
+      <h3 class="case-sh">Question page</h3>
+      <p class="case-prose" lang="ru">Страница вопроса&nbsp;— то&nbsp;место, где платформа либо становится источником знаний, либо остаётся форумом. Принятый ответ поднят к&nbsp;вопросу и&nbsp;обведён рамкой: читателю не&nbsp;нужно проходить весь тред, чтобы найти решение. Остальные ответы идут ниже, во&nbsp;вложенных ветках, чтобы обсуждение не&nbsp;терялось, но&nbsp;и&nbsp;не&nbsp;спорило с&nbsp;ответом за&nbsp;внимание.</p>
+      <p class="case-prose" lang="ru">Реакции сильнее простого плюса: несколько эмодзи дают увидеть, чем ответ оказался полезен. Автор, репутация и&nbsp;роль стоят у&nbsp;каждого сообщения&nbsp;— это и&nbsp;есть та&nbsp;самая метка «надёжного источника» из&nbsp;гипотез, только не&nbsp;отдельным элементом, а&nbsp;частью каждой реплики. Справа&nbsp;— блок Related: похожие вопросы, темы и&nbsp;статьи вики, чтобы страница отвечала и&nbsp;тем, кто пришёл не&nbsp;совсем с&nbsp;тем же&nbsp;вопросом.</p>
+      <p class="case-prose" lang="ru">Отдельная строка связывает вопрос с&nbsp;задачей в&nbsp;трекере и&nbsp;показывает её&nbsp;статус. Так техническое обсуждение остаётся привязанным к&nbsp;работе, из&nbsp;которой оно выросло.</p>
+      <figure class="case-shot">
+        <img src="../../assets/cases/ydx-thread-after-900.jpg"
+             srcset="../../assets/cases/ydx-thread-after-900.jpg 900w, ../../assets/cases/ydx-thread-after-1800.jpg 1800w"
+             sizes="(max-width: 840px) 100vw, 800px"
+             alt="The redesigned question page: the question with tags and a linked tracker issue, an accepted answer outlined in green, threaded replies with emoji reactions and author reputation, a rich-text reply editor, and a Related panel listing similar questions, preferred topics and wiki guides."
+             width="1137" height="1800" loading="lazy" decoding="async">
+        <figcaption class="case-caption" lang="ru">Принятый ответ поднят к&nbsp;вопросу, обсуждение&nbsp;— ниже. Решение не&nbsp;приходится искать в&nbsp;треде.</figcaption>
+      </figure>
+    </section>
+
+    <section class="case-section" id="creation">
       <h3 class="case-sh">Creating a question</h3>
       <ul class="case-list" lang="ru">
         <li>Поля выстроены по&nbsp;важности, поэтому форма ведёт пользователя от&nbsp;заголовка к&nbsp;публикации.</li>
@@ -163,7 +190,7 @@
       </ul>
     </section>
 
-    <section class="case-section">
+    <section class="case-section" id="process">
       <h3 class="case-sh">Process</h3>
       <figure class="case-shot">
         <img src="../../assets/cases/ydx-tags-board-900.jpg"

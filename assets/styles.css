@@ -523,9 +523,52 @@ a { color: inherit; text-decoration: none; }
   color: var(--muted);
 }
 
+/* Section tabs. Deliberately anchors, not panels: hiding case content behind
+   a tab breaks scanning, deep links, in-page search and print. The tab is an
+   affordance for jumping, and the page stays one readable document. */
+.case-toc {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  gap: 4px;
+  margin: 0 -4px;
+  padding: 14px 4px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--ink-a10);
+  overflow-x: auto;
+  scrollbar-width: none;
+  /* The nav scrolls sideways on narrow screens; let the ends bleed rather than
+     clip mid-label, matching the marquee's edge treatment. */
+  mask-image: linear-gradient(90deg, transparent 0, #000 12px, #000 calc(100% - 12px), transparent 100%);
+}
+.case-toc::-webkit-scrollbar { display: none; }
+.case-toc a {
+  position: relative;
+  flex: none;
+  padding: 8px 12px;
+  color: var(--muted);
+  white-space: nowrap;
+  transition: color .25s var(--ease-spring);
+}
+.case-toc a:hover { color: var(--ink); }
+.case-toc a[aria-current="true"] { color: var(--ink); }
+/* Same 2px rust underline the marquee uses for its active title, so "you are
+   here" reads identically in both places. */
+.case-toc a[aria-current="true"]::after {
+  content: '';
+  position: absolute;
+  left: 12px; right: 12px; bottom: 2px;
+  height: 2px;
+  background: var(--rust);
+}
+.case-toc a:focus-visible { outline: 2px solid var(--rust); outline-offset: -2px; }
+
 /* Long-form sections. Headings stay English so the structure is navigable at a
    glance; the body keeps the language it was written in. */
 .case-section { display: flex; flex-direction: column; gap: 20px; }
+/* Clears the sticky tab bar when an anchor jumps here. */
+.case-section[id] { scroll-margin-top: 72px; }
 .case-sh {
   font-family: var(--font-serif);
   font-style: italic;

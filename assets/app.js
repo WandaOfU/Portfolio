@@ -104,6 +104,55 @@
     if (e.target.closest('button.open-case')) showToast();
   });
 
+  /* ---------- case study section tabs ---------- */
+  const toc = document.querySelector('.case-toc');
+  if (toc) {
+    const links = [...toc.querySelectorAll('a[href^="#"]')];
+    const sections = links
+      .map((a) => document.getElementById(a.getAttribute('href').slice(1)))
+      .filter(Boolean);
+
+    if (sections.length) {
+      const setCurrent = (id) => {
+        links.forEach((a) => {
+          const on = a.getAttribute('href') === '#' + id;
+          if (on) a.setAttribute('aria-current', 'true');
+          else a.removeAttribute('aria-current');
+        });
+      };
+
+      // The topmost section still intersecting the band below the sticky bar
+      // wins, so the marker tracks reading position rather than flickering
+      // between neighbours mid-scroll.
+      const visible = new Set();
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) visible.add(e.target);
+          else visible.delete(e.target);
+        });
+        const first = sections.find((s) => visible.has(s));
+        if (first) setCurrent(first.id);
+      }, { rootMargin: '-72px 0px -55% 0px', threshold: 0 });
+
+      sections.forEach((s) => io.observe(s));
+      setCurrent(sections[0].id);
+
+      // Keep the active tab in view when the bar itself scrolls sideways.
+      const scrollTabIntoView = (a) => {
+        const r = a.getBoundingClientRect();
+        const t = toc.getBoundingClientRect();
+        if (r.left < t.left + 12 || r.right > t.right - 12) {
+          toc.scrollTo({ left: a.offsetLeft - toc.clientWidth / 2 + a.offsetWidth / 2, behavior: reduceMotion ? 'auto' : 'smooth' });
+        }
+      };
+      const obsCurrent = new MutationObserver(() => {
+        const a = toc.querySelector('a[aria-current="true"]');
+        if (a) scrollTabIntoView(a);
+      });
+      links.forEach((a) => obsCurrent.observe(a, { attributes: true, attributeFilter: ['aria-current'] }));
+    }
+  }
+
   /* ---------- projects marquee ---------- */
   const wrap = document.getElementById('marquee-wrap');
   if (!wrap) return;
