@@ -539,8 +539,11 @@ a { color: inherit; text-decoration: none; }
   overflow-x: auto;
   scrollbar-width: none;
   /* The nav scrolls sideways on narrow screens; let the ends bleed rather than
-     clip mid-label, matching the marquee's edge treatment. */
-  mask-image: linear-gradient(90deg, transparent 0, #000 12px, #000 calc(100% - 12px), transparent 100%);
+     clip mid-label, matching the marquee's edge treatment. The stops are mask
+     opacity, not paint — opaque means "show" — so this is not a colour and the
+     No Pure Black Rule does not apply. Written as `black` rather than `#000`
+     so nobody copies a hex the palette forbids. */
+  mask-image: linear-gradient(90deg, transparent 0, black 12px, black calc(100% - 12px), transparent 100%);
 }
 .case-toc::-webkit-scrollbar { display: none; }
 .case-toc a {
