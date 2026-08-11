@@ -615,7 +615,9 @@ a { color: inherit; text-decoration: none; }
   width: min(1400px, 100%);
   height: auto;
   margin: auto;
-  border-radius: 8px;
+  /* Same panel radius as .case-preview and the figures it enlarges — this is
+     the same media object, just bigger. */
+  border-radius: 23px;
   cursor: zoom-out;
 }
 .lightbox-close {
