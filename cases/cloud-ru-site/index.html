@@ -4,11 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Cloud.ru website — Vladislav Sapelin</title>
-<meta name="description" content="Surfaces designed for the Cloud.ru marketing site: the awards page, the events calendar and event pages, responsive layouts and reusable carousel blocks.">
+<meta name="description" content="Surfaces designed for the Cloud.ru marketing site: the awards page, the events calendar and event pages, the blog and its AI summary block, responsive layouts and reusable carousel blocks.">
 <link rel="canonical" href="https://wandaofu.github.io/Portfolio/cases/cloud-ru-site/">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Cloud.ru website — Vladislav Sapelin">
-<meta property="og:description" content="Awards, events and reusable blocks designed for the Cloud.ru marketing site.">
+<meta property="og:description" content="Awards, events, the blog with its AI summary block, and reusable blocks designed for the Cloud.ru marketing site.">
 <meta property="og:url" content="https://wandaofu.github.io/Portfolio/cases/cloud-ru-site/">
 <meta property="og:image" content="https://wandaofu.github.io/Portfolio/assets/cases/cru-awards-desktop-1800.jpg">
 <meta name="twitter:card" content="summary_large_image">
@@ -29,7 +29,7 @@
     <div class="case-lede">
       <div class="case-category mono"><span class="bar"></span>MARKETING SITE / SURFACES</div>
       <h2 class="case-h">Cloud.ru website</h2>
-      <p class="case-prose">Public surfaces designed for cloud.ru during my time on the site team. Not one project — a set of tasks: the awards page, the events calendar and its event pages, and the reusable blocks other pages were assembled from. Each is shown as it was delivered, across the breakpoints it shipped at.</p>
+      <p class="case-prose">Public surfaces designed for cloud.ru during my time on the site team. Not one project — a set of tasks: the awards page, the events calendar and its event pages, the blog and the AI summary block on its articles, and the reusable blocks other pages were assembled from. Each is shown as it was delivered, across the breakpoints it shipped at.</p>
     </div>
 
     <dl class="case-meta mono">
@@ -43,6 +43,7 @@
       <a href="#awards" class="link-hover">Awards</a>
       <a href="#events" class="link-hover">Events</a>
       <a href="#event-page" class="link-hover">Event page</a>
+      <a href="#blog" class="link-hover">Blog</a>
       <a href="#blocks" class="link-hover">Blocks</a>
       <a href="#hero" class="link-hover">Hero</a>
     </nav>
@@ -96,6 +97,37 @@
       </figure>
     </section>
 
+    <section class="case-section" id="blog">
+      <h3 class="case-sh">Blog and the Giga summary</h3>
+      <p class="case-prose">The blog: its catalog, its article page, its author pages. What makes it more than a blog is the summary block — a recap written by the GigaChat assistant, placed above the article so a reader can decide whether the next ten minutes are worth spending. I designed the component and specified its behaviour to the level the front-end could build from: four phases (idle, loading, streaming, done), a shimmer skeleton while the model works, sentences dissolving in one at a time at 700ms intervals, and a blue-to-green gradient wave crossing the GigaChat mark and the heading in step, three seconds out and two seconds still.</p>
+      <div class="case-shots">
+        <figure class="case-shot">
+          <img src="../../assets/cases/cru-blog-summary-800.jpg"
+               srcset="../../assets/cases/cru-blog-summary-400.jpg 400w, ../../assets/cases/cru-blog-summary-800.jpg 800w"
+               sizes="(max-width: 840px) 100vw, 800px"
+               alt="Three states of the Giga summary block: collapsed to a single heading row, loading with five shimmering placeholder bars, and complete with the generated recap followed by a thumbs-up and thumbs-down rating row."
+               width="800" height="1430" loading="lazy" decoding="async">
+          <figcaption class="case-caption">Three of the four phases. Collapsed, the block costs one line. Loading shows five bars at 100, 92, 97, 85 and 60 per cent width for two seconds — an empty box reads as broken where a skeleton reads as working. Done closes with a thumbs pair: the recap is machine-written, so the reader is asked whether it was any good.</figcaption>
+        </figure>
+        <figure class="case-shot">
+          <img src="../../assets/cases/cru-blog-article-1440.jpg"
+               srcset="../../assets/cases/cru-blog-article-720.jpg 720w, ../../assets/cases/cru-blog-article-1440.jpg 1440w"
+               sizes="(max-width: 840px) 100vw, 800px"
+               alt="Top of a Cloud.ru blog article: breadcrumbs, category tag, headline, lede, the collapsed Giga summary block, the hero image, then author, reading time and publication date, a row of connected services, and a table of contents."
+               width="1440" height="2560" loading="lazy" decoding="async">
+          <figcaption class="case-caption">The block sits between the lede and the hero image — before the reader has committed, which is the only place it is worth anything. Below the byline, a row of connected services links the article to the products it describes.</figcaption>
+        </figure>
+        <figure class="case-shot">
+          <img src="../../assets/cases/cru-blog-catalog-1600.jpg"
+               srcset="../../assets/cases/cru-blog-catalog-800.jpg 800w, ../../assets/cases/cru-blog-catalog-1600.jpg 1600w"
+               sizes="(max-width: 840px) 100vw, 800px"
+               alt="The blog catalog at three breakpoints side by side: desktop with a lead story, paired article cards and a popular-news sidebar; tablet with the sidebar moved into the flow; and mobile as a single stacked column."
+               width="1600" height="3605" loading="lazy" decoding="async">
+          <figcaption class="case-caption">The catalog at three widths. The popular-news rail starts as a right-hand column, rejoins the flow below the lead story at the middle width, then stacks. Article cards hold at two across until the phone, where everything goes single file.</figcaption>
+        </figure>
+      </div>
+    </section>
+
     <section class="case-section" id="blocks">
       <h3 class="case-sh">Carousel blocks</h3>
       <p class="case-prose">Reusable carousel blocks for site pages, specified as a set rather than per page: card counts, states, arrow and dot behaviour, and how each degrades as the viewport narrows. Built so other designers and developers could assemble pages from them without asking.</p>
@@ -122,7 +154,7 @@
       </figure>
     </section>
 
-    <p class="case-note mono">Selected surfaces from the Cloud.ru marketing site. Event titles, dates and registration counts are placeholder content from the design files.</p>
+    <p class="case-note mono">Selected surfaces from the Cloud.ru marketing site. Event and article titles, dates, bylines and registration counts are placeholder content from the design files.</p>
   </main>
 
   <footer class="contact-panel mono">
