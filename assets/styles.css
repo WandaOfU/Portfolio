@@ -14,12 +14,14 @@
   src: url('fonts/roboto-mono-cyrillic.woff2') format('woff2');
   unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
 }
+/* Latin subset only: the display face sets the wordmark and the two
+   parentheses and nothing else, so the Cyrillic cut would be dead weight. */
 @font-face {
-  font-family: 'Inter Display';
+  font-family: 'Roboto Condensed';
   font-style: normal;
   font-weight: 700;
   font-display: swap;
-  src: url('fonts/inter-700-latin.woff2') format('woff2');
+  src: url('fonts/roboto-condensed-700-latin.woff2') format('woff2');
 }
 @font-face {
   font-family: 'Lora Italic';
@@ -43,7 +45,7 @@
      the drag hint). Same hue and saturation, lower lightness: 4.71:1. */
   --muted: #636a73;
   --white: #ffffff;
-  --font-display: 'Inter Display', 'Helvetica Neue', Arial, sans-serif;
+  --font-display: 'Roboto Condensed', 'Helvetica Neue Condensed', 'Arial Narrow', sans-serif;
   --font-serif: 'Lora Italic', Georgia, serif;
   --font-mono: 'Roboto Mono', ui-monospace, monospace;
   --ease-spring: cubic-bezier(.22, 1, .36, 1);
@@ -56,14 +58,21 @@
     air to stay legible. Sizes are in rem so a user's browser text-size
     setting still scales the whole page.
   */
-  --text-display-size: clamp(3rem, 11vw, 9.75rem);   /* 48px -> 156px, the wordmark */
+  /* 54px -> 180px, the wordmark. Raised from 11vw/9.75rem when the display
+     face went condensed: at the old size the name held 59% of the 1200px
+     shell against Inter's 67%, and the block read as having shrunk. Same
+     optical width, narrower letterforms. */
+  --text-display-size: clamp(3.4rem, 12.5vw, 11.25rem);
   --text-display-leading: .88;
-  --text-display-tracking: -.065em;
+  /* -.065em was cut for Inter's wide caps; on a condensed face it welds
+     SLAV and PEL together. Condensed letterforms already supply the
+     tightness that negative tracking was buying. */
+  --text-display-tracking: -.02em;
 
   /* 40px -> 110px, the parentheses bracketing the portrait. Deliberately a
      step under the wordmark: they frame the photo without competing with the
      name above and below it. */
-  --text-paren-size: clamp(2.5rem, 8vw, 6.875rem);
+  --text-paren-size: clamp(2.9rem, 9.1vw, 7.93rem);
 
   --text-heading-size: clamp(1.5rem, 3.4vw, 2.125rem); /* 24px -> 34px, case/section titles */
   --text-heading-leading: 1.08;
@@ -92,7 +101,9 @@
        would crowd the letterforms — Apple's rule is size-specific, so
        the smaller instance gets its own, less aggressive tracking */
     --text-display-leading: .95;
-    --text-display-tracking: -.03em;
+    /* Same rule one step further: the condensed face at phone sizes needs
+       the tracking back at zero, not merely less negative. */
+    --text-display-tracking: 0em;
     --text-heading-tracking: -.005em;
   }
 }
