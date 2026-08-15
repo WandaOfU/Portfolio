@@ -1,34 +1,30 @@
+/* One family carries every role — nav, headings, prose, labels, the wordmark.
+   Latin and Cyrillic are separate cuts because the site runs bilingual and
+   the Russian record has to be set in the same face as everything else. */
 @font-face {
-  font-family: 'Roboto Mono';
+  font-family: 'Roboto Condensed';
   font-style: normal;
-  font-weight: 100 700;
+  font-weight: 400;
   font-display: swap;
-  src: url('fonts/roboto-mono-latin.woff2') format('woff2');
-  unicode-range: U+0000-00FF, U+2000-206F, U+20AC, U+2122;
+  src: url('fonts/roboto-condensed-400-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191,
+    U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 @font-face {
-  font-family: 'Roboto Mono';
+  font-family: 'Roboto Condensed';
   font-style: normal;
-  font-weight: 100 700;
+  font-weight: 400;
   font-display: swap;
-  src: url('fonts/roboto-mono-cyrillic.woff2') format('woff2');
+  src: url('fonts/roboto-condensed-400-cyrillic.woff2') format('woff2');
   unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
 }
-/* Latin subset only: the display face sets the wordmark and the two
-   parentheses and nothing else, so the Cyrillic cut would be dead weight. */
 @font-face {
   font-family: 'Roboto Condensed';
   font-style: normal;
   font-weight: 700;
   font-display: swap;
   src: url('fonts/roboto-condensed-700-latin.woff2') format('woff2');
-}
-@font-face {
-  font-family: 'Lora Italic';
-  font-style: italic;
-  font-weight: 400 700;
-  font-display: swap;
-  src: url('fonts/lora-italic.woff2') format('woff2');
 }
 
 :root {
@@ -53,16 +49,33 @@
     paper ground the whole system was drawn on — assigning nothing leaves
     a page exactly as it was.
   */
-  --theme-bg: var(--bg);
-  --theme-text: var(--ink);
-  --theme-accent: var(--rust);
-  --theme-muted: var(--muted);
-  --theme-hairline: var(--ink-a10);
-  --theme-fill: var(--ink-a04);
-  --theme-quiet: var(--ink-a25);
+  /* Fixed stock: eight hues, no greys between black and white. */
+  --c-black: #000000;
+  --c-white: #ffffff;
+  --c-red: #ff0100;
+  --c-purple: #6701a3;
+  --c-green: #aeff00;
+  --c-blue: #20c9ff;
+  --c-pink: #f600ff;
+  --c-burgundy: #56001c;
+
+  /* Home ground. Accent is purple, not the blue the source uses: blue on this
+     green measures 1.57:1, which is fine there because their accent sits on
+     video rather than on the ground itself. Purple clears 8.11:1 and still
+     reads as a colour rather than as the black body text. */
+  --theme-bg: var(--c-green);
+  --theme-text: var(--c-black);
+  --theme-accent: var(--c-purple);
+  --theme-muted: var(--c-black);
+  --theme-hairline: rgba(0, 0, 0, .35);
+  --theme-fill: rgba(0, 0, 0, .06);
+  --theme-quiet: rgba(0, 0, 0, .55);
+  /* Three tokens, one face. The roles stay named so markup does not have to
+     change, but the voices have been collapsed: hierarchy is now carried by
+     size, case and colour alone. */
   --font-display: 'Roboto Condensed', 'Helvetica Neue Condensed', 'Arial Narrow', sans-serif;
-  --font-serif: 'Lora Italic', Georgia, serif;
-  --font-mono: 'Roboto Mono', ui-monospace, monospace;
+  --font-serif: var(--font-display);
+  --font-mono: var(--font-display);
   --ease-spring: cubic-bezier(.22, 1, .36, 1);
 
   /*
@@ -89,46 +102,84 @@
      name above and below it. */
   --text-paren-size: clamp(2.9rem, 9.1vw, 7.93rem);
 
-  --text-heading-size: clamp(1.5rem, 3.4vw, 2.125rem); /* 24px -> 34px, case/section titles */
-  --text-heading-leading: 1.08;
-  --text-heading-tracking: -.012em;
+  /*
+    Two sizes for the whole site: 30.24px where text is the subject, 16px
+    everywhere else. Leading is 1.0 — a paragraph stops being a run of lines
+    and becomes a solid block, read as mass before it is read as sentences.
+    Uppercase chrome is the single exception at 1.1, because caps with no
+    descenders close up faster than mixed case.
+    Tracking is normal throughout: the condensed face is already tight.
+  */
+  /* 2.1vw — the ratio the reference page runs its reading size at, not its
+     rendered 30.24px, which is only what that ratio happens to produce at
+     1440. Derived here so the size tracks this viewport instead of freezing
+     someone else's. Clamped 20px—36px so phones stay readable and very wide
+     screens stop growing. */
+  --text-heading-size: clamp(1.25rem, 2.1vw, 2.25rem);
+  --text-heading-leading: 1;
+  --text-heading-tracking: normal;
 
-  --text-subheading-size: clamp(1.125rem, 2vw, 1.25rem); /* 18px -> 20px, job/school titles */
-  --text-subheading-leading: 1.3;
-  --text-subheading-tracking: -.004em;
+  --text-subheading-size: clamp(1.25rem, 2.1vw, 2.25rem);
+  --text-subheading-leading: 1;
+  --text-subheading-tracking: normal;
 
-  --text-body-size: 1rem;      /* 16px, the tagline */
-  --text-body-leading: 1.6;
-  --text-body-tracking: .01em;
+  --text-body-size: clamp(1.25rem, 2.1vw, 2.25rem);
+  --text-body-leading: 1;
+  --text-body-tracking: normal;
 
-  --text-caption-size: .75rem;  /* 12px, descriptions & role lines */
-  --text-caption-leading: 1.5;
-  --text-caption-tracking: .04em;
+  --text-caption-size: 1rem;    /* 16px, descriptions & role lines */
+  --text-caption-leading: 1;
+  --text-caption-tracking: normal;
 
-  --text-label-size: .6875rem;  /* 11px, nav/buttons/dates/footer */
-  --text-label-leading: 1.4;
-  --text-label-tracking: .05em;
+  --text-label-size: 1rem;      /* 16px, nav/buttons/dates/footer */
+  --text-label-leading: 1.1;
+  --text-label-tracking: normal;
 }
 
 /*
-  The ink ground. Used where the page is mostly work rather than reading —
-  the projects index — so the screens are lit against a dark room instead
-  of sitting on the same paper as the writing.
+  One ground per route. Arriving somewhere new is signalled by the whole
+  screen changing rather than by a page title, so every slot below is
+  reassigned together — background, text, accent and the three alphas that
+  hang off them.
 
-  Rust and ash cannot simply carry over: measured against ink they run at
-  2.86:1 and 3.48:1, both below AA. The two values below are the same hue
-  and saturation lifted until they clear 4.5:1 (4.54 and 4.51). Any new
-  slot value on a dark ground has to be measured, not assumed.
+  Every pairing here is measured, not assumed: a hue that looks like it
+  should carry over usually does not. See the note on the about ground.
 */
-[data-theme="ink"] {
-  --theme-bg: var(--ink);
-  --theme-text: var(--bg);
-  --theme-accent: #ce544e;
-  --theme-muted: #747c86;
-  /* Hairlines invert too: ink-on-ink is invisible. */
-  --theme-hairline: rgba(237, 238, 240, .16);
-  --theme-fill: rgba(237, 238, 240, .05);
-  --theme-quiet: rgba(237, 238, 240, .30);
+[data-theme="projects"] {
+  --theme-bg: var(--c-burgundy);
+  --theme-text: var(--c-white);
+  --theme-accent: var(--c-pink);
+  --theme-muted: var(--c-white);
+  --theme-hairline: rgba(255, 255, 255, .30);
+  --theme-fill: rgba(255, 255, 255, .05);
+  --theme-quiet: rgba(255, 255, 255, .55);
+  color-scheme: dark;
+}
+
+/* Nothing in the eight hues clears 4.5:1 against this red — black is the only
+   value that does, and black is already the body text. White at 4.00:1 is the
+   best available: short of AA for 16px text, past the 3:1 bar that focus rings
+   and large text answer to, and a large gain on the source's own 2.49:1. */
+[data-theme="about"] {
+  --theme-bg: var(--c-red);
+  --theme-text: var(--c-black);
+  --theme-accent: var(--c-white);
+  --theme-muted: var(--c-black);
+  --theme-hairline: rgba(0, 0, 0, .35);
+  --theme-fill: rgba(0, 0, 0, .06);
+  --theme-quiet: rgba(0, 0, 0, .55);
+}
+
+/* Case pages put screens first, so they get the black ground the reel sits
+   on rather than one of the saturated rooms. */
+[data-theme="case"] {
+  --theme-bg: var(--c-black);
+  --theme-text: var(--c-white);
+  --theme-accent: var(--c-blue);
+  --theme-muted: var(--c-white);
+  --theme-hairline: rgba(255, 255, 255, .30);
+  --theme-fill: rgba(255, 255, 255, .05);
+  --theme-quiet: rgba(255, 255, 255, .55);
   color-scheme: dark;
 }
 
@@ -165,22 +216,26 @@ html, body {
   font-optical-sizing: auto;
 }
 
+/* Full bleed. There is no centred measure and no page margin — content runs
+   to the viewport edge behind a single 16px gutter, so the ground is the
+   whole screen rather than a sheet laid on one. */
 body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  padding: clamp(20px, 4vw, 32px) 0 16px;
+  align-items: stretch;
+  padding: 0;
   cursor: default;
 }
 
 a { color: inherit; text-decoration: none; }
 
 .shell {
-  width: min(1200px, 100% - 40px);
+  width: 100%;
+  padding: 0 16px;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
   justify-content: space-between;
   gap: 48px;
   flex: 1;
@@ -234,18 +289,20 @@ a { color: inherit; text-decoration: none; }
 }
 
 /* ---------- header (projects/about) ---------- */
+/* Chrome lives in the corner, not in a centred band: nav pinned left, flush
+   with the gutter, so the middle of the screen belongs entirely to the work. */
 .page-header {
-  max-width: 800px;
-  width: 70%;
+  max-width: none;
+  width: 100%;
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 14px;
+  justify-content: flex-start;
+  gap: 16px;
 }
 .page-header .dot {
   width: 4px;
   height: 4px;
-  border-radius: 50%;
+  border-radius: 0;
   background: var(--theme-quiet);
   flex: none;
 }
@@ -330,7 +387,7 @@ a { color: inherit; text-decoration: none; }
 
 /* ---------- footer contact panel ---------- */
 .contact-panel {
-  max-width: 800px;
+  max-width: none;
   width: 100%;
   display: flex;
   align-items: center;
@@ -351,14 +408,23 @@ a { color: inherit; text-decoration: none; }
 /* The home page teases three cases in a row; this page is the full index, so
    each entry gets a wide screen and a line saying what the project is. Two
    pages showing identical cards would give the second one nothing to do. */
+/* Three across, full bleed. Row gap is five times the column gap (80/16):
+   entries sit shoulder to shoulder but rows stay unmistakably separate, so
+   the eye groups horizontally without needing a rule between them. */
 .index {
   width: 100%;
-  max-width: 800px;
-  margin: 0 auto;
+  max-width: none;
+  margin: 0;
   align-self: stretch;
-  display: flex;
-  flex-direction: column;
-  gap: 72px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 80px 16px;
+}
+@media (max-width: 900px) {
+  .index { grid-template-columns: repeat(2, 1fr); gap: 56px 16px; }
+}
+@media (max-width: 620px) {
+  .index { grid-template-columns: 1fr; gap: 48px; }
 }
 .index-item {
   display: flex;
@@ -368,27 +434,40 @@ a { color: inherit; text-decoration: none; }
 }
 /* Four surfaces rather than one hero: an index entry has to show that the
    product has range, and a single screen cannot. */
+/* One plate per entry. A 2x2 of thumbnails inside a third-of-the-screen cell
+   puts 24 screenshots on the page at ~110px each — a texture, not evidence.
+   The remaining three stay in the markup (they are decorative, alt="") and
+   come back at the single-column width, where a cell is wide enough to carry
+   them. */
 .index-shots {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  display: block;
   margin-bottom: 4px;
 }
+.index-shots img:nth-child(n+2) { display: none; }
 /* Four screens in a 350px column would be 169px each — a coloured smudge that
    proves nothing. One column, and only the first two: the index exists to show
    range and get a decision, and the case study is where detail belongs.
    The images are decorative (alt=""), so hiding two costs nothing semantically. */
-@media (max-width: 700px) {
-  .index-shots { grid-template-columns: 1fr; }
-  .index-shots img:nth-child(n + 3) { display: none; }
+@media (max-width: 620px) {
+  /* Single column here, so a cell is the full width of the screen and can
+     carry the pair back. Four would run the entry past two screens. */
+  .index-shots { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .index-shots img:nth-child(-n+2) { display: block; }
+  .index-shots img:nth-child(n+3) { display: none; }
 }
 .index-item img {
   width: 100%;
   height: auto;
-  aspect-ratio: 16 / 10;
+  /* Portrait, not landscape. A tall crop reads as a catalogue plate rather
+     than a screenshot, and three of them across fill the row without any
+     one of them dominating. */
+  aspect-ratio: 3 / 4;
   object-fit: cover;
-  object-position: top center;
-  border-radius: 23px;
+  /* Left, not centre: a portrait crop of a landscape screenshot loses both
+     sides, and everything that identifies the screen — logo, nav, headline —
+     lives at its left edge. */
+  object-position: top left;
+  border-radius: 0;
   background-color: var(--theme-fill);
   display: block;
   /* Product screens are near-white and bleed into the paper ground without an
@@ -488,7 +567,7 @@ a { color: inherit; text-decoration: none; }
   width: 100%;
   height: auto;
   display: block;
-  border-radius: 23px;
+  border-radius: 0;
   background-color: var(--theme-fill);
   /* Same hairline as the index previews — the same object, larger. */
   border: 1px solid var(--theme-hairline);
@@ -541,7 +620,7 @@ a { color: inherit; text-decoration: none; }
   margin: auto;
   /* Same panel radius as the figures it enlarges — this is
      the same media object, just bigger. */
-  border-radius: 23px;
+  border-radius: 0;
   cursor: zoom-out;
 }
 .lightbox-close {
@@ -554,7 +633,7 @@ a { color: inherit; text-decoration: none; }
   align-items: center;
   justify-content: center;
   border: 1px solid rgba(237, 238, 240, .35);
-  border-radius: 999px;
+  border-radius: 0;
   background: none;
   color: var(--theme-bg);
   cursor: pointer;
