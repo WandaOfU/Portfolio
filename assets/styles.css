@@ -45,6 +45,21 @@
      the drag hint). Same hue and saturation, lower lightness: 4.71:1. */
   --muted: #636a73;
   --white: #ffffff;
+
+  /*
+    Theme slots. The palette above is the fixed stock; these five are what
+    surfaces actually read, so a route can be re-grounded by reassigning
+    slots rather than by overriding rules one at a time. Default is the
+    paper ground the whole system was drawn on — assigning nothing leaves
+    a page exactly as it was.
+  */
+  --theme-bg: var(--bg);
+  --theme-text: var(--ink);
+  --theme-accent: var(--rust);
+  --theme-muted: var(--muted);
+  --theme-hairline: var(--ink-a10);
+  --theme-fill: var(--ink-a04);
+  --theme-quiet: var(--ink-a25);
   --font-display: 'Roboto Condensed', 'Helvetica Neue Condensed', 'Arial Narrow', sans-serif;
   --font-serif: 'Lora Italic', Georgia, serif;
   --font-mono: 'Roboto Mono', ui-monospace, monospace;
@@ -95,6 +110,28 @@
   --text-label-tracking: .05em;
 }
 
+/*
+  The ink ground. Used where the page is mostly work rather than reading —
+  the projects index — so the screens are lit against a dark room instead
+  of sitting on the same paper as the writing.
+
+  Rust and ash cannot simply carry over: measured against ink they run at
+  2.86:1 and 3.48:1, both below AA. The two values below are the same hue
+  and saturation lifted until they clear 4.5:1 (4.54 and 4.51). Any new
+  slot value on a dark ground has to be measured, not assumed.
+*/
+[data-theme="ink"] {
+  --theme-bg: var(--ink);
+  --theme-text: var(--bg);
+  --theme-accent: #ce544e;
+  --theme-muted: #747c86;
+  /* Hairlines invert too: ink-on-ink is invisible. */
+  --theme-hairline: rgba(237, 238, 240, .16);
+  --theme-fill: rgba(237, 238, 240, .05);
+  --theme-quiet: rgba(237, 238, 240, .30);
+  color-scheme: dark;
+}
+
 @media (max-width: 700px) {
   :root {
     /* at the small end of the display clamp, full desktop tightening
@@ -121,8 +158,8 @@
 html, body {
   margin: 0;
   padding: 0;
-  background: var(--bg);
-  color: var(--ink);
+  background: var(--theme-bg);
+  color: var(--theme-text);
   font-family: var(--font-mono);
   -webkit-font-smoothing: antialiased;
   font-optical-sizing: auto;
@@ -163,11 +200,11 @@ a { color: inherit; text-decoration: none; }
 }
 
 .link-hover { transition: color .25s var(--ease-spring); }
-.link-hover:hover, .link-hover:focus-visible { color: var(--rust); }
+.link-hover:hover, .link-hover:focus-visible { color: var(--theme-accent); }
 /* Colour alone can't carry focus — it reads identically to hover, and a
    keyboard user has no way to tell where they are. One ring, everywhere. */
 .link-hover:focus-visible {
-  outline: 2px solid var(--rust);
+  outline: 2px solid var(--theme-accent);
   outline-offset: 4px;
 }
 
@@ -209,12 +246,12 @@ a { color: inherit; text-decoration: none; }
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: var(--ink-a25);
+  background: var(--theme-quiet);
   flex: none;
 }
 /* An h1 for document structure, but the header's .mono chrome is the intended
    look — drop the UA heading size, weight, and margins rather than restyling. */
-.page-header .title { color: var(--ink); font: inherit; margin: 0; }
+.page-header .title { color: var(--theme-text); font: inherit; margin: 0; }
 
 /* ---------- HOME ---------- */
 .name-block {
@@ -252,7 +289,7 @@ a { color: inherit; text-decoration: none; }
   font-family: var(--font-display);
   font-weight: 700;
   font-size: var(--text-paren-size);
-  color: var(--ink);
+  color: var(--theme-text);
   line-height: 1;
 }
 .photo {
@@ -269,7 +306,7 @@ a { color: inherit; text-decoration: none; }
   line-height: var(--text-body-leading);
   text-transform: uppercase;
   text-align: center;
-  color: var(--ink);
+  color: var(--theme-text);
   margin-left: 12px;
   white-space: nowrap;
 }
@@ -352,14 +389,14 @@ a { color: inherit; text-decoration: none; }
   object-fit: cover;
   object-position: top center;
   border-radius: 23px;
-  background-color: var(--ink-a04);
+  background-color: var(--theme-fill);
   display: block;
   /* Product screens are near-white and bleed into the paper ground without an
      edge. The hairline is the system's existing 8%-ink rule, so the panel
      gains a boundary without gaining a new border weight. */
-  border: 1px solid var(--ink-a10);
+  border: 1px solid var(--theme-hairline);
 }
-.index-cat { color: var(--muted); }
+.index-cat { color: var(--theme-muted); }
 .index-title {
   font-family: var(--font-serif);
   font-style: italic;
@@ -367,7 +404,7 @@ a { color: inherit; text-decoration: none; }
   font-size: var(--text-heading-size);
   letter-spacing: var(--text-heading-tracking);
   line-height: var(--text-heading-leading);
-  color: var(--ink);
+  color: var(--theme-text);
   transition: color .25s var(--ease-spring);
 }
 .index-desc {
@@ -375,18 +412,18 @@ a { color: inherit; text-decoration: none; }
   font-size: var(--text-caption-size);
   letter-spacing: var(--text-caption-tracking);
   line-height: 1.7;
-  color: var(--muted);
+  color: var(--theme-muted);
   max-width: 62ch;
 }
 .index-item:hover { transform: translateY(-4px); }
 .index-item:hover .index-title,
-.index-item:focus-visible .index-title { color: var(--rust); }
-.index-item:focus-visible { outline: 2px solid var(--rust); outline-offset: 8px; }
+.index-item:focus-visible .index-title { color: var(--theme-accent); }
+.index-item:focus-visible { outline: 2px solid var(--theme-accent); outline-offset: 8px; }
 .index-note {
   margin: 0;
   padding-top: 28px;
-  border-top: 1px solid var(--ink-a10);
-  color: var(--muted);
+  border-top: 1px solid var(--theme-hairline);
+  color: var(--theme-muted);
 }
 @media (prefers-reduced-motion: reduce) {
   .index-item, .index-item:hover { transform: none; transition: none; }
@@ -414,7 +451,7 @@ a { color: inherit; text-decoration: none; }
   font-size: var(--text-heading-size);
   letter-spacing: var(--text-heading-tracking);
   line-height: var(--text-heading-leading);
-  color: var(--ink);
+  color: var(--theme-text);
   margin: 0;
 }
 /* The one place the system reads rather than annotates. Chrome stays uppercase
@@ -426,7 +463,7 @@ a { color: inherit; text-decoration: none; }
   font-weight: 400;
   letter-spacing: var(--text-body-tracking);
   line-height: var(--text-body-leading);
-  color: var(--ink);
+  color: var(--theme-text);
   margin: 0;
   max-width: 68ch;
 }
@@ -437,11 +474,11 @@ a { color: inherit; text-decoration: none; }
   gap: 20px 24px;
   margin: 0;
   padding-top: 24px;
-  border-top: 1px solid var(--ink-a10);
+  border-top: 1px solid var(--theme-hairline);
 }
 .case-meta div { display: flex; flex-direction: column; gap: 6px; }
-.case-meta dt { color: var(--muted); }
-.case-meta dd { margin: 0; color: var(--ink); }
+.case-meta dt { color: var(--theme-muted); }
+.case-meta dd { margin: 0; color: var(--theme-text); }
 
 .case-shots { display: flex; flex-direction: column; gap: 56px; }
 /* figure carries a UA margin of 1em 40px — left alone it insets every
@@ -452,24 +489,24 @@ a { color: inherit; text-decoration: none; }
   height: auto;
   display: block;
   border-radius: 23px;
-  background-color: var(--ink-a04);
+  background-color: var(--theme-fill);
   /* Same hairline as the index previews — the same object, larger. */
-  border: 1px solid var(--ink-a10);
+  border: 1px solid var(--theme-hairline);
 }
 .case-caption {
   font-family: var(--font-mono);
   font-size: var(--text-caption-size);
   letter-spacing: var(--text-caption-tracking);
   line-height: var(--text-caption-leading);
-  color: var(--muted);
+  color: var(--theme-muted);
   margin: 0;
   max-width: 62ch;
 }
 
 .case-note {
   padding-top: 24px;
-  border-top: 1px solid var(--ink-a10);
-  color: var(--muted);
+  border-top: 1px solid var(--theme-hairline);
+  color: var(--theme-muted);
 }
 
 /* A full desktop capture inside an 800px column puts its UI text near 6px.
@@ -519,12 +556,12 @@ a { color: inherit; text-decoration: none; }
   border: 1px solid rgba(237, 238, 240, .35);
   border-radius: 999px;
   background: none;
-  color: var(--bg);
+  color: var(--theme-bg);
   cursor: pointer;
   transition: border-color .2s var(--ease-spring);
 }
-.lightbox-close:hover { border-color: var(--bg); }
-.lightbox-close:focus-visible { outline: 2px solid var(--bg); outline-offset: 3px; }
+.lightbox-close:hover { border-color: var(--theme-bg); }
+.lightbox-close:focus-visible { outline: 2px solid var(--theme-bg); outline-offset: 3px; }
 .lightbox-close svg { width: 14px; height: 14px; }
 @media (prefers-reduced-motion: reduce) {
   .lightbox { transition: none; }
@@ -546,28 +583,28 @@ a { color: inherit; text-decoration: none; }
   gap: 2px;
   margin: 0 -4px;
   padding: 14px 4px;
-  background: var(--bg);
-  border-bottom: 1px solid var(--ink-a10);
+  background: var(--theme-bg);
+  border-bottom: 1px solid var(--theme-hairline);
 }
 .case-toc a {
   position: relative;
   flex: none;
   padding: 8px 10px;
-  color: var(--muted);
+  color: var(--theme-muted);
   white-space: nowrap;
   transition: color .25s var(--ease-spring);
 }
-.case-toc a:hover { color: var(--ink); }
-.case-toc a[aria-current="true"] { color: var(--ink); }
+.case-toc a:hover { color: var(--theme-text); }
+.case-toc a[aria-current="true"] { color: var(--theme-text); }
 /* A 2px rust underline, the same weight the system uses for any active mark. */
 .case-toc a[aria-current="true"]::after {
   content: '';
   position: absolute;
   left: 10px; right: 10px; bottom: 2px;
   height: 2px;
-  background: var(--rust);
+  background: var(--theme-accent);
 }
-.case-toc a:focus-visible { outline: 2px solid var(--rust); outline-offset: -2px; }
+.case-toc a:focus-visible { outline: 2px solid var(--theme-accent); outline-offset: -2px; }
 
 /* Below the breakpoint there is no width to wrap into, so the bar becomes a
    single scrolling row and its ends fade instead of clipping mid-label —
@@ -595,7 +632,7 @@ a { color: inherit; text-decoration: none; }
   font-size: var(--text-subheading-size);
   letter-spacing: var(--text-subheading-tracking);
   line-height: var(--text-subheading-leading);
-  color: var(--ink);
+  color: var(--theme-text);
   margin: 0;
 }
 /* Paired statement + explanation: the lead-in carries weight, the body recedes.
@@ -608,7 +645,7 @@ a { color: inherit; text-decoration: none; }
   font-weight: 500;
   letter-spacing: var(--text-body-tracking);
   line-height: var(--text-body-leading);
-  color: var(--ink);
+  color: var(--theme-text);
 }
 .case-pairs dd {
   margin: 0;
@@ -616,7 +653,7 @@ a { color: inherit; text-decoration: none; }
   font-size: var(--text-caption-size);
   letter-spacing: var(--text-caption-tracking);
   line-height: 1.7;
-  color: var(--muted);
+  color: var(--theme-muted);
   max-width: 68ch;
 }
 .case-list {
@@ -626,10 +663,10 @@ a { color: inherit; text-decoration: none; }
   font-size: var(--text-caption-size);
   letter-spacing: var(--text-caption-tracking);
   line-height: 1.9;
-  color: var(--ink);
+  color: var(--theme-text);
   max-width: 68ch;
 }
-.case-list li::marker { color: var(--rust); }
+.case-list li::marker { color: var(--theme-accent); }
 
 /* ---------- ABOUT ---------- */
 .about-content {
@@ -646,13 +683,13 @@ a { color: inherit; text-decoration: none; }
   font-size: var(--text-heading-size);
   letter-spacing: var(--text-heading-tracking);
   line-height: var(--text-heading-leading);
-  color: var(--ink);
+  color: var(--theme-text);
   margin: 0 0 20px;
 }
 .about-list { display: flex; flex-direction: column; gap: 20px; }
 .about-row {
   padding: 16px 0;
-  border-top: 1px solid var(--ink-a10);
+  border-top: 1px solid var(--theme-hairline);
   transition: transform .3s var(--ease-spring);
 }
 .about-row:hover { transform: translateX(4px); }
@@ -664,14 +701,14 @@ a { color: inherit; text-decoration: none; }
   font-size: var(--text-subheading-size);
   letter-spacing: var(--text-subheading-tracking);
   line-height: var(--text-subheading-leading);
-  color: var(--ink);
+  color: var(--theme-text);
   margin: 0;
 }
 .about-row-top .date {
   font-size: var(--text-label-size);
   letter-spacing: var(--text-label-tracking);
   line-height: var(--text-label-leading);
-  color: var(--muted);
+  color: var(--theme-muted);
   white-space: nowrap;
 }
 .about-row .role {
@@ -679,7 +716,7 @@ a { color: inherit; text-decoration: none; }
   font-size: var(--text-caption-size);
   letter-spacing: var(--text-caption-tracking);
   line-height: var(--text-caption-leading);
-  color: var(--muted);
+  color: var(--theme-muted);
   text-transform: uppercase;
 }
 
