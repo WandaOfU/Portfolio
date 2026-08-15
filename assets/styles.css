@@ -93,12 +93,10 @@
   --ease-spring: cubic-bezier(.22, 1, .36, 1);
 
   /*
-    Type scale: tracking and leading move opposite to size, not a fixed
-    value reused everywhere. Bigger steps get tighter (more negative)
-    tracking and tighter leading; smaller steps get looser leading and
-    slightly *positive* tracking, since letters that small need the extra
-    air to stay legible. Sizes are in rem so a user's browser text-size
-    setting still scales the whole page.
+    Leading is 1.0 at every reading step — a paragraph reads as a solid block
+    before it reads as sentences. Uppercase chrome is the one exception at
+    1.1, since caps carry no descenders and close up faster. Tracking is
+    normal throughout; only the wordmark is tightened.
   */
   /* 54px -> 180px, the wordmark. Raised from 11vw/9.75rem when the display
      face went condensed: at the old size the name held 59% of the 1200px
@@ -106,9 +104,9 @@
      optical width, narrower letterforms. */
   --text-display-size: clamp(3.4rem, 12.5vw, 11.25rem);
   --text-display-leading: .88;
-  /* -.065em was cut for Inter's wide caps; on a condensed face it welds
-     SLAV and PEL together. Condensed letterforms already supply the
-     tightness that negative tracking was buying. */
+  /* Mild negative tracking on the wordmark only. Everything else runs at
+     normal — this is a neo-grotesque with even fitting, not a condensed
+     face that needed loosening. */
   --text-display-tracking: -.02em;
 
   /* 40px -> 110px, the parentheses bracketing the portrait. Deliberately a
@@ -116,24 +114,21 @@
      name above and below it. */
   --text-paren-size: clamp(2.9rem, 9.1vw, 7.93rem);
 
-  /*
-    Two sizes for the whole site: 30.24px where text is the subject, 16px
-    everywhere else. Leading is 1.0 — a paragraph stops being a run of lines
-    and becomes a solid block, read as mass before it is read as sentences.
-    Uppercase chrome is the single exception at 1.1, because caps with no
-    descenders close up faster than mixed case.
-    Tracking is normal throughout: the condensed face is already tight.
-  */
   /* 2.1vw — the ratio the reference page runs its reading size at, not its
      rendered 30.24px, which is only what that ratio happens to produce at
      1440. Derived here so the size tracks this viewport instead of freezing
      someone else's. Clamped 20px—36px so phones stay readable and very wide
      screens stop growing. */
-  --text-heading-size: clamp(1.25rem, 2.1vw, 2.25rem);
+  /* Three steps, not one. All three of these resolved to the same clamp while
+     the system ran on two sizes, which left a case title, a section heading
+     and the paragraph under it identical — the reference this scale came from
+     carries no long-form writing, and these pages are nothing but. Ratios at
+     1440: 51.8 / 37.4 / 30.24. */
+  --text-heading-size: clamp(2rem, 3.6vw, 3.5rem);
   --text-heading-leading: 1;
   --text-heading-tracking: normal;
 
-  --text-subheading-size: clamp(1.25rem, 2.1vw, 2.25rem);
+  --text-subheading-size: clamp(1.5rem, 2.6vw, 2.75rem);
   --text-subheading-leading: 1;
   --text-subheading-tracking: normal;
 
@@ -262,7 +257,7 @@ a { color: inherit; text-decoration: none; }
 .mono {
   font-family: var(--font-mono);
   font-size: var(--text-label-size);
-  font-weight: 500;
+  font-weight: 400;
   letter-spacing: var(--text-label-tracking);
   line-height: var(--text-label-leading);
   text-transform: uppercase;
@@ -492,8 +487,7 @@ a { color: inherit; text-decoration: none; }
 .index-cat { color: var(--theme-muted); }
 .index-title {
   font-family: var(--font-serif);
-  font-style: italic;
-  font-weight: 600;
+  font-weight: 700;
   font-size: var(--text-heading-size);
   letter-spacing: var(--text-heading-tracking);
   line-height: var(--text-heading-leading);
@@ -539,8 +533,7 @@ a { color: inherit; text-decoration: none; }
 .case-lede { display: flex; flex-direction: column; gap: 16px; }
 .case-h {
   font-family: var(--font-serif);
-  font-style: italic;
-  font-weight: 600;
+  font-weight: 700;
   font-size: var(--text-heading-size);
   letter-spacing: var(--text-heading-tracking);
   line-height: var(--text-heading-leading);
@@ -720,8 +713,7 @@ a { color: inherit; text-decoration: none; }
 .case-section[id] { scroll-margin-top: 72px; }
 .case-sh {
   font-family: var(--font-serif);
-  font-style: italic;
-  font-weight: 600;
+  font-weight: 700;
   font-size: var(--text-subheading-size);
   letter-spacing: var(--text-subheading-tracking);
   line-height: var(--text-subheading-leading);
@@ -735,7 +727,7 @@ a { color: inherit; text-decoration: none; }
 .case-pairs dt {
   font-family: var(--font-mono);
   font-size: var(--text-body-size);
-  font-weight: 500;
+  font-weight: 400;
   letter-spacing: var(--text-body-tracking);
   line-height: var(--text-body-leading);
   color: var(--theme-text);
@@ -771,8 +763,7 @@ a { color: inherit; text-decoration: none; }
 }
 .about-section h2 {
   font-family: var(--font-serif);
-  font-style: italic;
-  font-weight: 600;
+  font-weight: 700;
   font-size: var(--text-heading-size);
   letter-spacing: var(--text-heading-tracking);
   line-height: var(--text-heading-leading);
@@ -789,8 +780,7 @@ a { color: inherit; text-decoration: none; }
 .about-row-top { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
 .about-row-top h3 {
   font-family: var(--font-serif);
-  font-style: italic;
-  font-weight: 600;
+  font-weight: 700;
   font-size: var(--text-subheading-size);
   letter-spacing: var(--text-subheading-tracking);
   line-height: var(--text-subheading-leading);
