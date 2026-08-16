@@ -127,9 +127,17 @@
   /* Three steps, not one. All three of these resolved to the same clamp while
      the system ran on two sizes, which left a case title, a section heading
      and the paragraph under it identical — the reference this scale came from
-     carries no long-form writing, and these pages are nothing but. Ratios at
-     1440: 51.8 / 37.4 / 30.24. */
-  --text-heading-size: clamp(2rem, 3.6vw, 3.5rem);
+     carries no long-form writing, and these pages are nothing but.
+     At 1440 the ladder is 46.1 / 37.4 / 30.2, steps of 1.23 and 1.24. The
+     heading came down from 3.6vw: it was 1.38 above the subheading against
+     1.24 below it, so the scale had one loud step and one quiet one. Anything
+     under 3vw closes the gap to the subheading instead of evening it.
+     The cap stays high on purpose: at 1920 both steps hit their ceilings,
+     and a 3rem cap left the heading 1.09 above a subheading capped at
+     2.75rem — almost the collapse this ladder exists to prevent. 3.4rem
+     holds 1.24 there. Lower the vw term to shrink the common case; the
+     cap governs a different problem. */
+  --text-heading-size: clamp(2rem, 3.2vw, 3.4rem);
   --text-heading-leading: 1;
   /* Tracking is size-specific, not one value for the whole system: at 52px
      the words come apart at `normal`. Tightened here and nowhere else — the
