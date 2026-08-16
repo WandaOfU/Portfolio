@@ -416,13 +416,16 @@ a { color: inherit; text-decoration: none; }
   border: 1px solid var(--theme-hairline);
 }
 .index-cat { color: var(--theme-muted); }
+/* Caption size, matching the number beside it: the label is one line of text,
+   not a heading with a figure attached. Tracking goes back to normal — the
+   −0.015em on the heading step was cut for 46px, and at 16px it crowds. */
 .index-title {
   text-wrap: balance;
   font-family: var(--font-serif);
   font-weight: 700;
-  font-size: var(--text-heading-size);
-  letter-spacing: var(--text-heading-tracking);
-  line-height: var(--text-heading-leading);
+  font-size: var(--text-caption-size);
+  letter-spacing: normal;
+  line-height: 1.1;
   color: var(--theme-text);
   transition: color .25s var(--ease-spring);
 }
@@ -798,8 +801,6 @@ a { color: inherit; text-decoration: none; }
   display: flex;
   align-items: baseline;
   gap: 12px;
-  padding-top: 14px;
-  border-top: 1px solid var(--theme-hairline);
 }
 .index-num {
   flex: none;
