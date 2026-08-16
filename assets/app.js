@@ -130,12 +130,12 @@
   // from the page. Built in JS, the worst case is plain sharp text.
   const nameEl = document.querySelector('.identity-name');
   if (nameEl && !reduceMotion) {
-    // 2.5, not the 12 the effect was measured from: that figure was cut for a
+    // 3, not the 12 the effect was measured from: that figure was cut for a
     // drawn mark with thick strokes and wide counters. Golos 900 caps weld
-    // shut well before it — at 3.5 the name stops reading, at 5 it is smears.
-    // 2.5 is where the glyphs go liquid and merge at the joins but the name
-    // survives, which is the point of the effect rather than the number.
-    const MAX_BLUR = 2.5;  // stdDeviation at the centre of the name
+    // shut well before it — the counters in S and A start closing at 3.2, and
+    // by 3.5 the name has stopped reading. 3 is the last step that still
+    // spends every bit of the effect without costing a letter.
+    const MAX_BLUR = 3;    // stdDeviation at the centre of the name
     const RADIUS = 850;    // distance at which the effect reaches zero
     const NS = 'http://www.w3.org/2000/svg';
 
