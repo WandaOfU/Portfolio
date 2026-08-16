@@ -319,7 +319,7 @@ a { color: inherit; text-decoration: none; }
   letter-spacing: var(--text-body-tracking);
   line-height: var(--text-body-leading);
   text-transform: uppercase;
-  text-align: center;
+  text-align: left;
   color: var(--theme-text);
   margin-left: 12px;
   white-space: nowrap;
