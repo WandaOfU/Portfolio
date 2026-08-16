@@ -111,7 +111,8 @@
     Leading is 1.0 at every reading step — a paragraph reads as a solid block
     before it reads as sentences. Uppercase chrome is the one exception at
     1.1, since caps carry no descenders and close up faster. Tracking is
-    normal throughout; only the wordmark is tightened.
+    normal at every step except the two largest — the wordmark and the
+    heading — where letters come apart if left alone.
   */
   /* 40px -> 110px, the parentheses bracketing the portrait. Deliberately a
      step under the wordmark: they frame the photo without competing with the
@@ -130,7 +131,10 @@
      1440: 51.8 / 37.4 / 30.24. */
   --text-heading-size: clamp(2rem, 3.6vw, 3.5rem);
   --text-heading-leading: 1;
-  --text-heading-tracking: normal;
+  /* Tracking is size-specific, not one value for the whole system: at 52px
+     the words come apart at `normal`. Tightened here and nowhere else — the
+     smaller steps still run at normal, where they need the air. */
+  --text-heading-tracking: -.015em;
 
   --text-subheading-size: clamp(1.5rem, 2.6vw, 2.75rem);
   --text-subheading-leading: 1;
@@ -405,6 +409,7 @@ a { color: inherit; text-decoration: none; }
 }
 .index-cat { color: var(--theme-muted); }
 .index-title {
+  text-wrap: balance;
   font-family: var(--font-serif);
   font-weight: 700;
   font-size: var(--text-heading-size);
@@ -413,26 +418,35 @@ a { color: inherit; text-decoration: none; }
   color: var(--theme-text);
   transition: color .25s var(--ease-spring);
 }
+/* 1.4, not the system's 1.0: that figure is for the 30px reading block, where
+   a paragraph is meant to read as a solid mass. At 16px across three lines it
+   collides — ascenders meet descenders. The 62ch cap is gone: the column is
+   459px wide, so it never bound anything. */
 .index-desc {
   font-family: var(--font-mono);
   font-size: var(--text-caption-size);
   letter-spacing: var(--text-caption-tracking);
-  line-height: 1.7;
+  line-height: 1.4;
   color: var(--theme-muted);
-  max-width: 62ch;
 }
 .index-item:hover { transform: translateY(-4px); }
+/* Feedback on press, not on release — and faster than the hover lift, which
+   at .3s would make the card feel like it answers late. Touch has no hover
+   at all, so without this the card is silent until the page changes. */
+.index-item:active { transform: scale(.99); transition-duration: .1s; }
 .index-item:hover .index-title,
 .index-item:focus-visible .index-title { color: var(--theme-accent); }
 .index-item:focus-visible { outline: 2px solid var(--theme-accent); outline-offset: 8px; }
+/* Spans the row. In a project cell it read as a fourth, unfinished case. */
 .index-note {
+  grid-column: 1 / -1;
   margin: 0;
   padding-top: 28px;
   border-top: 1px solid var(--theme-hairline);
   color: var(--theme-muted);
 }
 @media (prefers-reduced-motion: reduce) {
-  .index-item, .index-item:hover { transform: none; transition: none; }
+  .index-item, .index-item:hover, .index-item:active { transform: none; transition: none; }
 }
 
 /* ---------- CASE STUDY ---------- */
