@@ -77,7 +77,11 @@
   /* Fixed stock: eight hues, no greys between black and white. */
   --c-black: #000000;
   --c-white: #ffffff;
-  --c-red: #ff0100;
+  /* Warm brick, hue 8°, saturation dropped 1.0 -> 0.60. The spectral red it
+     replaced left no room for an accent: at that lightness black cleared AA
+     and nothing else did. Pulling luminance down to 0.183 puts black and
+     white on opposite sides of the same narrow band, and both pass. */
+  --c-red: #cc4733;
   --c-purple: #6701a3;
   --c-green: #aeff00;
   --c-blue: #20c9ff;
@@ -165,10 +169,10 @@
   color-scheme: dark;
 }
 
-/* Nothing in the eight hues clears 4.5:1 against this red — black is the only
-   value that does, and black is already the body text. White at 4.00:1 is the
-   best available: short of AA for 16px text, past the 3:1 bar that focus rings
-   and large text answer to, and a large gain on the source's own 2.49:1. */
+/* Black text and a white accent both clear AA here — 4.52:1 and 4.65:1 — but
+   only because the ground sits in a narrow band. They move in opposite
+   directions: black needs luminance above 0.175, white needs it below 0.183.
+   Darken this red and the text fails; lighten it and the accent does. */
 [data-theme="about"] {
   --theme-bg: var(--c-red);
   --theme-text: var(--c-black);
