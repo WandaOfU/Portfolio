@@ -1,87 +1,88 @@
 <!doctype html>
-<html lang="en" data-theme="case">
+<html lang="ru" data-theme="case">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Yandex Ask &amp; Learn — Vladislav Sapelin</title>
 <meta name="description" content="Yandex Ask &amp; Learn: redesign of an internal Q&amp;A platform for developers — social mechanics, a rebuilt tag system, and a clearer question card.">
-<link rel="canonical" href="https://wandaofu.github.io/Portfolio/cases/yandex-ask-learn/">
+<link rel="canonical" href="https://wandaofu.github.io/Portfolio/ru/cases/yandex-ask-learn/">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Yandex Ask &amp; Learn — Vladislav Sapelin">
 <meta property="og:description" content="Redesign of an internal Q&amp;A platform for developers: social mechanics, a rebuilt tag system, and a clearer question card.">
 <meta property="og:url" content="https://wandaofu.github.io/Portfolio/cases/yandex-ask-learn/">
 <meta property="og:image" content="https://wandaofu.github.io/Portfolio/assets/cases/ydx-tagmodal-after-1440.jpg">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="icon" href="../../favicon.png">
-<link rel="apple-touch-icon" href="../../favicon.png">
-<link rel="preload" href="../../assets/fonts/golos-text-400-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="../../assets/fonts/golos-text-400-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="icon" href="../../../favicon.png">
+<link rel="apple-touch-icon" href="../../../favicon.png">
+<link rel="preload" href="../../../assets/fonts/golos-text-400-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../../../assets/fonts/golos-text-400-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="alternate" hreflang="en" href="https://wandaofu.github.io/Portfolio/cases/yandex-ask-learn/">
 <link rel="alternate" hreflang="ru" href="https://wandaofu.github.io/Portfolio/ru/cases/yandex-ask-learn/">
 <link rel="alternate" hreflang="x-default" href="https://wandaofu.github.io/Portfolio/cases/yandex-ask-learn/">
-<link rel="stylesheet" href="../../assets/styles.css">
+<link rel="stylesheet" href="../../../assets/styles.css">
 </head>
 <body>
 <div class="shell" id="view-case">
   <h1 class="sr-only">Yandex Ask &amp; Learn — Vladislav Sapelin</h1>
   <div class="site-bar mono">
     <nav class="site-nav" aria-label="Sections">
-      <a href="../../" class="link-hover">Home</a>
-      <a href="../../projects/" class="link-hover">Projects</a>
-      <a href="../../about/" class="link-hover">About</a>
+      <a href="../../" class="link-hover">Главная</a>
+      <a href="../../projects/" class="link-hover">Проекты</a>
+      <a href="../../about/" class="link-hover">О&nbsp;себе</a>
     </nav>
     <div class="lang-switch">
-      <a href="../../ru/cases/yandex-ask-learn/" class="link-hover" lang="ru" hreflang="ru">RU</a>
-      <span aria-current="true">ENG</span>
+      <span aria-current="true">RU</span>
+      <a href="../../../cases/yandex-ask-learn/" class="link-hover" lang="en" hreflang="en">ENG</a>
     </div>
   </div>
 
   <main class="case">
     <div class="case-lede">
+      <p class="case-lang mono" lang="ru">Текст кейса пока на&nbsp;английском. <a class="link-hover" href="../../../cases/yandex-ask-learn/" lang="en" hreflang="en">Открыть английскую версию</a></p>
       <div class="case-category mono"><span class="bar"></span>DEVELOPER PLATFORM / REDESIGN</div>
       <h2 class="case-h">Yandex Ask &amp; Learn</h2>
       <p class="case-prose" lang="ru">Yandex Ask &amp; Learn&nbsp;— платформа для&nbsp;программистов и&nbsp;разработчиков, где ищут ответы на&nbsp;технические вопросы. В&nbsp;редизайне я&nbsp;сделал интерфейс современнее и&nbsp;понятнее, а&nbsp;заодно разобрался с&nbsp;проблемами старой версии, которые мешали людям находить ответы и&nbsp;участвовать в&nbsp;обсуждениях.</p>
     </div>
 
     <dl class="case-meta mono">
-      <div><dt>Role</dt><dd>Product Designer</dd></div>
-      <div><dt>Company</dt><dd>Yandex</dd></div>
+      <div><dt>Роль</dt><dd>Продуктовый дизайнер</dd></div>
+      <div><dt>Компания</dt><dd>Yandex</dd></div>
       <div><dt>Platform</dt><dd>Desktop &amp; mobile</dd></div>
       <div><dt>Year</dt><dd>2024</dd></div>
     </dl>
 
     <nav class="case-toc mono" aria-label="Case sections">
       <a href="#problem" class="link-hover">Problem</a>
-      <a href="#before" class="link-hover">Before</a>
+      <a href="#before" class="link-hover">Как&nbsp;было</a>
       <a href="#jtbd" class="link-hover">JTBD</a>
-      <a href="#hypotheses" class="link-hover">Hypotheses</a>
+      <a href="#hypotheses" class="link-hover">Гипотезы</a>
       <a href="#tags" class="link-hover">Tag system</a>
-      <a href="#card" class="link-hover">Question card</a>
-      <a href="#thread" class="link-hover">Question page</a>
+      <a href="#card" class="link-hover">Карточка вопроса</a>
+      <a href="#thread" class="link-hover">Страница вопроса</a>
       <a href="#creation" class="link-hover">Creation</a>
-      <a href="#process" class="link-hover">Process</a>
+      <a href="#process" class="link-hover">Процесс</a>
     </nav>
 
     <section class="case-section" id="problem">
-      <h3 class="case-sh">The problem</h3>
+      <h3 class="case-sh">Проблема</h3>
       <p class="case-prose" lang="ru">В&nbsp;старом интерфейсе почти не&nbsp;было механик, рассчитанных на&nbsp;людей и&nbsp;общение между ними. Без&nbsp;социальных функций и&nbsp;рекомендаций пользователям было сложно следить за&nbsp;интересными темами. Новички подолгу ждали ответов, а&nbsp;опытные специалисты не&nbsp;видели причин подключаться к&nbsp;нужным обсуждениям.</p>
       <p class="case-prose" lang="ru">Тег-система тоже мешала работе: теги нельзя было редактировать, объединять и&nbsp;сортировать. Из-за этого контент было трудно упорядочивать и&nbsp;находить.</p>
     </section>
 
     <section class="case-section" id="before">
-      <h3 class="case-sh">Before</h3>
+      <h3 class="case-sh">Как&nbsp;было</h3>
       <div class="case-shots">
         <figure class="case-shot">
-          <img src="../../assets/cases/ydx-card-before-900.jpg"
-               srcset="../../assets/cases/ydx-card-before-900.jpg 900w, ../../assets/cases/ydx-card-before-1440.jpg 1440w"
+          <img src="../../../assets/cases/ydx-card-before-900.jpg"
+               srcset="../../../assets/cases/ydx-card-before-900.jpg 900w, ../../../assets/cases/ydx-card-before-1440.jpg 1440w"
                sizes="(max-width: 840px) 100vw, 800px"
                alt="The old question card: a dark, cramped block with the title, one tag, the author and a like and comment count."
                width="1440" height="343" loading="lazy" decoding="async">
           <figcaption class="case-caption" lang="ru">Старая карточка вопроса: метаданные, теги и&nbsp;счётчики без&nbsp;выраженной иерархии.</figcaption>
         </figure>
         <figure class="case-shot">
-          <img src="../../assets/cases/ydx-form-before-900.jpg"
-               srcset="../../assets/cases/ydx-form-before-900.jpg 900w, ../../assets/cases/ydx-form-before-1440.jpg 1440w"
+          <img src="../../../assets/cases/ydx-form-before-900.jpg"
+               srcset="../../../assets/cases/ydx-form-before-900.jpg 900w, ../../../assets/cases/ydx-form-before-1440.jpg 1440w"
                sizes="(max-width: 840px) 100vw, 800px"
                alt="The old question creation form: a required-field error under the title, a dense formatting toolbar, and mentions, tags and anonymity controls stacked below."
                width="1440" height="908" loading="lazy" decoding="async">
@@ -91,7 +92,7 @@
     </section>
 
     <section class="case-section" id="jtbd">
-      <h3 class="case-sh">Jobs to be done</h3>
+      <h3 class="case-sh">Задачи пользователя</h3>
       <dl class="case-pairs" lang="ru">
         <div>
           <dt>Быстро найти решение или ответ</dt>
@@ -117,7 +118,7 @@
     </section>
 
     <section class="case-section" id="hypotheses">
-      <h3 class="case-sh">Hypotheses</h3>
+      <h3 class="case-sh">Гипотезы</h3>
       <dl class="case-pairs" lang="ru">
         <div>
           <dt>Поиск</dt>
@@ -139,20 +140,20 @@
     </section>
 
     <section class="case-section" id="tags">
-      <h3 class="case-sh">The rebuilt tag system</h3>
+      <h3 class="case-sh">Перестроенная тег-система</h3>
       <p class="case-prose" lang="ru">Теги получили категории, поиск, сортировку и&nbsp;понятные действия&nbsp;— создание, редактирование, объединение и&nbsp;удаление. Контент стало проще упорядочивать и&nbsp;находить.</p>
       <div class="case-shots">
         <figure class="case-shot">
-          <img src="../../assets/cases/ydx-tags-after-900.jpg"
-               srcset="../../assets/cases/ydx-tags-after-900.jpg 900w, ../../assets/cases/ydx-tags-after-1440.jpg 1440w"
+          <img src="../../../assets/cases/ydx-tags-after-900.jpg"
+               srcset="../../../assets/cases/ydx-tags-after-900.jpg 900w, ../../../assets/cases/ydx-tags-after-1440.jpg 1440w"
                sizes="(max-width: 840px) 100vw, 800px"
                alt="The redesigned tags page: a left rail of categories including programming, network infrastructure, databases, API and integration, unsorted and archived, with tags grouped under headings."
                width="1440" height="823" loading="lazy" decoding="async">
           <figcaption class="case-caption" lang="ru">Категории вместо одного плоского списка: у&nbsp;тегов появилась структура, а&nbsp;«Unsorted» и&nbsp;«Archived» делают беспорядок видимым, а&nbsp;не&nbsp;скрытым.</figcaption>
         </figure>
         <figure class="case-shot">
-          <img src="../../assets/cases/ydx-tagmodal-after-900.jpg"
-               srcset="../../assets/cases/ydx-tagmodal-after-900.jpg 900w, ../../assets/cases/ydx-tagmodal-after-1440.jpg 1440w"
+          <img src="../../../assets/cases/ydx-tagmodal-after-900.jpg"
+               srcset="../../../assets/cases/ydx-tagmodal-after-900.jpg 900w, ../../../assets/cases/ydx-tagmodal-after-1440.jpg 1440w"
                sizes="(max-width: 840px) 100vw, 800px"
                alt="A tag detail modal for Django showing question and follower counts, a description, its category path, who created it and the tag experts."
                width="1440" height="823" loading="lazy" decoding="async">
@@ -162,7 +163,7 @@
     </section>
 
     <section class="case-section" id="card">
-      <h3 class="case-sh">Question card</h3>
+      <h3 class="case-sh">Карточка вопроса</h3>
       <ul class="case-list" lang="ru">
         <li>Вопрос, метаданные и&nbsp;счётчики получили ясную иерархию&nbsp;— карточку проще просмотреть по&nbsp;диагонали.</li>
         <li>Репутация, роли и&nbsp;теги с&nbsp;подсказками дают контекст ещё до&nbsp;перехода в&nbsp;обсуждение.</li>
@@ -175,13 +176,13 @@
     </section>
 
     <section class="case-section" id="thread">
-      <h3 class="case-sh">Question page</h3>
+      <h3 class="case-sh">Страница вопроса</h3>
       <p class="case-prose" lang="ru">Принятый ответ поднят к&nbsp;вопросу и&nbsp;обведён рамкой: читателю не&nbsp;нужно проходить весь тред, чтобы найти решение. Остальные ответы идут ниже, во&nbsp;вложенных ветках, чтобы обсуждение не&nbsp;терялось, но&nbsp;и&nbsp;не&nbsp;спорило с&nbsp;ответом за&nbsp;внимание.</p>
       <p class="case-prose" lang="ru">Реакции сильнее простого плюса: несколько эмодзи дают увидеть, чем ответ оказался полезен. Автор, репутация и&nbsp;роль стоят у&nbsp;каждого сообщения&nbsp;— это и&nbsp;есть та&nbsp;самая метка «надёжного источника» из&nbsp;гипотез, только не&nbsp;отдельным элементом, а&nbsp;частью каждой реплики. Справа&nbsp;— блок Related: похожие вопросы, темы и&nbsp;статьи вики, чтобы страница отвечала и&nbsp;тем, кто пришёл не&nbsp;совсем с&nbsp;тем же&nbsp;вопросом.</p>
       <p class="case-prose" lang="ru">Отдельная строка связывает вопрос с&nbsp;задачей в&nbsp;трекере и&nbsp;показывает её&nbsp;статус. Так техническое обсуждение остаётся привязанным к&nbsp;работе, из&nbsp;которой оно выросло.</p>
       <figure class="case-shot">
-        <img src="../../assets/cases/ydx-thread-after-900.jpg"
-             srcset="../../assets/cases/ydx-thread-after-900.jpg 900w, ../../assets/cases/ydx-thread-after-1800.jpg 1800w"
+        <img src="../../../assets/cases/ydx-thread-after-900.jpg"
+             srcset="../../../assets/cases/ydx-thread-after-900.jpg 900w, ../../../assets/cases/ydx-thread-after-1800.jpg 1800w"
              sizes="(max-width: 840px) 100vw, 800px"
              alt="The redesigned question page: the question with tags and a linked tracker issue, an accepted answer outlined in green, threaded replies with emoji reactions and author reputation, a rich-text reply editor, and a Related panel listing similar questions, preferred topics and wiki guides."
              width="1137" height="1800" loading="lazy" decoding="async">
@@ -190,7 +191,7 @@
     </section>
 
     <section class="case-section" id="creation">
-      <h3 class="case-sh">Creating a question</h3>
+      <h3 class="case-sh">Создание вопроса</h3>
       <ul class="case-list" lang="ru">
         <li>Поля выстроены по&nbsp;важности, поэтому форма ведёт пользователя от&nbsp;заголовка к&nbsp;публикации.</li>
         <li>Теги и&nbsp;упоминания разделены и&nbsp;подписаны: сразу понятно, что&nbsp;и&nbsp;где добавлять.</li>
@@ -201,10 +202,10 @@
     </section>
 
     <section class="case-section" id="process">
-      <h3 class="case-sh">Process</h3>
+      <h3 class="case-sh">Процесс</h3>
       <figure class="case-shot">
-        <img src="../../assets/cases/ydx-tags-board-900.jpg"
-             srcset="../../assets/cases/ydx-tags-board-900.jpg 900w, ../../assets/cases/ydx-tags-board-1440.jpg 1440w"
+        <img src="../../../assets/cases/ydx-tags-board-900.jpg"
+             srcset="../../../assets/cases/ydx-tags-board-900.jpg 900w, ../../../assets/cases/ydx-tags-board-1440.jpg 1440w"
              sizes="(max-width: 840px) 100vw, 800px"
              alt="The working board for the tag system redesign: problem statement, constraints, goals, competitor analysis, page states, and flows for creating, editing, merging and deleting a tag."
              width="722" height="1440" loading="lazy" decoding="async">
@@ -212,7 +213,7 @@
       </figure>
     </section>
 
-    <p class="case-note mono">Selected screens from the desktop redesign. The mobile version was built from scratch and is not shown here.</p>
+    <p class="case-note mono">Избранные экраны десктопного редизайна. Мобильная версия собрана с&nbsp;нуля и&nbsp;здесь не&nbsp;показана.</p>
   </main>
 
   <footer class="identity">
@@ -229,12 +230,12 @@
       </div>
       <div>
         <dt>HH</dt>
-        <dd><a class="link-hover" href="https://hh.ru/resume/724d9d0aff0cb8b9020039ed1f536366475148?customDomain=1&overRideDomainAreaId=1" target="_blank" rel="noopener" aria-label="Resume on HeadHunter, opens in a new tab">Resume</a></dd>
+        <dd><a class="link-hover" href="https://hh.ru/resume/724d9d0aff0cb8b9020039ed1f536366475148?customDomain=1&overRideDomainAreaId=1" target="_blank" rel="noopener" aria-label="Resume on HeadHunter, opens in a new tab">Резюме</a></dd>
       </div>
     </dl>
   </footer>
 </div>
 
-<script src="../../assets/app.js"></script>
+<script src="../../../assets/app.js"></script>
 </body>
 </html>
