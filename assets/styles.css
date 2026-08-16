@@ -274,10 +274,6 @@ a { color: inherit; text-decoration: none; }
    target grows without moving anything on screen. */
 .home-nav a,
 .contact-links a,
-.page-header a {
-  padding: 12px 0;
-  margin: -12px 0;
-}
 
 /* Carries the page's heading for search engines and screen readers where the
    visible lettering is decorative (the home wordmark is split into per-letter
@@ -295,26 +291,6 @@ a { color: inherit; text-decoration: none; }
 }
 
 /* ---------- header (projects/about) ---------- */
-/* Chrome lives in the corner, not in a centred band: nav pinned left, flush
-   with the gutter, so the middle of the screen belongs entirely to the work. */
-.page-header {
-  max-width: none;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 16px;
-}
-.page-header .dot {
-  width: 4px;
-  height: 4px;
-  border-radius: 0;
-  background: var(--theme-quiet);
-  flex: none;
-}
-/* An h1 for document structure, but the header's .mono chrome is the intended
-   look — drop the UA heading size, weight, and margins rather than restyling. */
-.page-header .title { color: var(--theme-text); font: inherit; margin: 0; }
 
 .name-middle {
   display: flex;
@@ -736,6 +712,9 @@ a { color: inherit; text-decoration: none; }
    the line's height is measured from the top of the viewport, not from the
    element above it. */
 #view-about { justify-content: flex-start; gap: 0; }
+/* The shell aligns from the top so the statement can be held at a measured
+   height; the footer has to claim the remaining space itself. */
+#view-about .contact-panel { margin-top: auto; }
 .statement {
   margin-top: calc(40.3vh - 36px);
   width: 100%;
