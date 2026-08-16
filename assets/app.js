@@ -122,4 +122,96 @@
       links.forEach((a) => obsCurrent.observe(a, { attributes: true, attributeFilter: ['aria-current'] }));
     }
   }
+
+  /* ---------- the name: gooey blur that answers the pointer ---------- */
+  // The filter is built here rather than declared in CSS on purpose: a CSS
+  // `filter: url(#id)` pointing at a filter that does not exist stops the
+  // element being rendered at all, so a script failure would delete the name
+  // from the page. Built in JS, the worst case is plain sharp text.
+  const nameEl = document.querySelector('.identity-name');
+  if (nameEl && !reduceMotion) {
+    // 2.5, not the 12 the effect was measured from: that figure was cut for a
+    // drawn mark with thick strokes and wide counters. Golos 900 caps weld
+    // shut well before it — at 3.5 the name stops reading, at 5 it is smears.
+    // 2.5 is where the glyphs go liquid and merge at the joins but the name
+    // survives, which is the point of the effect rather than the number.
+    const MAX_BLUR = 2.5;  // stdDeviation at the centre of the name
+    const RADIUS = 850;    // distance at which the effect reaches zero
+    const NS = 'http://www.w3.org/2000/svg';
+
+    const svg = document.createElementNS(NS, 'svg');
+    svg.setAttribute('aria-hidden', 'true');
+    svg.setAttribute('width', '0');
+    svg.setAttribute('height', '0');
+    svg.style.cssText = 'position:absolute;pointer-events:none';
+
+    const filter = document.createElementNS(NS, 'filter');
+    filter.setAttribute('id', 'name-gooey');
+    filter.setAttribute('color-interpolation-filters', 'sRGB');
+    // The blur spills far outside the glyphs; without an enlarged region the
+    // browser clips it back to the element box and the edges go square.
+    filter.setAttribute('x', '-150%');
+    filter.setAttribute('y', '-150%');
+    filter.setAttribute('width', '600%');
+    filter.setAttribute('height', '600%');
+
+    const blur = document.createElementNS(NS, 'feGaussianBlur');
+    blur.setAttribute('in', 'SourceGraphic');
+    blur.setAttribute('stdDeviation', '0');
+    blur.setAttribute('result', 'blur');
+
+    const shape = document.createElementNS(NS, 'feComponentTransfer');
+    shape.setAttribute('in', 'blur');
+    shape.setAttribute('result', 'shaped');
+    const fa1 = document.createElementNS(NS, 'feFuncA');
+    fa1.setAttribute('type', 'table');
+    fa1.setAttribute('tableValues', '0 1');
+    shape.appendChild(fa1);
+
+    const mask = document.createElementNS(NS, 'feComposite');
+    mask.setAttribute('operator', 'in');
+    mask.setAttribute('in', 'blur');
+    mask.setAttribute('in2', 'shaped');
+    mask.setAttribute('result', 'masked');
+
+    // The step that makes this gooey rather than merely soft: alpha is pushed
+    // through a slope of 10, so anything half-transparent snaps to fully on or
+    // fully off. The glyphs spread and merge, but keep hard edges.
+    const harden = document.createElementNS(NS, 'feComponentTransfer');
+    harden.setAttribute('in', 'masked');
+    const fa2 = document.createElementNS(NS, 'feFuncA');
+    fa2.setAttribute('type', 'linear');
+    fa2.setAttribute('slope', '10');
+    fa2.setAttribute('intercept', '-2');
+    harden.appendChild(fa2);
+
+    filter.append(blur, shape, mask, harden);
+    svg.appendChild(filter);
+    document.body.appendChild(svg);
+    nameEl.style.filter = 'url(#name-gooey)';
+
+    let pending = false, px = -9999, py = -9999, applied = -1;
+
+    function paint() {
+      const r = nameEl.getBoundingClientRect();
+      // Distance to the block, not to its centre: the name is far wider than
+      // it is tall, and measuring from the centre would leave the ends dead.
+      const dx = Math.max(r.left - px, 0, px - r.right);
+      const dy = Math.max(r.top - py, 0, py - r.bottom);
+      const d = Math.hypot(dx, dy);
+      const v = +(MAX_BLUR * Math.max(0, 1 - d / RADIUS)).toFixed(2);
+      if (v !== applied) { applied = v; blur.setAttribute('stdDeviation', v); }
+    }
+
+    window.addEventListener('pointermove', (e) => {
+      px = e.clientX; py = e.clientY;
+      if (!pending) {
+        pending = true;
+        requestAnimationFrame(() => { paint(); pending = false; });
+      }
+    });
+    window.addEventListener('scroll', () => {
+      if (!pending) { pending = true; requestAnimationFrame(() => { paint(); pending = false; }); }
+    }, { passive: true });
+  }
 })();
