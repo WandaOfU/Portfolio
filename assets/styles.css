@@ -765,3 +765,38 @@ a { color: inherit; text-decoration: none; }
    column rather than trailing their labels at ragged offsets. */
 .identity-contacts dt { width: 92px; flex: none; color: var(--theme-text); }
 .identity-contacts dd { margin: 0; color: var(--theme-text); }
+
+/* ---------- projects: staggered plates ---------- */
+/* Cards sit at the top of their row instead of stretching to the tallest —
+   with per-project ratios the uneven bottoms are the rhythm, not a fault. */
+.index { align-items: start; }
+
+/* Every project gets the proportion its source can carry. A wide screenshot
+   forced into a portrait crop loses the half that identifies it, so the ratio
+   follows the image rather than the grid. */
+.index-item[data-ratio="tall"]     img { aspect-ratio: 3 / 4; }
+.index-item[data-ratio="portrait"] img { aspect-ratio: 4 / 5; }
+.index-item[data-ratio="square"]   img { aspect-ratio: 1 / 1; }
+.index-item[data-ratio="wide"]     img { aspect-ratio: 16 / 9; }
+
+/* The middle column drops. One offset across three columns is enough to break
+   the catalogue read — a second one would just look like a broken grid. */
+.index-item:nth-child(3n+2) { margin-top: 80px; }
+
+.index-num {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--text-subheading-size);
+  line-height: 1;
+  letter-spacing: -.015em;
+  color: var(--theme-text);
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--theme-hairline);
+  margin-bottom: 4px;
+}
+
+@media (max-width: 900px) {
+  /* Two columns and one: the offset reads as a mistake rather than a rhythm,
+     because there is no third card to establish the pattern against. */
+  .index-item:nth-child(3n+2) { margin-top: 0; }
+}
