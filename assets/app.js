@@ -83,6 +83,31 @@
     });
   }
 
+  /* ---------- projects index: skeleton, then the picture ---------- */
+  // Wrapped here rather than in the markup so the no-script path keeps the
+  // plates it already draws. The wrapper owns the frame; the image only fades.
+  const plates = [...document.querySelectorAll('.index-shots img')];
+  plates.forEach((img) => {
+    const shot = document.createElement('span');
+    shot.className = 'shot';
+    // Decorative already (alt=""), and the wrapper adds no meaning of its own.
+    shot.setAttribute('aria-hidden', 'true');
+    img.parentNode.insertBefore(shot, img);
+    shot.appendChild(img);
+
+    const settle = (state) => shot.setAttribute('data-state', state);
+
+    // A cached image is already done before any listener could fire, and
+    // naturalWidth separates "decoded" from "complete but broken".
+    if (img.complete) {
+      settle(img.naturalWidth > 0 ? 'ready' : 'failed');
+      return;
+    }
+    settle('loading');
+    img.addEventListener('load', () => settle('ready'), { once: true });
+    img.addEventListener('error', () => settle('failed'), { once: true });
+  });
+
   /* ---------- case study section tabs ---------- */
   const toc = document.querySelector('.case-toc');
   if (toc) {

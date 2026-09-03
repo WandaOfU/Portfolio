@@ -380,7 +380,14 @@ a { color: inherit; text-decoration: none; }
   display: block;
   margin-bottom: 4px;
 }
-.index-shots img:nth-child(n+2) { display: none; }
+/* `> *` rather than `img`: app.js wraps each plate in a .shot, so the child
+   that gets shown or hidden is the wrapper when script has run and the image
+   itself when it has not. Both paths have to hit the same selector.
+   Visibility is owned here and nowhere else — `.shot` deliberately declares no
+   `display`, because at equal specificity it is written later in the file and
+   would win, which is exactly how all four plates once came back at once. */
+.index-shots > * { display: block; }
+.index-shots > *:nth-child(n+2) { display: none; }
 /* Four screens in a 350px column would be 169px each — a coloured smudge that
    proves nothing. One column, and only the first two: the index exists to show
    range and get a decision, and the case study is where detail belongs.
@@ -389,8 +396,8 @@ a { color: inherit; text-decoration: none; }
   /* Single column here, so a cell is the full width of the screen and can
      carry the pair back. Four would run the entry past two screens. */
   .index-shots { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .index-shots img:nth-child(-n+2) { display: block; }
-  .index-shots img:nth-child(n+3) { display: none; }
+  .index-shots > *:nth-child(-n+2) { display: block; }
+  .index-shots > *:nth-child(n+3) { display: none; }
 }
 .index-item img {
   width: 100%;
@@ -869,6 +876,65 @@ a { color: inherit; text-decoration: none; }
 .index-item[data-ratio="portrait"] img { aspect-ratio: 4 / 5; }
 .index-item[data-ratio="square"]   img { aspect-ratio: 1 / 1; }
 .index-item[data-ratio="wide"]     img { aspect-ratio: 16 / 9; }
+
+/* ---------- index plates: skeleton, then the picture ---------- */
+/* The plate is drawn before the picture exists and never changes size when it
+   arrives. The wrapper takes over the frame — ratio, wash and hairline — and
+   the image lies inside it at full bleed, so the only thing that changes on
+   load is the image's own opacity. Nothing reflows, and a slow connection
+   shows a composed page of empty plates rather than a column of gaps.
+   Without script there is no .shot and the rules on `.index-item img` above
+   still draw the frame, so the no-JS path is the current design unchanged. */
+.index-shots .shot {
+  /* No `display` here on purpose — see the visibility rules above. */
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 3 / 4;
+  background-color: var(--theme-fill);
+  border: 1px solid var(--theme-hairline);
+}
+.index-item[data-ratio="tall"]     .shot { aspect-ratio: 3 / 4; }
+.index-item[data-ratio="portrait"] .shot { aspect-ratio: 4 / 5; }
+.index-item[data-ratio="square"]   .shot { aspect-ratio: 1 / 1; }
+.index-item[data-ratio="wide"]     .shot { aspect-ratio: 16 / 9; }
+
+/* The frame now belongs to the wrapper, so the image drops its own border and
+   wash — stacked, the two hairlines would double to .51 alpha and read as a
+   heavier rule on the index than on a case page. */
+.index-shots .shot img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto;
+  border: 0;
+  background: none;
+  opacity: 0;
+  transition: opacity .45s var(--ease-spring);
+}
+.index-shots .shot[data-state="ready"] img { opacity: 1; }
+
+/* A failed image stops waiting. It keeps the plate and stays silent rather
+   than pulsing forever or revealing a broken-image box — these are decorative
+   (alt=""), so an empty frame costs nothing and lies about nothing. */
+.index-shots .shot[data-state="failed"] img { opacity: 0; }
+
+/* The one timer-driven animation in the system, and the exception is narrow:
+   it reports that something is in flight, it stops the moment the picture
+   lands, and it never touches content the reader is trying to read. Amplitude
+   is small on purpose — this is a status, not a shimmer sweeping the page. */
+@media (prefers-reduced-motion: no-preference) {
+  .index-shots .shot[data-state="loading"] {
+    animation: plate-wait 1.8s ease-in-out infinite;
+  }
+}
+@keyframes plate-wait {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: .55; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .index-shots .shot img { transition: none; }
+}
 
 /* The middle column drops. One offset across three columns is enough to break
    the catalogue read — a second one would just look like a broken grid. */
