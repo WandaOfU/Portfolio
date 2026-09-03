@@ -95,7 +95,12 @@
   --theme-bg: var(--c-green);
   --theme-text: var(--c-black);
   --theme-accent: var(--c-purple);
-  --theme-muted: var(--c-black);
+  /* The secondary tier, and a real step down from --theme-text rather than a
+     copy of it. It was the text colour verbatim in all four themes, which
+     collapsed captions, categories, meta labels and the section tabs into the
+     body voice and made the tab hover a no-op. Alphas are solved per ground
+     for the 4.5:1 floor, not chosen by eye: .60 measures 5.42:1 here. */
+  --theme-muted: rgba(0, 0, 0, .60);
   --theme-hairline: rgba(0, 0, 0, .35);
   --theme-fill: rgba(0, 0, 0, .06);
   --theme-quiet: rgba(0, 0, 0, .55);
@@ -174,7 +179,7 @@
   --theme-bg: var(--c-burgundy);
   --theme-text: var(--c-white);
   --theme-accent: var(--c-pink);
-  --theme-muted: var(--c-white);
+  --theme-muted: rgba(255, 255, 255, .55);   /* 5.06:1 */
   --theme-hairline: rgba(255, 255, 255, .30);
   --theme-fill: rgba(255, 255, 255, .05);
   --theme-quiet: rgba(255, 255, 255, .55);
@@ -189,6 +194,10 @@
   --theme-bg: var(--c-red);
   --theme-text: var(--c-black);
   --theme-accent: var(--c-white);
+  /* The one ground with no room for a secondary tier. Black measures 4.52:1
+     here — 0.02 above the floor — so any dimming at all fails AA. Muted stays
+     at full strength on purpose; anything that has to read as secondary on
+     this page distinguishes itself by shape instead (see .lang-switch a). */
   --theme-muted: var(--c-black);
   --theme-hairline: rgba(0, 0, 0, .35);
   --theme-fill: rgba(0, 0, 0, .06);
@@ -201,7 +210,7 @@
   --theme-bg: var(--c-black);
   --theme-text: var(--c-white);
   --theme-accent: var(--c-blue);
-  --theme-muted: var(--c-white);
+  --theme-muted: rgba(255, 255, 255, .50);   /* 5.28:1 */
   --theme-hairline: rgba(255, 255, 255, .30);
   --theme-fill: rgba(255, 255, 255, .05);
   --theme-quiet: rgba(255, 255, 255, .55);
@@ -281,15 +290,13 @@ a { color: inherit; text-decoration: none; }
   outline-offset: 4px;
 }
 
-/* Chrome links sit at 11px, which leaves a hit area well under the 24px
-   minimum on touch. The negative margin absorbs the added padding, so the
-   target grows without moving anything on screen. */
-.home-nav a,
-.contact-links a,
-
 /* Carries the page's heading for search engines and screen readers where the
-   visible lettering is decorative (the home wordmark is split into per-letter
-   spans and marked aria-hidden). */
+   visible lettering is decorative.
+
+   .home-nav a and .contact-links a used to sit at the head of this selector
+   list, separated from it only by a comment — so two chrome selectors were
+   silently visually-hidden, and the hit-area padding their comment described
+   had never shipped. Neither class exists in the markup any more. */
 .sr-only {
   position: absolute;
   width: 1px;
@@ -475,6 +482,10 @@ a { color: inherit; text-decoration: none; }
   gap: 64px;
 }
 .case-lede { display: flex; flex-direction: column; gap: 16px; }
+/* The line above the case title. It carried no rule at all — only .mono — so
+   it rendered at body strength and read as a heading rather than as a tag.
+   Now that --theme-muted is a real step down it can just use it. */
+.case-category { color: var(--theme-muted); }
 .case-h {
   font-family: var(--font-serif);
   font-weight: 700;
@@ -487,12 +498,18 @@ a { color: inherit; text-decoration: none; }
 /* The one place the system reads rather than annotates. Chrome stays uppercase
    (see the Uppercase Chrome Rule); running prose does not — a paragraph of
    uppercase mono is a wall, and a case study exists to be read. */
+/* 1.4, not the system's 1.0. That figure is for display steps and for the
+   short paired lead-ins, which are one or two lines and are meant to read as a
+   mass. These paragraphs wrap to seven, eight and ten lines at 30px, where the
+   measured clearance between the ink of one line and the next was 2.3px and
+   the face's own box overflowed the line box by 6.8px. A case study exists to
+   be read, so the reading step gets reading leading. */
 .case-prose {
   font-family: var(--font-mono);
   font-size: var(--text-body-size);
   font-weight: 400;
   letter-spacing: var(--text-body-tracking);
-  line-height: var(--text-body-leading);
+  line-height: 1.4;
   color: var(--theme-text);
   margin: 0;
   max-width: 68ch;
@@ -564,6 +581,9 @@ a { color: inherit; text-decoration: none; }
 .lightbox {
   overflow: auto;
   align-items: flex-start;
+  /* Stops the scroll chaining into the page underneath once the capture hits
+     its end. */
+  overscroll-behavior: contain;
 }
 .lightbox img {
   width: min(1400px, 100%);
@@ -574,8 +594,12 @@ a { color: inherit; text-decoration: none; }
   border-radius: 0;
   cursor: zoom-out;
 }
+/* fixed, not absolute. The overlay is the scroll container, so an absolutely
+   positioned control travels with the content: on a tall capture, scrolling to
+   the bottom put this button at top:-894px and left the overlay with no
+   visible way out. Pinned to the viewport it stays put at any scroll offset. */
 .lightbox-close {
-  position: absolute;
+  position: fixed;
   top: 20px;
   right: 20px;
   width: 40px;
@@ -583,16 +607,37 @@ a { color: inherit; text-decoration: none; }
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgba(237, 238, 240, .35);
+  /* Paint, not a theme slot. Everything here sits on the overlay rather than on
+     the page ground, and --theme-bg — which this used to read — is #000 on a
+     case page: the glyph, the hover border and the focus ring all measured
+     1.09:1 against the overlay and none of them rendered. */
+  border: 1px solid rgba(255, 255, 255, .55);
   border-radius: 0;
-  background: none;
-  color: var(--theme-bg);
+  background: rgba(2, 16, 36, .8);
+  color: var(--c-white);
   cursor: pointer;
   transition: border-color .2s var(--ease-spring);
 }
-.lightbox-close:hover { border-color: var(--theme-bg); }
-.lightbox-close:focus-visible { outline: 2px solid var(--theme-bg); outline-offset: 3px; }
+.lightbox-close:hover { border-color: var(--c-white); }
+.lightbox-close:focus-visible { outline: 2px solid var(--theme-accent); outline-offset: 3px; }
 .lightbox-close svg { width: 14px; height: 14px; }
+
+/* The zoom trigger. Built by app.js around each figure image, because the
+   click handler used to sit on the bare <img> — no tab stop, no key handler,
+   so the only path to a legible screenshot was the mouse. A real button
+   carries keyboard, Enter/Space and a focus ring without any of it written
+   here; this rule only removes the chrome the button brings with it. */
+.case-shot .zoom {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: zoom-in;
+}
+.case-shot .zoom:focus-visible { outline: 2px solid var(--theme-accent); outline-offset: 4px; }
 @media (prefers-reduced-motion: reduce) {
   .lightbox { transition: none; }
 }
@@ -710,29 +755,50 @@ a { color: inherit; text-decoration: none; }
    until content earns it. */
 /* Nav left, language switch right, both on the top gutter line. The bar takes
    the full width so the two ends anchor to opposite edges of the screen. */
+/* Wraps. Russian chrome is wider than English — the nav alone measures 243px
+   against the 288px a 320px screen leaves after the gutter — so with the
+   language switch pinned at flex:none the bar ran 19px past the viewport on
+   every /ru/ page. Wrapping costs nothing above that width and is the whole
+   fix below it. */
 .site-bar {
   display: flex;
+  flex-wrap: wrap;
   align-items: baseline;
   justify-content: space-between;
-  gap: 16px;
+  gap: 8px 16px;
   width: 100%;
 }
 .site-nav {
   display: flex;
-  gap: 16px;
+  flex-wrap: wrap;
+  gap: 8px 16px;
 }
+/* margin-inline-start:auto rather than justify-content alone: once the bar
+   wraps, a lone item on the second line would otherwise fall to the leading
+   edge and stop reading as the opposite corner of the same bar. */
 .lang-switch {
   display: flex;
   gap: 8px;
   flex: none;
+  margin-inline-start: auto;
 }
 /* The current language is not a link: there is nowhere for it to go. It stays
-   at full strength while the other one recedes, so the pair reads as a state
-   rather than as two equal buttons. */
+   at full strength while the other one recedes.
+
+   The recession is the muted token and an underline, not opacity. Opacity .6
+   over --theme-muted measured 2.94:1 on the about ground and failed AA, and
+   on that ground there is no lightness left to spend (see the note there), so
+   the pair has to be told apart by shape as well as colour. */
 .lang-switch span { color: var(--theme-text); }
-.lang-switch a { color: var(--theme-muted); opacity: .6; }
+.lang-switch a {
+  color: var(--theme-muted);
+  text-decoration: underline;
+  text-underline-position: from-font;
+  text-decoration-thickness: from-font;
+  text-underline-offset: 2px;
+}
 .lang-switch a:hover,
-.lang-switch a:focus-visible { color: var(--theme-accent); opacity: 1; }
+.lang-switch a:focus-visible { color: var(--theme-accent); }
 
 /* ---------- about: one line, held at the reference's height ---------- */
 /* 40.3vh is where the line sits in the mock (322.5 of 800). The nav above it
@@ -841,7 +907,6 @@ a { color: inherit; text-decoration: none; }
 /* A Russian page whose case narrative is still English says so at the top and
    offers the English page, instead of letting the reader discover it a
    paragraph in. */
-.case-lang {
-  color: var(--theme-muted);
-  opacity: .75;
-}
+/* Opacity dropped: --theme-muted now carries the recession by itself, and
+   stacking .75 on top of it put this under the contrast floor. */
+.case-lang { color: var(--theme-muted); }

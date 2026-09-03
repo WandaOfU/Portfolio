@@ -7,6 +7,12 @@
     const box = document.createElement('div');
     box.className = 'lightbox';
     box.hidden = true;
+    // Announced as a dialog rather than as a div that happens to cover the
+    // page: without these a screen reader has no way to know the overlay is
+    // modal, and .shell below stays browsable behind it.
+    box.setAttribute('role', 'dialog');
+    box.setAttribute('aria-modal', 'true');
+    box.setAttribute('aria-label', 'Enlarged screen');
     box.innerHTML = '<button class="lightbox-close" type="button" aria-label="Close">'
       + '<svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">'
       + '<path d="M1 1l8 8M9 1l-8 8"/></svg></button>';
@@ -17,6 +23,7 @@
     const bigImg = document.createElement('img');
     box.appendChild(bigImg);
     const closeBtn = box.querySelector('.lightbox-close');
+    const shell = document.querySelector('.shell');
     let lastFocus = null;
 
     const close = () => {
@@ -24,6 +31,7 @@
       const done = () => { box.hidden = true; bigImg.removeAttribute('src'); };
       if (reduceMotion) done(); else setTimeout(done, 200);
       document.body.style.overflow = '';
+      if (shell) shell.removeAttribute('inert');
       if (lastFocus) lastFocus.focus();
     };
 
@@ -39,12 +47,27 @@
       lastFocus = document.activeElement;
       box.hidden = false;
       document.body.style.overflow = 'hidden';
+      // Takes the page behind the overlay out of the accessibility tree and
+      // the tab order both, which the Tab handler below cannot do on its own.
+      if (shell) shell.setAttribute('inert', '');
       requestAnimationFrame(() => box.classList.add('show'));
       closeBtn.focus();
     };
 
+    // Wrap each screen in a real button rather than hanging a click handler on
+    // the <img>. An image is not focusable and answers no key, so the only way
+    // to read a screenshot at legible size used to be the mouse. A button
+    // brings the tab stop, Enter and Space, and a focus ring with it — none of
+    // which has to be reimplemented here.
     shots.forEach((img) => {
-      img.addEventListener('click', () => open(img));
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'zoom';
+      // Leads with the action; the img's own alt still describes the picture.
+      btn.setAttribute('aria-label', img.alt ? 'Enlarge: ' + img.alt : 'Enlarge screen');
+      img.parentNode.insertBefore(btn, img);
+      btn.appendChild(img);
+      btn.addEventListener('click', () => open(img));
     });
     box.addEventListener('click', (e) => {
       // Anywhere outside the image closes, including the image itself — at

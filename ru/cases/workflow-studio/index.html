@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Workflow Studio — Vladislav Sapelin</title>
-<meta name="description" content="Workflow Studio: a concept for agent-assisted pipeline building in Cloud.ru's Evolution platform. Describe an engineering task in plain language and get a runnable cloud workflow.">
+<meta name="description" content="Workflow Studio: концепт сборки пайплайнов с помощью агента в платформе Cloud.ru Evolution. Инженерная задача на естественном языке превращается в редактируемый граф.">
 <link rel="canonical" href="https://wandaofu.github.io/Portfolio/ru/cases/workflow-studio/">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Workflow Studio — Vladislav Sapelin">
-<meta property="og:description" content="A concept for agent-assisted pipeline building: describe the task, get a runnable cloud workflow.">
-<meta property="og:url" content="https://wandaofu.github.io/Portfolio/cases/workflow-studio/">
+<meta property="og:description" content="Концепт сборки пайплайнов агентом: описываете задачу словами, получаете редактируемый граф.">
+<meta property="og:url" content="https://wandaofu.github.io/Portfolio/ru/cases/workflow-studio/">
 <meta property="og:image" content="https://wandaofu.github.io/Portfolio/assets/cases/workflow-home-1440.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="../../../favicon.png">
@@ -37,10 +37,10 @@
 
   <main class="case">
     <div class="case-lede">
-      <p class="case-lang mono" lang="ru">Текст кейса пока на&nbsp;английском. <a class="link-hover" href="../../../cases/workflow-studio/" lang="en" hreflang="en">Открыть английскую версию</a></p>
-      <div class="case-category mono"><span class="bar"></span>CLOUD TOOLING / CONCEPT</div>
+      <p class="case-lang mono" lang="ru">Текст кейса пока на&nbsp;английском. <a class="link-hover" href="../../../cases/workflow-studio/" hreflang="en">Открыть английскую версию</a></p>
+      <div class="case-category mono">CLOUD TOOLING / CONCEPT</div>
       <h2 class="case-h">Workflow Studio</h2>
-      <p class="case-prose">A concept for agent-assisted pipeline building inside Cloud.ru's Evolution platform. Instead of assembling stages by hand on an empty canvas, you describe the engineering task in plain language and an agent proposes the steps and hands back an ordinary, editable workflow.</p>
+      <p class="case-prose" lang="en">A concept for agent-assisted pipeline building inside Cloud.ru's Evolution platform. Instead of assembling stages by hand on an empty canvas, you describe the engineering task in plain language and an agent proposes the steps and hands back an ordinary, editable workflow.</p>
     </div>
 
     <dl class="case-meta mono">
@@ -60,8 +60,8 @@
 
     <section class="case-section" id="entry">
       <h3 class="case-sh">Точка входа</h3>
-      <p class="case-prose">An empty canvas asks for the answer before the user has stated the problem. A prompt field turns that around: you describe the task, and the system does the decomposition.</p>
-      <p class="case-prose">The domain chips and template cards below exist for the other half of the audience. Someone who already knows the shape of their pipeline should not have to write a sentence to get to it, so the two entry modes sit on the same screen at the same level, with no mode switch between them.</p>
+      <p class="case-prose" lang="en">An empty canvas asks for the answer before the user has stated the problem. A prompt field turns that around: you describe the task, and the system does the decomposition.</p>
+      <p class="case-prose" lang="en">The domain chips and template cards below exist for the other half of the audience. Someone who already knows the shape of their pipeline should not have to write a sentence to get to it, so the two entry modes sit on the same screen at the same level, with no mode switch between them.</p>
       <div class="case-shots">
         <figure class="case-shot">
         <img src="../../../assets/cases/workflow-home-900.jpg"
@@ -69,14 +69,14 @@
              sizes="(max-width: 840px) 100vw, 800px"
              alt="Workflow Studio home screen with a prompt field reading 'describe your task and our AI agent will solve it', domain chips for inference, CI/CD, cloud events and containers, and template cards."
              width="1440" height="800" loading="lazy" decoding="async">
-        <figcaption class="case-caption">Entry point. A prompt field replaces the empty canvas, with domain chips and ready-made templates for anyone who would rather start from a known shape than a blank one.</figcaption>
+        <figcaption class="case-caption" lang="en">Entry point. A prompt field replaces the empty canvas, with domain chips and ready-made templates for anyone who would rather start from a known shape than a blank one.</figcaption>
         </figure>
       </div>
     </section>
     <section class="case-section" id="agent">
       <h3 class="case-sh">Холст агента</h3>
-      <p class="case-prose">While the agent works, the original request stays pinned in the left panel. Generated output can only be judged against what was asked, and someone who has lost sight of their own prompt cannot tell a good result from a plausible one.</p>
-      <p class="case-prose">The YAML and Visual toggle sits in the same bar as zoom and fit. The code view is a peer of the diagram, not an export buried in a menu, which is what keeps the result inspectable.</p>
+      <p class="case-prose" lang="en">While the agent works, the original request stays pinned in the left panel. Generated output can only be judged against what was asked, and someone who has lost sight of their own prompt cannot tell a good result from a plausible one.</p>
+      <p class="case-prose" lang="en">The YAML and Visual toggle sits in the same bar as zoom and fit. The code view is a peer of the diagram, not an export buried in a menu, which is what keeps the result inspectable.</p>
       <div class="case-shots">
         <figure class="case-shot">
         <img src="../../../assets/cases/workflow-agent-900.jpg"
@@ -84,14 +84,14 @@
              sizes="(max-width: 840px) 100vw, 800px"
              alt="Workflow Studio canvas while the AI agent works: the user's request sits in a left panel, the agent reports it is thinking through the steps, and the canvas awaits the generated workflow."
              width="1440" height="800" loading="lazy" decoding="async">
-        <figcaption class="case-caption">Agent canvas. The request stays visible while the agent works, and the same workflow can be read as a diagram or as YAML, so the generated result stays inspectable rather than opaque.</figcaption>
+        <figcaption class="case-caption" lang="en">Agent canvas. The request stays visible while the agent works, and the same workflow can be read as a diagram or as YAML, so the generated result stays inspectable rather than opaque.</figcaption>
         </figure>
       </div>
     </section>
     <section class="case-section" id="result">
       <h3 class="case-sh">Сгенерированный воркфлоу</h3>
-      <p class="case-prose">The output is a graph of typed nodes, each carrying its service identity. A graph can be rearranged, partially rerun and diffed; a generated block of config cannot.</p>
-      <p class="case-prose">Dependency order is shown by position instead of being stated. Networking resolves before the cluster, the cluster before the database, and the second example shows the agent is not limited to a chain: an API gateway fans out to three parallel services, so the proposal carries real topology.</p>
+      <p class="case-prose" lang="en">The output is a graph of typed nodes, each carrying its service identity. A graph can be rearranged, partially rerun and diffed; a generated block of config cannot.</p>
+      <p class="case-prose" lang="en">Dependency order is shown by position instead of being stated. Networking resolves before the cluster, the cluster before the database, and the second example shows the agent is not limited to a chain: an API gateway fans out to three parallel services, so the proposal carries real topology.</p>
       <div class="case-shots">
         <figure class="case-shot">
         <img src="../../../assets/cases/workflow-result-dev-900.jpg"
@@ -99,7 +99,7 @@
              sizes="(max-width: 840px) 100vw, 800px"
              alt="The generated workflow for a dev environment: a trigger node followed by SNAT, Subnet, a Kubernetes cluster, a Kubernetes node pool and PostgreSQL, connected left to right on the canvas."
              width="1800" height="1000" loading="lazy" decoding="async">
-        <figcaption class="case-caption">The prompt resolved. “Create a Dev environment on Kubernetes and PostgreSQL” becomes six typed steps in dependency order: networking, then cluster, then database. Each one lands as an editable node rather than a block of generated config.</figcaption>
+        <figcaption class="case-caption" lang="en">The prompt resolved. “Create a Dev environment on Kubernetes and PostgreSQL” becomes six typed steps in dependency order: networking, then cluster, then database. Each one lands as an editable node rather than a block of generated config.</figcaption>
         </figure>
         <figure class="case-shot">
         <img src="../../../assets/cases/workflow-result-api-900.jpg"
@@ -107,14 +107,14 @@
              sizes="(max-width: 840px) 100vw, 800px"
              alt="A generated workflow that branches: a trigger leads to an API Gateway node, which fans out to three parallel container service nodes."
              width="1800" height="1000" loading="lazy" decoding="async">
-        <figcaption class="case-caption">Branching, not just a chain. An API gateway fans out to three container services in parallel, so what the agent proposes carries real topology, and stays a diagram the engineer can rearrange.</figcaption>
+        <figcaption class="case-caption" lang="en">Branching, not just a chain. An API gateway fans out to three container services in parallel, so what the agent proposes carries real topology, and stays a diagram the engineer can rearrange.</figcaption>
         </figure>
       </div>
     </section>
     <section class="case-section" id="catalog">
       <h3 class="case-sh">Каталог шагов</h3>
-      <p class="case-prose">The agent is one way in; the catalog is the other. Steps are grouped by domain: utilities, AI Factory, containers, applications, infrastructure, networking, disks, databases, data platform. Every group carries a plain-language line under it, because a name like AI Factory tells an engineer nothing about whether their model serving belongs there.</p>
-      <p class="case-prose">It opens as a drawer, not a page, so the canvas stays visible behind it. You choose a step against a workflow you can still see.</p>
+      <p class="case-prose" lang="en">The agent is one way in; the catalog is the other. Steps are grouped by domain: utilities, AI Factory, containers, applications, infrastructure, networking, disks, databases, data platform. Every group carries a plain-language line under it, because a name like AI Factory tells an engineer nothing about whether their model serving belongs there.</p>
+      <p class="case-prose" lang="en">It opens as a drawer, not a page, so the canvas stays visible behind it. You choose a step against a workflow you can still see.</p>
       <div class="case-shots">
         <figure class="case-shot">
           <img src="../../../assets/cases/workflow-catalog-900.jpg"
@@ -122,15 +122,15 @@
                sizes="(max-width: 840px) 100vw, 800px"
                alt="Workflow Studio step catalog opening as a right-hand drawer, listing domains such as utilities, AI Factory, containers, applications, infrastructure, networking, disks, databases and data platform, each with a one-line description."
                width="1800" height="1000" loading="lazy" decoding="async">
-          <figcaption class="case-caption">Every domain carries a plain-language line. Engineers skip categories they have to guess at.</figcaption>
+          <figcaption class="case-caption" lang="en">Every domain carries a plain-language line. Engineers skip categories they have to guess at.</figcaption>
         </figure>
       </div>
     </section>
 
     <section class="case-section" id="scenarios">
       <h3 class="case-sh">Сохранённые сценарии</h3>
-      <p class="case-prose">Once generated, a workflow becomes an ordinary listed object with author, updated and created columns. That keeps the feature from fragmenting the product: the agent is an entry point, not a second system with its own storage and its own list.</p>
-      <p class="case-prose">Anything created by prompt lands in the same place as anything built by hand, and is managed with the same controls.</p>
+      <p class="case-prose" lang="en">Once generated, a workflow becomes an ordinary listed object with author, updated and created columns. That keeps the feature from fragmenting the product: the agent is an entry point, not a second system with its own storage and its own list.</p>
+      <p class="case-prose" lang="en">Anything created by prompt lands in the same place as anything built by hand, and is managed with the same controls.</p>
       <div class="case-shots">
         <figure class="case-shot">
         <img src="../../../assets/cases/workflow-scenarios-900.jpg"
@@ -138,7 +138,7 @@
              sizes="(max-width: 840px) 100vw, 800px"
              alt="Workflow Studio saved scenarios list, a table of workflows with author, updated date and created date columns."
              width="1440" height="808" loading="lazy" decoding="async">
-        <figcaption class="case-caption">Saved scenarios. Once generated, a workflow becomes an ordinary listed object with author, updated and created columns, so the agent entry point does not fork the information architecture.</figcaption>
+        <figcaption class="case-caption" lang="en">Saved scenarios. Once generated, a workflow becomes an ordinary listed object with author, updated and created columns, so the agent entry point does not fork the information architecture.</figcaption>
         </figure>
       </div>
     </section>
@@ -147,15 +147,15 @@
   </main>
 
   <footer class="identity">
-    <div class="identity-role mono">Product designer</div>
+    <div class="identity-role mono">Продуктовый дизайнер</div>
     <div class="identity-name">VLADISLAV SAPELIN</div>
     <dl class="identity-contacts mono">
       <div>
         <dt>Telegram</dt>
-        <dd><a class="link-hover" href="https://t.me/lost_endeavor" target="_blank" rel="noopener">@lost_endeavor</a></dd>
+        <dd><a class="link-hover" href="https://t.me/lost_endeavor" target="_blank" rel="noopener" aria-label="Telegram @lost_endeavor, opens in a new tab">@lost_endeavor</a></dd>
       </div>
       <div>
-        <dt>Mail</dt>
+        <dt>Почта</dt>
         <dd><a class="link-hover" href="mailto:vladsapelin@mail.ru">vladsapelin@mail.ru</a></dd>
       </div>
       <div>
