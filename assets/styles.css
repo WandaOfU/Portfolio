@@ -256,22 +256,37 @@ a { color: inherit; text-decoration: none; }
   justify-content: space-between;
   gap: 48px;
   flex: 1;
+}
+
+/* The entrance rises, and it is applied to the shell's three children rather
+   than to the shell itself. That is the whole trick, and it is geometric.
+
+   The shell on a short page is exactly viewport height, so translating *it*
+   down 10px put its bottom edge past the fold and the browser grew a
+   scrollbar for the 250ms the animation ran — then took it away. The children
+   sit inside 16px of shell padding, so the same 10px offset on the bottom-most
+   one leaves its box 6px clear of the padding edge. A descendant's transformed
+   box only grows the scrollable region when it escapes the padding box, and
+   this one never does. Rise preserved, scrollbar gone.
+
+   All three run on identical timing, so this is visually indistinguishable
+   from moving the shell as one block. Deliberately not staggered: a staged
+   entrance would be a different decision from the one being fixed here.
+
+   `main` is left a transformed ancestor once this settles — the keyframe ends
+   at `none`, but `animation-fill-mode: forwards` computes that to the identity
+   matrix, not to nothing. That makes it a containing block for anything fixed
+   inside it. Measured against the sticky section tabs on a case page before
+   and after this change: pinned at top 0 in both, so it costs nothing here.
+   Worth re-measuring if a fixed-position child is ever added under `main`. */
+.shell > .site-bar,
+.shell > main,
+.shell > footer {
   opacity: 0;
-  /* Negative, so the shell settles down into place instead of rising up into
-     it. The direction is not a taste call. On a short page the shell is
-     already exactly viewport height, so a downward offset put its bottom edge
-     10px past the fold and the browser grew a scrollbar for the 250ms the
-     animation ran — visible on every load of the home and about pages, and on
-     any platform with classic (non-overlay) scrollbars it also reflowed the
-     whole page twice as the bar appeared and left. Overflow above the scroll
-     origin is not reachable, so the same 10px in the other direction costs
-     nothing. Transform is the only way to move a box without touching layout,
-     and a transform always extends the scrollable region downward: that is
-     the constraint this direction is chosen against. */
-  transform: translateY(-10px);
+  transform: translateY(10px);
   animation: page-in .5s var(--ease-spring) forwards;
 }
-@keyframes page-in { to { opacity: 1; transform: translateY(0); } }
+@keyframes page-in { to { opacity: 1; transform: none; } }
 
 .mono {
   font-family: var(--font-mono);
@@ -757,7 +772,9 @@ a { color: inherit; text-decoration: none; }
 .about-list { display: flex; flex-direction: column; gap: 20px; }
 
 @media (prefers-reduced-motion: reduce) {
-  .shell { animation: page-fade .2s ease forwards; transform: none; }
+  .shell > .site-bar,
+  .shell > main,
+  .shell > footer { animation: page-fade .2s ease forwards; transform: none; }
   @keyframes page-fade { to { opacity: 1; } }
   }
 
