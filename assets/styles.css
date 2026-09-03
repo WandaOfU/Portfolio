@@ -53,19 +53,9 @@
 }
 
 :root {
-  --bg: #edeef0;
-  --ink: #021024;
-  --ink-a25: rgba(2, 16, 36, .25);
-  --ink-a10: rgba(2, 16, 36, .08);
-  --ink-a04: rgba(2, 16, 36, .04);
-  --rust: #a6342e;
-  --rust-dark: #9c4a2e;
-  --rust-a06: rgba(166, 52, 46, .06);
-  /* Ash. Darkened from #767e89, which sat at 3.54:1 on --bg and failed WCAG
-     AA for the 11-12px roles that use it (dates, role lines, case categories,
-     the drag hint). Same hue and saturation, lower lightness: 4.71:1. */
-  --muted: #636a73;
-  --white: #ffffff;
+  /* The paper ground, the navy ink, rust and ash used to be declared here.
+     All ten were left behind by the 2026-08-15 palette change and referenced
+     by nothing; they came out on 2026-08-18. The stock below is the palette. */
 
   /*
     Theme slots. The palette above is the fixed stock; these five are what
@@ -568,8 +558,12 @@ a { color: inherit; text-decoration: none; }
   align-items: center;
   justify-content: center;
   padding: 24px;
-  /* Ink rather than black, per the No Pure Black Rule. */
-  background: rgba(2, 16, 36, .94);
+  /* Black at .94, not the navy ink this carried until 2026-08-18. That value
+     survived The No Pure Black Rule by eleven days: the rule was retired when
+     the palette went to pure black and white, and its retirement note exists
+     precisely to stop the navy being reinstated on one surface while the rest
+     of the system is black. This was that surface. */
+  background: rgba(0, 0, 0, .94);
   opacity: 0;
   transition: opacity .2s var(--ease-spring);
 }
@@ -613,7 +607,7 @@ a { color: inherit; text-decoration: none; }
      1.09:1 against the overlay and none of them rendered. */
   border: 1px solid rgba(255, 255, 255, .55);
   border-radius: 0;
-  background: rgba(2, 16, 36, .8);
+  background: rgba(0, 0, 0, .8);
   color: var(--c-white);
   cursor: pointer;
   transition: border-color .2s var(--ease-spring);
