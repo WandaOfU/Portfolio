@@ -64,7 +64,9 @@
     paper ground the whole system was drawn on — assigning nothing leaves
     a page exactly as it was.
   */
-  /* Fixed stock: eight hues, no greys between black and white. */
+  /* Fixed stock: eight values. Seven are saturated hues; one, as of
+     2026-09-05, is a warm grey — see The Measured Grey Rule, which this
+     change amends rather than ignores. */
   --c-black: #000000;
   --c-white: #ffffff;
   /* Warm brick, hue 8°, saturation dropped 1.0 -> 0.60. The spectral red it
@@ -75,8 +77,23 @@
   --c-purple: #6701a3;
   --c-green: #aeff00;
   --c-blue: #20c9ff;
-  --c-pink: #f600ff;
-  --c-burgundy: #56001c;
+  /* The projects room, 2026-09-05. Burgundy and pink came out with it: each
+     was consumed by exactly one declaration — that room's ground and its
+     accent — so when the room changed they became stock nothing referenced,
+     which this system does not keep.
+
+     A warm grey rather than a neutral one. At 0° saturation it reads as an
+     absence of decision next to seven saturated hues; warmed toward the red
+     end it reads as a chosen colour that happens to be quiet. Luminance is
+     the load-bearing part: it sits 1.82 from the case room's black, far
+     enough to arrive as a different room, and light enough that near-white
+     product screenshots still separate from it. */
+  --c-grey: #3d3835;
+  /* Amber, not a vivid orange. #ff7a1a measures 4.43:1 on the grey and fails;
+     this clears at 5.24:1 and is the darkest orange that does. The room's
+     ground could be dropped to carry a hotter accent, but only by moving it
+     toward the case black it has to stay distinct from. */
+  --c-orange: #ff9424;
 
   /* Home ground. Accent is purple, not the blue the source uses: blue on this
      green measures 1.57:1, which is fine there because their accent sits on
@@ -170,18 +187,23 @@
   Every pairing here is measured, not assumed: a hue that looks like it
   should carry over usually does not. See the note on the about ground.
 */
+/* Re-grounded 2026-09-05, off burgundy and pink. That pairing was the weakest
+   room in the system and measurably so: the pink accent sat at 4.50:1 against
+   the burgundy, the AA floor to two decimal places, which left nothing to
+   spend and was why this was the one room that could not carry the wash. */
 [data-theme="projects"] {
-  --theme-bg: var(--c-burgundy);
+  --theme-bg: var(--c-grey);
   --theme-text: var(--c-white);
-  --theme-accent: var(--c-pink);
-  --theme-muted: rgba(255, 255, 255, .55);   /* 5.06:1 */
+  --theme-accent: var(--c-orange);
+  --theme-muted: rgba(255, 255, 255, .62);   /* 5.56:1 */
   --theme-hairline: rgba(255, 255, 255, .30);
   --theme-fill: rgba(255, 255, 255, .05);
-  /* No glow, and this has to be said out loud rather than left unset: slots
-     declared on :root inherit into every ground that does not override them,
-     which is how this one silently washed a room that has no room for it.
-     Measured here: the pink accent on the lit ground fell to 3.41:1. */
-  --theme-glow: transparent;
+  /* .03, not the .055 the other two lit rooms carry, and the difference is the
+     whole point of solving this per ground. White lifts the ground, which
+     costs the accent: at .055 the amber falls to 4.43:1 and fails, at .03 it
+     holds 4.78:1. Copying another room's figure here would have shipped a
+     focus ring under the floor. */
+  --theme-glow: rgba(255, 255, 255, .03);
   color-scheme: dark;
 }
 
