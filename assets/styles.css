@@ -93,6 +93,9 @@
   --theme-muted: rgba(0, 0, 0, .60);
   --theme-hairline: rgba(0, 0, 0, .35);
   --theme-fill: rgba(0, 0, 0, .06);
+  /* The pointer wash. White at .055 measured on this ground: black text
+     holds 17.22:1 and the purple accent 8.16:1, both far clear of the floor. */
+  --theme-glow: rgba(255, 255, 255, .055);
   /* One token, one face. --font-serif and --font-mono aliased to this until
      2026-09-04; they were the last trace of the two-family system and made
      nine rules claim a mono or a serif the site has not shipped in months. */
@@ -174,6 +177,11 @@
   --theme-muted: rgba(255, 255, 255, .55);   /* 5.06:1 */
   --theme-hairline: rgba(255, 255, 255, .30);
   --theme-fill: rgba(255, 255, 255, .05);
+  /* No glow, and this has to be said out loud rather than left unset: slots
+     declared on :root inherit into every ground that does not override them,
+     which is how this one silently washed a room that has no room for it.
+     Measured here: the pink accent on the lit ground fell to 3.41:1. */
+  --theme-glow: transparent;
   color-scheme: dark;
 }
 
@@ -192,6 +200,9 @@
   --theme-muted: var(--c-black);
   --theme-hairline: rgba(0, 0, 0, .35);
   --theme-fill: rgba(0, 0, 0, .06);
+  /* No glow: black text sits 0.02 above the floor on this ground and the white
+     accent at 4.65:1, so there is nothing left to spend in either direction. */
+  --theme-glow: transparent;
 }
 
 /* Case pages put screens first, so they get the black ground the reel sits
@@ -203,6 +214,8 @@
   --theme-muted: rgba(255, 255, 255, .50);   /* 5.28:1 */
   --theme-hairline: rgba(255, 255, 255, .30);
   --theme-fill: rgba(255, 255, 255, .05);
+  /* White at .055: white text 19.13:1, blue accent 9.89:1. */
+  --theme-glow: rgba(255, 255, 255, .055);
   color-scheme: dark;
 }
 
@@ -251,6 +264,61 @@ body {
 }
 
 a { color: inherit; text-decoration: none; }
+
+/* ---------- the ground answers the pointer ---------- */
+/* The largest surface in the system was also the only one doing nothing: a
+   flat saturated field, edge to edge, seventy per cent of the home page. This
+   lights it — a very large, very slow luminous centre that follows the cursor.
+   It reads as the ground having depth rather than as a thing moving on top of
+   it, which is the only version of this that does not fight the flatness the
+   whole design argues for.
+
+   The wash is a slot, `--theme-glow`, and it obeys the same discipline as
+   every other slot: measured per ground, never assumed to carry.
+
+   It is deliberately NOT the accent. The accent may not fill a surface (see
+   The Reactive Accent Rule) and 520px of tinted ground is filling one — and
+   measured, an accent wash at .085 puts the pink accent on burgundy at 4.03:1
+   and the white accent on brick at 4.10:1, both under the floor, on focus
+   rings. A white lift spends no colour and introduces no hue.
+
+   **Two grounds declare no glow at all, and that is the measurement, not an
+   oversight.** Burgundy and brick were solved to sit at the contrast floor —
+   their accents measure 4.50:1 and 4.65:1 against the bare ground — so a wash
+   in any direction at any alpha takes them under. There is no room left on
+   those rooms to spend, so they spend none and the gradient resolves to
+   transparent. Home and case have the headroom and carry it.
+
+   Further constraints: pointer devices only (a touch screen has no cursor to
+   answer, and a stuck glow is worse than none), never under reduced motion,
+   and behind every pixel of content — `.shell` is lifted a layer so nothing
+   reads through it. Raise an alpha here and re-measure that ground's text and
+   its accent, both. */
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background: radial-gradient(
+      520px circle at var(--glow-x, 50%) var(--glow-y, 50%),
+      var(--theme-glow, transparent) 0%,
+      transparent 68%
+    );
+    opacity: 0;
+    /* Slower than anything else in the system on purpose. This is weather, not
+       feedback: it should never look like it is answering a specific gesture. */
+    transition: opacity .8s var(--ease-spring);
+  }
+  /* app.js adds the class on the first real pointer movement, so the wash is
+     never already lit on arrival and a device that only ever taps never
+     acquires it. */
+  html.lit body::before { opacity: 1; }
+}
+/* The content plane sits above the wash. Without this the ground would print
+   through the type. */
+.shell { position: relative; z-index: 1; }
 
 .shell {
   width: 100%;
@@ -454,9 +522,56 @@ html.vt .shell > footer {
   margin-left: 12px;
   white-space: nowrap;
 }
+/* The lines carry the breaks now, not <br>. Unconditional, so the shape of the
+   tagline never depends on whether the entrance runs. */
+.tagline .line { display: block; }
+
 @media (max-width: 700px) {
   .tagline { margin-left: 0; white-space: normal; width: 100%; order: 3; margin-top: 8px; }
 }
+
+/* ---------- the home hero assembles itself ---------- */
+/* Home is seen once per visit, which is the tier this system spends its
+   delight budget at, and the tagline is the thesis: four hard-broken lines
+   that arrived as one undifferentiated block. They come in in sequence now,
+   and the parentheses close in around the portrait — the motif explaining
+   itself rather than simply being present.
+
+   All of it rides inside the shell's existing entrance rather than replacing
+   it, and all of it is opacity and transform. Under reduced motion none of it
+   is declared: the lines and the parens are simply there. */
+@media (prefers-reduced-motion: no-preference) {
+  .name-middle .paren {
+    opacity: 0;
+    animation: paren-in .55s var(--ease-spring) .05s forwards;
+  }
+  /* Parentheses only — the portrait and the tagline are the other children. */
+  .name-middle > .paren:nth-child(1) { --paren-from: -28px; }
+  .name-middle > .paren:nth-child(3) { --paren-from: 28px; }
+
+  .tagline .line {
+    opacity: 0;
+    animation: line-in .5s var(--ease-spring) forwards;
+  }
+  /* 70ms apart: enough to read as a sequence, short enough that the last line
+     has landed before the half-second entrance around it finishes. */
+  .tagline .line:nth-child(1) { animation-delay: .18s; }
+  .tagline .line:nth-child(2) { animation-delay: .25s; }
+  .tagline .line:nth-child(3) { animation-delay: .32s; }
+  .tagline .line:nth-child(4) { animation-delay: .39s; }
+}
+@keyframes paren-in {
+  from { opacity: 0; transform: translateX(var(--paren-from, 0)); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes line-in {
+  from { opacity: 0; transform: translateY(.3em); }
+  to   { opacity: 1; transform: none; }
+}
+/* A route transition already moves the whole page; the hero must not also
+   assemble itself underneath it. */
+html.vt .name-middle .paren,
+html.vt .tagline .line { animation: none; opacity: 1; transform: none; }
 
 /* ---------- PROJECTS INDEX ---------- */
 /* The home page teases three cases in a row; this page is the full index, so

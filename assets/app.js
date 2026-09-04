@@ -45,16 +45,18 @@
     const shell = document.querySelector('.shell');
     let lastFocus = null;
 
-    const close = () => {
+    const close = (morphing) => {
       box.classList.remove('show');
       const done = () => { box.hidden = true; bigImg.removeAttribute('src'); };
-      if (reduceMotion) done(); else setTimeout(done, 200);
+      // The view transition is already animating the whole surface; a second
+      // 200ms opacity fade underneath it would double the exit.
+      if (reduceMotion || morphing) done(); else setTimeout(done, 200);
       document.body.style.overflow = '';
       if (shell) shell.removeAttribute('inert');
       if (lastFocus) lastFocus.focus();
     };
 
-    const open = (img) => {
+    const open = (img, morphing) => {
       // Take the largest candidate the srcset offers rather than the rendered
       // src, which is the 900px version sized for the column.
       const set = img.getAttribute('srcset') || '';
@@ -89,11 +91,45 @@
       // Takes the page behind the overlay out of the accessibility tree and
       // the tab order both, which the Tab handler below cannot do on its own.
       if (shell) shell.setAttribute('inert', '');
-      requestAnimationFrame(() => box.classList.add('show'));
+      // Synchronously when morphing: the transition snapshots the DOM at the
+      // end of the update callback, and a class added a frame later is not in it.
+      if (morphing) box.classList.add('show');
+      else requestAnimationFrame(() => box.classList.add('show'));
       // The container, not the button: it is the scroll container, and it
       // carries the dialog role and label a screen reader announces on entry.
       // Close is one Tab away, and Escape works from either.
       box.focus();
+    };
+
+    // The overlay grows out of the picture it enlarges instead of fading in on
+    // top of it. Both elements are in the DOM at once, so the name has to be
+    // handed from one to the other inside the update callback — two elements
+    // holding it at the same time makes the browser skip the morph. The
+    // overlay already seeds its src from this exact decoded image, so the
+    // morph starts from a picture that is on screen rather than from nothing.
+    const morphSupported = () => !reduceMotion && typeof document.startViewTransition === 'function';
+
+    const openFrom = (img) => {
+      if (!morphSupported()) { open(img); return; }
+      img.style.viewTransitionName = 'zoomed';
+      const t = document.startViewTransition(() => {
+        img.style.viewTransitionName = '';
+        bigImg.style.viewTransitionName = 'zoomed';
+        open(img, true);
+      });
+      t.finished.finally(() => { bigImg.style.viewTransitionName = ''; });
+    };
+
+    const closeTo = () => {
+      const src = lastFocus && lastFocus.querySelector ? lastFocus.querySelector('img') : null;
+      if (!morphSupported() || !src) { close(); return; }
+      bigImg.style.viewTransitionName = 'zoomed';
+      const t = document.startViewTransition(() => {
+        bigImg.style.viewTransitionName = '';
+        src.style.viewTransitionName = 'zoomed';
+        close(true);
+      });
+      t.finished.finally(() => { src.style.viewTransitionName = ''; });
     };
 
     // Wrap each screen in a real button rather than hanging a click handler on
@@ -109,7 +145,7 @@
       btn.setAttribute('aria-label', img.alt ? T.enlargeThis(img.alt) : T.enlarge);
       img.parentNode.insertBefore(btn, img);
       btn.appendChild(img);
-      btn.addEventListener('click', () => open(img));
+      btn.addEventListener('click', () => openFrom(img));
 
       // The wrapper owns the frame, so it also owns the load state — the same
       // three-state machine the index plates run. These are lazily loaded and
@@ -127,11 +163,11 @@
       // Anywhere outside the image closes, including the image itself — at
       // this size there is nothing to do but dismiss.
       if (e.target !== box && !e.target.closest('.lightbox-close') && e.target !== bigImg) return;
-      close();
+      closeTo();
     });
     document.addEventListener('keydown', (e) => {
       if (box.hidden) return;
-      if (e.key === 'Escape') close();
+      if (e.key === 'Escape') closeTo();
       // Two stops inside, and Tab cycles between them. It used to pin focus to
       // the close button on every press, which trapped it there: once you
       // tabbed off the overlay you could never focus it again, and with it went
@@ -348,6 +384,21 @@
 
     let pending = false, px = -9999, py = -9999, applied = -1;
 
+    // The name also answers scroll speed, not just proximity: it liquefies
+    // while the page is moving fast under it and re-solidifies the moment it
+    // stops. Same filter, same ceiling — 3 is where the counters in S and A
+    // start to weld shut, and no input is allowed past it.
+    const VEL_FULL = 2.6;   // px/ms of scrolling that reaches the ceiling
+    const DECAY = 0.86;     // per frame once the scrolling stops
+    let velBlur = 0, lastY = window.scrollY, lastT = performance.now(), decaying = false;
+
+    function decay() {
+      velBlur *= DECAY;
+      if (velBlur < 0.02) { velBlur = 0; decaying = false; }
+      paint();
+      if (decaying) requestAnimationFrame(decay);
+    }
+
     function paint() {
       const r = nameEl.getBoundingClientRect();
       // Distance to the block, not to its centre: the name is far wider than
@@ -355,7 +406,10 @@
       const dx = Math.max(r.left - px, 0, px - r.right);
       const dy = Math.max(r.top - py, 0, py - r.bottom);
       const d = Math.hypot(dx, dy);
-      const v = +(MAX_BLUR * Math.max(0, 1 - d / RADIUS)).toFixed(2);
+      const near = MAX_BLUR * Math.max(0, 1 - d / RADIUS);
+      // Whichever input is asking for more, capped at the same ceiling. They
+      // are not added: two effects stacking would take the name past legible.
+      const v = +Math.min(MAX_BLUR, Math.max(near, velBlur)).toFixed(2);
       if (v !== applied) { applied = v; blur.setAttribute('stdDeviation', v); }
     }
 
@@ -367,7 +421,38 @@
       }
     });
     window.addEventListener('scroll', () => {
+      const now = performance.now();
+      const dt = now - lastT;
+      if (dt > 0) {
+        const speed = Math.abs(window.scrollY - lastY) / dt;
+        velBlur = Math.max(velBlur, MAX_BLUR * Math.min(1, speed / VEL_FULL));
+        lastY = window.scrollY; lastT = now;
+      }
+      if (!decaying) { decaying = true; requestAnimationFrame(decay); }
       if (!pending) { pending = true; requestAnimationFrame(() => { paint(); pending = false; }); }
+    }, { passive: true });
+  }
+
+  /* ---------- the ground answers the pointer ---------- */
+  // CSS owns the wash; this only feeds it a position and decides whether it
+  // exists at all. Gated on a real pointer for the same reason hover is: a
+  // touch screen has no cursor to answer, and a wash left lit where a finger
+  // last landed is worse than no wash.
+  if (!reduceMotion && matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    const root = document.documentElement;
+    let gx = 0, gy = 0, queued = false;
+    window.addEventListener('pointermove', (e) => {
+      gx = e.clientX; gy = e.clientY;
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(() => {
+        root.style.setProperty('--glow-x', gx + 'px');
+        root.style.setProperty('--glow-y', gy + 'px');
+        // Lit on the first real movement, never on arrival: the page should
+        // settle before the ground acquires any depth.
+        if (!root.classList.contains('lit')) root.classList.add('lit');
+        queued = false;
+      });
     }, { passive: true });
   }
 })();
