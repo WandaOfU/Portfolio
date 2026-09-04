@@ -293,8 +293,16 @@
       if (!e.viewTransition) return;
       // Both entrances would run at once otherwise — the browser morphing the
       // page while page-in fades and lifts the children inside it.
+      //
+      // Set once and never cleared. Removing it when the transition finished
+      // was a bug with teeth: `html.vt` suppresses page-in with
+      // `animation: none`, so taking the class back off *restarted* the
+      // animation from zero and the whole page faded and rose a second time,
+      // after the route change had already landed. Measured at the time:
+      // opacity 0.97 and climbing, 450ms after the transition was over. The
+      // flag belongs to this document, and the document is replaced on the
+      // next navigation anyway.
       document.documentElement.classList.add('vt');
-      e.viewTransition.finished.finally(() => document.documentElement.classList.remove('vt'));
 
       // Coming back to the index: hand the name to the card the reader left
       // from, so the return journey is the same one reversed rather than a

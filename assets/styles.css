@@ -379,26 +379,69 @@ a { color: inherit; text-decoration: none; }
   @view-transition { navigation: auto; }
 }
 
-/* .45s, the same figure the index plate uses to fade in a picture, and inside
-   the 200-500ms this system spends on a surface appearing. The entrance runs
-   at .5s; the transition is deliberately a hair quicker, because it replaces
-   the entrance rather than joining it. */
-::view-transition-group(root),
-::view-transition-old(root),
-::view-transition-new(root) {
-  animation-duration: .45s;
+/* The two pages must not sit on top of each other while the ground changes.
+   A symmetric .45s crossfade of the root put four project plates underneath a
+   page of case prose for the whole duration — a double exposure of two
+   documents that share nothing, which is what made the whole move read as
+   cheap. The overlap is now about 30ms: the old page leaves quickly, the new
+   one arrives just behind it, and what the eye follows across the remaining
+   time is the ground colour and the title, not two compositions fighting.
+
+   The ground itself is inside the root snapshot, so this is also how long the
+   room takes to change. A flat colour does not need half a second. */
+::view-transition-group(root) {
+  animation-duration: .32s;
   animation-timing-function: var(--ease-spring);
 }
+::view-transition-old(root) {
+  animation: vt-root-out .16s linear forwards;
+}
+::view-transition-new(root) {
+  animation: vt-root-in .26s .13s linear backwards;
+}
+@keyframes vt-root-out { to { opacity: 0; } }
+@keyframes vt-root-in  { from { opacity: 0; } }
 
 /* The title is the shared element: `.index-title` at 16px on the index and
    `.case-h` at 46px on the case, the same string in the same face at the same
    weight. Type is this system's one material, so the thing that travels
    between rooms is a word rather than a picture — and unlike the plates, the
-   string is identical on all four projects and in both languages. */
+   string is identical on all four projects and in both languages.
+
+   Two things have to be corrected or a text morph looks cheap, and the naive
+   version did.
+
+   1. The snapshots are replaced elements stretched to fill a group whose
+      aspect ratio changes across the morph — 16px at 1.1 leading and normal
+      tracking becomes 46px at 1.0 leading and -0.015em, so the box is a
+      different shape at each end and the type squashed on the way. `height:
+      100%; width: auto` makes each snapshot scale uniformly to the group's
+      height and keep its own proportions; the group clips what that overruns.
+      This is the spec author's own recipe for the aspect-ratio problem.
+
+   2. By default both snapshots cross-fade across the whole duration, so for
+      450ms you are looking at two copies of the same word at two sizes ghosted
+      over each other. That is what read as clumsy. The geometry keeps the full
+      duration; the crossfade is cut to a fraction of it at the start, so the
+      eye sees one word travelling rather than two words dissolving. */
 ::view-transition-group(case-title) {
   animation-duration: .45s;
   animation-timing-function: var(--ease-spring);
+  overflow: clip;
 }
+::view-transition-old(case-title),
+::view-transition-new(case-title) {
+  height: 100%;
+  width: auto;
+}
+::view-transition-old(case-title) {
+  animation: vt-title-out .1s linear forwards;
+}
+::view-transition-new(case-title) {
+  animation: vt-title-in .16s .08s linear backwards;
+}
+@keyframes vt-title-out { to { opacity: 0; } }
+@keyframes vt-title-in  { from { opacity: 0; } }
 .case-h { view-transition-name: case-title; }
 
 /* Both entrances would otherwise run at once: the browser morphs the page and
