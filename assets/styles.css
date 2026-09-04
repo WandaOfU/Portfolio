@@ -293,6 +293,57 @@ a { color: inherit; text-decoration: none; }
 }
 @keyframes page-in { to { opacity: 1; transform: none; } }
 
+/* ---------- one room to the next ---------- */
+/* The system's north star is that every route is a different room, announced
+   by the whole surface changing colour. Until now that announcement was a hard
+   cut: the old ground vanished, the new page's children faded up from nothing,
+   and the reader was left to infer that a room had changed. A cross-document
+   view transition makes the change itself the announcement — the ground moves
+   between the two colours, and the project title you clicked grows into the
+   heading you are about to read.
+
+   This is motion answering a click, which is the only kind the system allows.
+   Declared under no-preference rather than overridden later, so a
+   reduced-motion setting never has to undo it, and a browser without cross-
+   document view transitions gets exactly today's behaviour: a normal load and
+   the page-in entrance. Nothing here is load-bearing. */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition { navigation: auto; }
+}
+
+/* .45s, the same figure the index plate uses to fade in a picture, and inside
+   the 200-500ms this system spends on a surface appearing. The entrance runs
+   at .5s; the transition is deliberately a hair quicker, because it replaces
+   the entrance rather than joining it. */
+::view-transition-group(root),
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: .45s;
+  animation-timing-function: var(--ease-spring);
+}
+
+/* The title is the shared element: `.index-title` at 16px on the index and
+   `.case-h` at 46px on the case, the same string in the same face at the same
+   weight. Type is this system's one material, so the thing that travels
+   between rooms is a word rather than a picture — and unlike the plates, the
+   string is identical on all four projects and in both languages. */
+::view-transition-group(case-title) {
+  animation-duration: .45s;
+  animation-timing-function: var(--ease-spring);
+}
+.case-h { view-transition-name: case-title; }
+
+/* Both entrances would otherwise run at once: the browser morphs the page and
+   `page-in` fades and lifts the children inside it. app.js marks the document
+   for the length of the transition and the entrance stands down. */
+html.vt .shell > .site-bar,
+html.vt .shell > main,
+html.vt .shell > footer {
+  animation: none;
+  opacity: 1;
+  transform: none;
+}
+
 .mono {
   font-family: var(--font-display);
   font-size: var(--text-label-size);
@@ -303,6 +354,13 @@ a { color: inherit; text-decoration: none; }
 }
 
 .link-hover { transition: color .25s var(--ease-spring); }
+/* Press feedback, and it exists for touch. Gating hover behind (hover: hover)
+   on 2026-09-04 was right, but it left a tap on a link answered by nothing at
+   all until the next page painted — measured: identical computed colour at
+   rest and mid-press. Colour only, no transform: these are text links, and the
+   accent is the one the pointer already gets. .1s is the press duration
+   .index-item:active already uses. */
+.link-hover:active { color: var(--theme-accent); transition-duration: .1s; }
 /* Hover is gated on a device that actually has a pointer. Ungated, a tap on a
    touch screen leaves the :hover state latched — the card stays lifted and its
    title stays accent-coloured until something else is tapped, which reads as
@@ -667,6 +725,17 @@ a { color: inherit; text-decoration: none; }
      the same media object, just bigger. */
   border-radius: 0;
   cursor: zoom-out;
+  /* The overlay opens on the picture the reader was already looking at, then
+     sharpens. Measured at 1.6 Mbps on a 1x display: the backdrop was fully
+     opaque at 200ms and the large capture landed at 898ms, so the overlay
+     showed 700ms of empty black on the one component that exists so the work
+     can be read. app.js seeds the src from the decoded column image and swaps
+     when the full-size file arrives; this softens the swap. */
+  transition: opacity .45s var(--ease-spring);
+}
+.lightbox img[data-state="loading"] { opacity: .999; }
+@media (prefers-reduced-motion: reduce) {
+  .lightbox img { transition: none; }
 }
 /* fixed, not absolute. The overlay is the scroll container, so an absolutely
    positioned control travels with the content: on a tall capture, scrolling to
@@ -703,15 +772,40 @@ a { color: inherit; text-decoration: none; }
    handler, so the only path to a legible screenshot was the mouse. A real
    button carries keyboard, Enter/Space and a focus ring without any of it
    written here; this rule only removes the chrome the button brings with it. */
+/* The button app.js builds owns the frame, exactly as .shot does on the index:
+   the wash and the hairline belong to the wrapper, the picture lies inside it
+   and only its opacity moves. Before this, a lazily-loaded capture snapped from
+   an empty frame to full opacity in one frame as the reader scrolled onto it —
+   the same defect the index plates were fixed for on 2026-08-18, never carried
+   to the pages that exist to show the work. The rule on `.case-shot img` above
+   still draws the frame when no script has run, so the no-JS path is unchanged. */
 .case-shot .zoom {
   display: block;
   width: 100%;
   padding: 0;
-  border: 0;
-  background: none;
   color: inherit;
   font: inherit;
   cursor: zoom-in;
+  background-color: var(--theme-fill);
+  border: 1px solid var(--theme-hairline);
+}
+.case-shot .zoom img {
+  border: 0;
+  background: none;
+  opacity: 0;
+  transition: opacity .45s var(--ease-spring);
+}
+.case-shot .zoom[data-state="ready"] img { opacity: 1; }
+/* A failed capture keeps its frame and goes quiet rather than pulsing forever
+   or revealing a broken-image box. */
+.case-shot .zoom[data-state="failed"] img { opacity: 0; }
+@media (prefers-reduced-motion: no-preference) {
+  .case-shot .zoom[data-state="loading"] {
+    animation: plate-wait 1.8s ease-in-out infinite;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .case-shot .zoom img { transition: none; }
 }
 .case-shot .zoom:focus-visible { outline: 2px solid var(--theme-accent); outline-offset: 4px; }
 @media (prefers-reduced-motion: reduce) {

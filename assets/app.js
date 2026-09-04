@@ -61,8 +61,28 @@
       const largest = set.split(',').map((s) => s.trim().split(/\s+/))
         .filter((p) => p.length === 2)
         .sort((a, b) => parseInt(b[1]) - parseInt(a[1]))[0];
-      bigImg.src = largest ? largest[0] : img.currentSrc || img.src;
+      // Seed from the picture the reader is already looking at. That file is
+      // decoded and in cache, so the overlay opens on the screenshot instead of
+      // on an empty box — measured, the large capture took 898ms to arrive on a
+      // 1.6 Mbps link while the backdrop finished fading at 200ms. The full-size
+      // file is fetched behind it and swapped in when it is ready, so the
+      // picture sharpens rather than appearing.
+      const seed = img.currentSrc || img.src;
+      const full = largest ? largest[0] : seed;
+      bigImg.src = seed;
       bigImg.alt = img.alt || '';
+      if (full !== seed) {
+        bigImg.setAttribute('data-state', 'loading');
+        const hi = new Image();
+        hi.onload = () => {
+          // Only if this is still the picture on screen — a reader can close
+          // and open another one while a big file is in flight.
+          if (bigImg.src === seed || bigImg.currentSrc === seed) bigImg.src = full;
+          bigImg.removeAttribute('data-state');
+        };
+        hi.onerror = () => bigImg.removeAttribute('data-state');
+        hi.src = full;
+      }
       lastFocus = document.activeElement;
       box.hidden = false;
       document.body.style.overflow = 'hidden';
@@ -90,6 +110,18 @@
       img.parentNode.insertBefore(btn, img);
       btn.appendChild(img);
       btn.addEventListener('click', () => open(img));
+
+      // The wrapper owns the frame, so it also owns the load state — the same
+      // three-state machine the index plates run. These are lazily loaded and
+      // the reader scrolls onto them, which is exactly when a hard pop shows.
+      const settleShot = (state) => btn.setAttribute('data-state', state);
+      if (img.complete) {
+        settleShot(img.naturalWidth > 0 ? 'ready' : 'failed');
+      } else {
+        settleShot('loading');
+        img.addEventListener('load', () => settleShot('ready'), { once: true });
+        img.addEventListener('error', () => settleShot('failed'), { once: true });
+      }
     });
     box.addEventListener('click', (e) => {
       // Anywhere outside the image closes, including the image itself — at
@@ -197,6 +229,54 @@
       });
       links.forEach((a) => obsCurrent.observe(a, { attributes: true, attributeFilter: ['aria-current'] }));
     }
+  }
+
+  /* ---------- one room to the next: the shared title ---------- */
+  // Cross-document view transitions do the rest in CSS; this only decides which
+  // element travels. The name has to be unique in the document, so on the index
+  // exactly one card can carry it — the one just clicked.
+  if (!reduceMotion && 'startViewTransition' in document) {
+    const NAME = 'case-title';
+    const KEY = 'vt-title';
+
+    const claim = (el) => {
+      document.querySelectorAll('.index-title').forEach((t) => { t.style.viewTransitionName = ''; });
+      if (el) el.style.viewTransitionName = NAME;
+    };
+
+    document.querySelectorAll('a.index-item').forEach((card) => {
+      // pointerdown, not click: the snapshot is taken as the navigation starts,
+      // and this way the name is already set for a middle-click or a slow tap.
+      card.addEventListener('pointerdown', () => {
+        claim(card.querySelector('.index-title'));
+        try { sessionStorage.setItem(KEY, card.getAttribute('href')); } catch { /* private mode */ }
+      });
+    });
+
+    window.addEventListener('pagereveal', (e) => {
+      if (!e.viewTransition) return;
+      // Both entrances would run at once otherwise — the browser morphing the
+      // page while page-in fades and lifts the children inside it.
+      document.documentElement.classList.add('vt');
+      e.viewTransition.finished.finally(() => document.documentElement.classList.remove('vt'));
+
+      // Coming back to the index: hand the name to the card the reader left
+      // from, so the return journey is the same one reversed rather than a
+      // plain cross-fade.
+      let from = null;
+      try { from = sessionStorage.getItem(KEY); } catch { /* private mode */ }
+      if (from) {
+        const card = [...document.querySelectorAll('a.index-item')]
+          .find((a) => a.getAttribute('href') === from);
+        if (card) claim(card.querySelector('.index-title'));
+      }
+    });
+
+    // The name must not outlive the transition, or the next one starts with two
+    // elements claiming it and the browser skips the morph entirely.
+    window.addEventListener('pageswap', (e) => {
+      if (e.viewTransition) e.viewTransition.finished.finally(() => claim(null));
+    });
   }
 
   /* ---------- the name: gooey blur that answers the pointer ---------- */
