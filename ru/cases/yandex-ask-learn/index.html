@@ -23,9 +23,10 @@
 </head>
 <body>
 <div class="shell" id="view-case">
+  <a class="skip-link" href="#main">Перейти к содержимому</a>
   <h1 class="sr-only">Yandex Ask &amp; Learn — Vladislav Sapelin</h1>
   <div class="site-bar mono">
-    <nav class="site-nav" aria-label="Sections">
+    <nav class="site-nav" aria-label="Разделы сайта">
       <a href="../../" class="link-hover">Главная</a>
       <a href="../../projects/" class="link-hover">Проекты</a>
       <a href="../../about/" class="link-hover">О&nbsp;себе</a>
@@ -36,9 +37,9 @@
     </div>
   </div>
 
-  <main class="case">
+  <main id="main" tabindex="-1" class="case">
     <div class="case-lede">
-      <div class="case-category mono">DEVELOPER PLATFORM / REDESIGN</div>
+      <div class="case-category mono">Платформа для&nbsp;разработчиков / редизайн</div>
       <h2 class="case-h" lang="en">Yandex Ask &amp; Learn</h2>
       <p class="case-prose" lang="ru">Yandex Ask &amp; Learn&nbsp;— платформа для&nbsp;программистов и&nbsp;разработчиков, где ищут ответы на&nbsp;технические вопросы. В&nbsp;редизайне я&nbsp;сделал интерфейс современнее и&nbsp;понятнее, а&nbsp;заодно разобрался с&nbsp;проблемами старой версии, которые мешали людям находить ответы и&nbsp;участвовать в&nbsp;обсуждениях.</p>
     </div>
@@ -46,19 +47,19 @@
     <dl class="case-meta mono">
       <div><dt>Роль</dt><dd>Продуктовый дизайнер</dd></div>
       <div><dt>Компания</dt><dd>Yandex</dd></div>
-      <div><dt>Platform</dt><dd>Desktop &amp; mobile</dd></div>
-      <div><dt>Year</dt><dd>2024</dd></div>
+      <div><dt>Платформы</dt><dd>Десктоп и&nbsp;мобильные</dd></div>
+      <div><dt>Год</dt><dd>2024</dd></div>
     </dl>
 
-    <nav class="case-toc mono" aria-label="Case sections">
-      <a href="#problem" class="link-hover">Problem</a>
+    <nav class="case-toc mono" aria-label="Разделы кейса">
+      <a href="#problem" class="link-hover">Проблема</a>
       <a href="#before" class="link-hover">Как&nbsp;было</a>
       <a href="#jtbd" class="link-hover">JTBD</a>
       <a href="#hypotheses" class="link-hover">Гипотезы</a>
-      <a href="#tags" class="link-hover">Tag system</a>
+      <a href="#tags" class="link-hover">Тег-система</a>
       <a href="#card" class="link-hover">Карточка вопроса</a>
       <a href="#thread" class="link-hover">Страница вопроса</a>
-      <a href="#creation" class="link-hover">Creation</a>
+      <a href="#creation" class="link-hover">Создание</a>
       <a href="#process" class="link-hover">Процесс</a>
     </nav>
 
@@ -73,6 +74,7 @@
       <div class="case-shots">
         <figure class="case-shot">
           <img src="../../../assets/cases/ydx-card-before-900.jpg"
+             lang="en"
                srcset="../../../assets/cases/ydx-card-before-900.jpg 900w, ../../../assets/cases/ydx-card-before-1440.jpg 1440w"
                sizes="(max-width: 840px) 100vw, 800px"
                alt="The old question card: a dark, cramped block with the title, one tag, the author and a like and comment count."
@@ -81,6 +83,7 @@
         </figure>
         <figure class="case-shot">
           <img src="../../../assets/cases/ydx-form-before-900.jpg"
+             lang="en"
                srcset="../../../assets/cases/ydx-form-before-900.jpg 900w, ../../../assets/cases/ydx-form-before-1440.jpg 1440w"
                sizes="(max-width: 840px) 100vw, 800px"
                alt="The old question creation form: a required-field error under the title, a dense formatting toolbar, and mentions, tags and anonymity controls stacked below."
@@ -144,6 +147,7 @@
       <div class="case-shots">
         <figure class="case-shot">
           <img src="../../../assets/cases/ydx-tags-after-900.jpg"
+             lang="en"
                srcset="../../../assets/cases/ydx-tags-after-900.jpg 900w, ../../../assets/cases/ydx-tags-after-1440.jpg 1440w"
                sizes="(max-width: 840px) 100vw, 800px"
                alt="The redesigned tags page: a left rail of categories including programming, network infrastructure, databases, API and integration, unsorted and archived, with tags grouped under headings."
@@ -152,6 +156,7 @@
         </figure>
         <figure class="case-shot">
           <img src="../../../assets/cases/ydx-tagmodal-after-900.jpg"
+             lang="en"
                srcset="../../../assets/cases/ydx-tagmodal-after-900.jpg 900w, ../../../assets/cases/ydx-tagmodal-after-1440.jpg 1440w"
                sizes="(max-width: 840px) 100vw, 800px"
                alt="A tag detail modal for Django showing question and follower counts, a description, its category path, who created it and the tag experts."
@@ -181,6 +186,7 @@
       <p class="case-prose" lang="ru">Отдельная строка связывает вопрос с&nbsp;задачей в&nbsp;трекере и&nbsp;показывает её&nbsp;статус. Так техническое обсуждение остаётся привязанным к&nbsp;работе, из&nbsp;которой оно выросло.</p>
       <figure class="case-shot">
         <img src="../../../assets/cases/ydx-thread-after-900.jpg"
+             lang="en"
              srcset="../../../assets/cases/ydx-thread-after-900.jpg 900w, ../../../assets/cases/ydx-thread-after-1800.jpg 1800w"
              sizes="(max-width: 840px) 100vw, 800px"
              alt="The redesigned question page: the question with tags and a linked tracker issue, an accepted answer outlined in green, threaded replies with emoji reactions and author reputation, a rich-text reply editor, and a Related panel listing similar questions, preferred topics and wiki guides."
@@ -204,6 +210,7 @@
       <h3 class="case-sh">Процесс</h3>
       <figure class="case-shot">
         <img src="../../../assets/cases/ydx-tags-board-900.jpg"
+             lang="en"
              srcset="../../../assets/cases/ydx-tags-board-900.jpg 900w, ../../../assets/cases/ydx-tags-board-1440.jpg 1440w"
              sizes="(max-width: 840px) 100vw, 800px"
              alt="The working board for the tag system redesign: problem statement, constraints, goals, competitor analysis, page states, and flows for creating, editing, merging and deleting a tag."
@@ -217,11 +224,11 @@
 
   <footer class="identity">
     <div class="identity-role mono">Продуктовый дизайнер</div>
-    <div class="identity-name">VLADISLAV SAPELIN</div>
+    <div class="identity-name">Vladislav Sapelin</div>
     <dl class="identity-contacts mono">
       <div>
         <dt>Telegram</dt>
-        <dd><a class="link-hover" href="https://t.me/lost_endeavor" target="_blank" rel="noopener" aria-label="Telegram @lost_endeavor, opens in a new tab">@lost_endeavor</a></dd>
+        <dd><a class="link-hover" href="https://t.me/lost_endeavor" target="_blank" rel="noopener" aria-label="Telegram @lost_endeavor, откроется в новой вкладке">@lost_endeavor</a></dd>
       </div>
       <div>
         <dt>Почта</dt>
@@ -229,7 +236,7 @@
       </div>
       <div>
         <dt>HH</dt>
-        <dd><a class="link-hover" href="https://hh.ru/resume/724d9d0aff0cb8b9020039ed1f536366475148?customDomain=1&overRideDomainAreaId=1" target="_blank" rel="noopener" aria-label="Resume on HeadHunter, opens in a new tab">Резюме</a></dd>
+        <dd><a class="link-hover" href="https://hh.ru/resume/724d9d0aff0cb8b9020039ed1f536366475148?customDomain=1&overRideDomainAreaId=1" target="_blank" rel="noopener" aria-label="Резюме на HeadHunter, откроется в новой вкладке">Резюме</a></dd>
       </div>
     </dl>
   </footer>

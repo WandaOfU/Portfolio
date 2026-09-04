@@ -1,6 +1,17 @@
 (() => {
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  // Every name this file builds used to be English, on both language trees. A
+  // Russian screen reader reads an English aria-label with Russian phonetics,
+  // so the overlay announced itself as noise on half the site. The document
+  // already declares which language it is in; nothing else has to.
+  const RU = document.documentElement.lang === 'ru';
+  const T = RU
+    ? { dialog: 'Увеличенный экран', close: 'Закрыть',
+        enlarge: 'Увеличить экран', enlargeThis: (alt) => 'Увеличить: ' + alt }
+    : { dialog: 'Enlarged screen', close: 'Close',
+        enlarge: 'Enlarge screen', enlargeThis: (alt) => 'Enlarge: ' + alt };
+
   /* ---------- case screens: click to enlarge ---------- */
   const shots = [...document.querySelectorAll('.case-shot img')];
   if (shots.length) {
@@ -12,8 +23,16 @@
     // modal, and .shell below stays browsable behind it.
     box.setAttribute('role', 'dialog');
     box.setAttribute('aria-modal', 'true');
-    box.setAttribute('aria-label', 'Enlarged screen');
-    box.innerHTML = '<button class="lightbox-close" type="button" aria-label="Close">'
+    box.setAttribute('aria-label', T.dialog);
+    // Focusable, and that is the whole fix for the overlay's scrolling. The
+    // browser scrolls the focused element's nearest scrollable ancestor; the
+    // close button is position: fixed, so its containing block is the viewport
+    // and the scroll chain skips this element entirely. With focus on the
+    // button, PageDown, End and the arrow keys moved nothing, and a 2419px
+    // capture in a 900px overlay showed a keyboard user its top third and no
+    // way to reach the rest. Focus lands here instead, and the keys work.
+    box.setAttribute('tabindex', '-1');
+    box.innerHTML = '<button class="lightbox-close" type="button" aria-label="' + T.close + '">'
       + '<svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">'
       + '<path d="M1 1l8 8M9 1l-8 8"/></svg></button>';
     document.body.appendChild(box);
@@ -51,7 +70,10 @@
       // the tab order both, which the Tab handler below cannot do on its own.
       if (shell) shell.setAttribute('inert', '');
       requestAnimationFrame(() => box.classList.add('show'));
-      closeBtn.focus();
+      // The container, not the button: it is the scroll container, and it
+      // carries the dialog role and label a screen reader announces on entry.
+      // Close is one Tab away, and Escape works from either.
+      box.focus();
     };
 
     // Wrap each screen in a real button rather than hanging a click handler on
@@ -64,7 +86,7 @@
       btn.type = 'button';
       btn.className = 'zoom';
       // Leads with the action; the img's own alt still describes the picture.
-      btn.setAttribute('aria-label', img.alt ? 'Enlarge: ' + img.alt : 'Enlarge screen');
+      btn.setAttribute('aria-label', img.alt ? T.enlargeThis(img.alt) : T.enlarge);
       img.parentNode.insertBefore(btn, img);
       btn.appendChild(img);
       btn.addEventListener('click', () => open(img));
@@ -78,8 +100,14 @@
     document.addEventListener('keydown', (e) => {
       if (box.hidden) return;
       if (e.key === 'Escape') close();
-      // Only one control inside, so keep focus on it.
-      if (e.key === 'Tab') { e.preventDefault(); closeBtn.focus(); }
+      // Two stops inside, and Tab cycles between them. It used to pin focus to
+      // the close button on every press, which trapped it there: once you
+      // tabbed off the overlay you could never focus it again, and with it went
+      // the only way to scroll a tall capture.
+      if (e.key === 'Tab') {
+        e.preventDefault();
+        (document.activeElement === closeBtn ? box : closeBtn).focus();
+      }
     });
   }
 

@@ -22,9 +22,10 @@
 </head>
 <body>
 <div class="shell" id="view-case">
+  <a class="skip-link" href="#main">Перейти к содержимому</a>
   <h1 class="sr-only">Workflow Studio — Vladislav Sapelin</h1>
   <div class="site-bar mono">
-    <nav class="site-nav" aria-label="Sections">
+    <nav class="site-nav" aria-label="Разделы сайта">
       <a href="../../" class="link-hover">Главная</a>
       <a href="../../projects/" class="link-hover">Проекты</a>
       <a href="../../about/" class="link-hover">О&nbsp;себе</a>
@@ -35,10 +36,10 @@
     </div>
   </div>
 
-  <main class="case">
+  <main id="main" tabindex="-1" class="case">
     <div class="case-lede">
       <p class="case-lang mono" lang="ru">Текст кейса пока на&nbsp;английском. <a class="link-hover" href="../../../cases/workflow-studio/" hreflang="en">Открыть английскую версию</a></p>
-      <div class="case-category mono">CLOUD TOOLING / CONCEPT</div>
+      <div class="case-category mono">Облачные инструменты / концепт</div>
       <h2 class="case-h">Workflow Studio</h2>
       <p class="case-prose" lang="en">A concept for agent-assisted pipeline building inside Cloud.ru's Evolution platform. Instead of assembling stages by hand on an empty canvas, you describe the engineering task in plain language and an agent proposes the steps and hands back an ordinary, editable workflow.</p>
     </div>
@@ -46,16 +47,16 @@
     <dl class="case-meta mono">
       <div><dt>Роль</dt><dd>Продуктовый дизайнер</dd></div>
       <div><dt>Компания</dt><dd>Cloud.ru</dd></div>
-      <div><dt>Scope</dt><dd>Concept · 14 screens</dd></div>
-      <div><dt>Year</dt><dd>2025</dd></div>
+      <div><dt>Объём</dt><dd>Концепт · 14 экранов</dd></div>
+      <div><dt>Год</dt><dd>2025</dd></div>
     </dl>
 
-    <nav class="case-toc mono" aria-label="Product areas">
-      <a href="#entry" class="link-hover">Entry</a>
-      <a href="#agent" class="link-hover">Agent</a>
+    <nav class="case-toc mono" aria-label="Разделы кейса">
+      <a href="#entry" class="link-hover">Вход</a>
+      <a href="#agent" class="link-hover">Агент</a>
       <a href="#result" class="link-hover">Сгенерированный воркфлоу</a>
       <a href="#catalog" class="link-hover">Каталог шагов</a>
-      <a href="#scenarios" class="link-hover">Scenarios</a>
+      <a href="#scenarios" class="link-hover">Сценарии</a>
     </nav>
 
     <section class="case-section" id="entry">
@@ -65,6 +66,7 @@
       <div class="case-shots">
         <figure class="case-shot">
         <img src="../../../assets/cases/workflow-home-900.jpg"
+             lang="en"
              srcset="../../../assets/cases/workflow-home-900.jpg 900w, ../../../assets/cases/workflow-home-1440.jpg 1440w"
              sizes="(max-width: 840px) 100vw, 800px"
              alt="Workflow Studio home screen with a prompt field reading 'describe your task and our AI agent will solve it', domain chips for inference, CI/CD, cloud events and containers, and template cards."
@@ -80,6 +82,7 @@
       <div class="case-shots">
         <figure class="case-shot">
         <img src="../../../assets/cases/workflow-agent-900.jpg"
+             lang="en"
              srcset="../../../assets/cases/workflow-agent-900.jpg 900w, ../../../assets/cases/workflow-agent-1440.jpg 1440w"
              sizes="(max-width: 840px) 100vw, 800px"
              alt="Workflow Studio canvas while the AI agent works: the user's request sits in a left panel, the agent reports it is thinking through the steps, and the canvas awaits the generated workflow."
@@ -95,6 +98,7 @@
       <div class="case-shots">
         <figure class="case-shot">
         <img src="../../../assets/cases/workflow-result-dev-900.jpg"
+             lang="en"
              srcset="../../../assets/cases/workflow-result-dev-900.jpg 900w, ../../../assets/cases/workflow-result-dev-1800.jpg 1800w"
              sizes="(max-width: 840px) 100vw, 800px"
              alt="The generated workflow for a dev environment: a trigger node followed by SNAT, Subnet, a Kubernetes cluster, a Kubernetes node pool and PostgreSQL, connected left to right on the canvas."
@@ -103,6 +107,7 @@
         </figure>
         <figure class="case-shot">
         <img src="../../../assets/cases/workflow-result-api-900.jpg"
+             lang="en"
              srcset="../../../assets/cases/workflow-result-api-900.jpg 900w, ../../../assets/cases/workflow-result-api-1800.jpg 1800w"
              sizes="(max-width: 840px) 100vw, 800px"
              alt="A generated workflow that branches: a trigger leads to an API Gateway node, which fans out to three parallel container service nodes."
@@ -118,6 +123,7 @@
       <div class="case-shots">
         <figure class="case-shot">
           <img src="../../../assets/cases/workflow-catalog-900.jpg"
+             lang="en"
                srcset="../../../assets/cases/workflow-catalog-900.jpg 900w, ../../../assets/cases/workflow-catalog-1800.jpg 1800w"
                sizes="(max-width: 840px) 100vw, 800px"
                alt="Workflow Studio step catalog opening as a right-hand drawer, listing domains such as utilities, AI Factory, containers, applications, infrastructure, networking, disks, databases and data platform, each with a one-line description."
@@ -134,6 +140,7 @@
       <div class="case-shots">
         <figure class="case-shot">
         <img src="../../../assets/cases/workflow-scenarios-900.jpg"
+             lang="en"
              srcset="../../../assets/cases/workflow-scenarios-900.jpg 900w, ../../../assets/cases/workflow-scenarios-1440.jpg 1440w"
              sizes="(max-width: 840px) 100vw, 800px"
              alt="Workflow Studio saved scenarios list, a table of workflows with author, updated date and created date columns."
@@ -148,11 +155,11 @@
 
   <footer class="identity">
     <div class="identity-role mono">Продуктовый дизайнер</div>
-    <div class="identity-name">VLADISLAV SAPELIN</div>
+    <div class="identity-name">Vladislav Sapelin</div>
     <dl class="identity-contacts mono">
       <div>
         <dt>Telegram</dt>
-        <dd><a class="link-hover" href="https://t.me/lost_endeavor" target="_blank" rel="noopener" aria-label="Telegram @lost_endeavor, opens in a new tab">@lost_endeavor</a></dd>
+        <dd><a class="link-hover" href="https://t.me/lost_endeavor" target="_blank" rel="noopener" aria-label="Telegram @lost_endeavor, откроется в новой вкладке">@lost_endeavor</a></dd>
       </div>
       <div>
         <dt>Почта</dt>
@@ -160,7 +167,7 @@
       </div>
       <div>
         <dt>HH</dt>
-        <dd><a class="link-hover" href="https://hh.ru/resume/724d9d0aff0cb8b9020039ed1f536366475148?customDomain=1&overRideDomainAreaId=1" target="_blank" rel="noopener" aria-label="Resume on HeadHunter, opens in a new tab">Резюме</a></dd>
+        <dd><a class="link-hover" href="https://hh.ru/resume/724d9d0aff0cb8b9020039ed1f536366475148?customDomain=1&overRideDomainAreaId=1" target="_blank" rel="noopener" aria-label="Резюме на HeadHunter, откроется в новой вкладке">Резюме</a></dd>
       </div>
     </dl>
   </footer>

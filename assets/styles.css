@@ -93,13 +93,10 @@
   --theme-muted: rgba(0, 0, 0, .60);
   --theme-hairline: rgba(0, 0, 0, .35);
   --theme-fill: rgba(0, 0, 0, .06);
-  --theme-quiet: rgba(0, 0, 0, .55);
-  /* Three tokens, one face. The roles stay named so markup does not have to
-     change, but the voices have been collapsed: hierarchy is now carried by
-     size, case and colour alone. */
+  /* One token, one face. --font-serif and --font-mono aliased to this until
+     2026-09-04; they were the last trace of the two-family system and made
+     nine rules claim a mono or a serif the site has not shipped in months. */
   --font-display: 'Golos Text', 'Helvetica Neue', Arial, sans-serif;
-  --font-serif: var(--font-display);
-  --font-mono: var(--font-display);
   --ease-spring: cubic-bezier(.22, 1, .36, 1);
 
   /*
@@ -153,7 +150,12 @@
 
   --text-label-size: 1rem;      /* 16px, nav/buttons/dates/footer */
   --text-label-leading: 1.1;
-  --text-label-tracking: normal;
+  /* The one small step that is always uppercase, and the only one that gets
+     positive tracking. Caps carry no ascenders or descenders, so they close up
+     on each other at a value that suits lowercase. The reading and caption
+     steps stay at `normal` — they run in sentence case, where the letters need
+     the air rather than the separation. */
+  --text-label-tracking: .02em;
 }
 
 /*
@@ -172,7 +174,6 @@
   --theme-muted: rgba(255, 255, 255, .55);   /* 5.06:1 */
   --theme-hairline: rgba(255, 255, 255, .30);
   --theme-fill: rgba(255, 255, 255, .05);
-  --theme-quiet: rgba(255, 255, 255, .55);
   color-scheme: dark;
 }
 
@@ -191,7 +192,6 @@
   --theme-muted: var(--c-black);
   --theme-hairline: rgba(0, 0, 0, .35);
   --theme-fill: rgba(0, 0, 0, .06);
-  --theme-quiet: rgba(0, 0, 0, .55);
 }
 
 /* Case pages put screens first, so they get the black ground the reel sits
@@ -203,7 +203,6 @@
   --theme-muted: rgba(255, 255, 255, .50);   /* 5.28:1 */
   --theme-hairline: rgba(255, 255, 255, .30);
   --theme-fill: rgba(255, 255, 255, .05);
-  --theme-quiet: rgba(255, 255, 255, .55);
   color-scheme: dark;
 }
 
@@ -218,9 +217,15 @@
 /* Jumping to a section drops the reader somewhere with no sense of how far they
    moved; the scroll carries that. Motion answering a click, which is the only
    kind this system allows. Declared under no-preference rather than overridden
-   later, so a reduced-motion setting never has to undo it. */
+   later, so a reduced-motion setting never has to undo it.
+
+   Scoped to the case sections rather than set on `html`. On the root it also
+   animated focus-driven scrolling: tabbing to a zoom button 1600px down the
+   page glided there over the same curve, and for the length of the glide the
+   focus ring was nowhere on screen. Anchors keep the motion; focus gets the
+   instant jump a keyboard user needs. */
 @media (prefers-reduced-motion: no-preference) {
-  html { scroll-behavior: smooth; }
+  .case { scroll-behavior: smooth; }
 }
 
 html, body {
@@ -228,7 +233,7 @@ html, body {
   padding: 0;
   background: var(--theme-bg);
   color: var(--theme-text);
-  font-family: var(--font-mono);
+  font-family: var(--font-display);
   -webkit-font-smoothing: antialiased;
   font-optical-sizing: auto;
 }
@@ -289,7 +294,7 @@ a { color: inherit; text-decoration: none; }
 @keyframes page-in { to { opacity: 1; transform: none; } }
 
 .mono {
-  font-family: var(--font-mono);
+  font-family: var(--font-display);
   font-size: var(--text-label-size);
   font-weight: 400;
   letter-spacing: var(--text-label-tracking);
@@ -298,7 +303,16 @@ a { color: inherit; text-decoration: none; }
 }
 
 .link-hover { transition: color .25s var(--ease-spring); }
-.link-hover:hover, .link-hover:focus-visible { color: var(--theme-accent); }
+/* Hover is gated on a device that actually has a pointer. Ungated, a tap on a
+   touch screen leaves the :hover state latched — the card stays lifted and its
+   title stays accent-coloured until something else is tapped, which reads as
+   selection rather than as a finished tap. focus-visible is deliberately left
+   outside every gate: a keyboard user on a touch laptop still needs the ring
+   and the colour. */
+.link-hover:focus-visible { color: var(--theme-accent); }
+@media (hover: hover) {
+  .link-hover:hover { color: var(--theme-accent); }
+}
 /* Colour alone can't carry focus — it reads identically to hover, and a
    keyboard user has no way to tell where they are. One ring, everywhere. */
 .link-hover:focus-visible {
@@ -325,6 +339,29 @@ a { color: inherit; text-decoration: none; }
   border: 0;
 }
 
+/* The first focusable element on every page. Four chrome stops repeat ahead of
+   the content on all fourteen routes, and a case page adds up to nine section
+   tabs on top of them. Off-screen until focused, so it costs the layout
+   nothing and the keyboard everything. */
+.skip-link {
+  /* fixed, not absolute: .shell is not a positioned ancestor, so an absolute
+     link would anchor to the page and ride the scroll off the top. */
+  position: fixed;
+  left: 16px;
+  top: -100px;
+  z-index: 100;
+  padding: 8px 12px;
+  background: var(--theme-bg);
+  color: var(--theme-text);
+  outline: 2px solid var(--theme-accent);
+  outline-offset: 0;
+  transition: top .15s var(--ease-spring);
+}
+.skip-link:focus-visible { top: 16px; }
+@media (prefers-reduced-motion: reduce) {
+  .skip-link { transition: none; }
+}
+
 /* ---------- header (projects/about) ---------- */
 
 .name-middle {
@@ -348,7 +385,7 @@ a { color: inherit; text-decoration: none; }
   display: block;
 }
 .tagline {
-  font-family: var(--font-mono);
+  font-family: var(--font-display);
   font-size: var(--text-body-size);
   font-weight: 400;
   letter-spacing: var(--text-body-tracking);
@@ -361,10 +398,6 @@ a { color: inherit; text-decoration: none; }
 }
 @media (max-width: 700px) {
   .tagline { margin-left: 0; white-space: normal; width: 100%; order: 3; margin-top: 8px; }
-}
-
-
-@media (max-width: 700px) {
 }
 
 /* ---------- PROJECTS INDEX ---------- */
@@ -451,7 +484,7 @@ a { color: inherit; text-decoration: none; }
    −0.015em on the heading step was cut for 46px, and at 16px it crowds. */
 .index-title {
   text-wrap: balance;
-  font-family: var(--font-serif);
+  font-family: var(--font-display);
   font-weight: 700;
   font-size: var(--text-caption-size);
   letter-spacing: normal;
@@ -464,26 +497,35 @@ a { color: inherit; text-decoration: none; }
    collides — ascenders meet descenders. The 62ch cap is gone: the column is
    459px wide, so it never bound anything. */
 .index-desc {
-  font-family: var(--font-mono);
+  font-family: var(--font-display);
   font-size: var(--text-caption-size);
   letter-spacing: var(--text-caption-tracking);
   line-height: 1.4;
   color: var(--theme-muted);
 }
-.index-item:hover { transform: translateY(-4px); }
+@media (hover: hover) {
+  .index-item:hover { transform: translateY(-4px); }
+}
 /* Feedback on press, not on release — and faster than the hover lift, which
    at .3s would make the card feel like it answers late. Touch has no hover
    at all, so without this the card is silent until the page changes. */
 .index-item:active { transform: scale(.99); transition-duration: .1s; }
-.index-item:hover .index-title,
 .index-item:focus-visible .index-title { color: var(--theme-accent); }
+@media (hover: hover) {
+  .index-item:hover .index-title { color: var(--theme-accent); }
+}
 .index-item:focus-visible { outline: 2px solid var(--theme-accent); outline-offset: 8px; }
 /* Spans the row. In a project cell it read as a fourth, unfinished case. */
+/* 1.4, not the 1.1 it inherits from .mono. Measured: this note wraps to three
+   lines at 1440, four at 768 and five at 360, and the system's own rule is
+   that anything past three lines gets reading leading. The chrome step's 1.1
+   is for a label on one line. */
 .index-note {
   grid-column: 1 / -1;
   margin: 0;
   padding-top: 28px;
   border-top: 1px solid var(--theme-hairline);
+  line-height: 1.4;
   color: var(--theme-muted);
 }
 @media (prefers-reduced-motion: reduce) {
@@ -510,7 +552,7 @@ a { color: inherit; text-decoration: none; }
    Now that --theme-muted is a real step down it can just use it. */
 .case-category { color: var(--theme-muted); }
 .case-h {
-  font-family: var(--font-serif);
+  font-family: var(--font-display);
   font-weight: 700;
   font-size: var(--text-heading-size);
   letter-spacing: var(--text-heading-tracking);
@@ -528,14 +570,13 @@ a { color: inherit; text-decoration: none; }
    the face's own box overflowed the line box by 6.8px. A case study exists to
    be read, so the reading step gets reading leading. */
 .case-prose {
-  font-family: var(--font-mono);
+  font-family: var(--font-display);
   font-size: var(--text-body-size);
   font-weight: 400;
   letter-spacing: var(--text-body-tracking);
   line-height: 1.4;
   color: var(--theme-text);
   margin: 0;
-  max-width: 68ch;
 }
 
 .case-meta {
@@ -563,19 +604,25 @@ a { color: inherit; text-decoration: none; }
   /* Same hairline as the index previews — the same object, larger. */
   border: 1px solid var(--theme-hairline);
 }
+/* 1.4, not the caption step's 1.0. A caption naming a design decision is a
+   sentence, not a label: these run to two lines at 1440 and three at 360,
+   where 1.0 puts one line's descenders into the next line's ascenders. */
 .case-caption {
-  font-family: var(--font-mono);
+  font-family: var(--font-display);
   font-size: var(--text-caption-size);
   letter-spacing: var(--text-caption-tracking);
-  line-height: var(--text-caption-leading);
+  line-height: 1.4;
   color: var(--theme-muted);
   margin: 0;
   max-width: 62ch;
 }
 
+/* Same reason as .index-note — three to four lines of honesty note, not a
+   one-line label. */
 .case-note {
   padding-top: 24px;
   border-top: 1px solid var(--theme-hairline);
+  line-height: 1.4;
   color: var(--theme-muted);
 }
 
@@ -645,7 +692,9 @@ a { color: inherit; text-decoration: none; }
   cursor: pointer;
   transition: border-color .2s var(--ease-spring);
 }
-.lightbox-close:hover { border-color: var(--c-white); }
+@media (hover: hover) {
+  .lightbox-close:hover { border-color: var(--c-white); }
+}
 .lightbox-close:focus-visible { outline: 2px solid var(--theme-accent); outline-offset: 3px; }
 .lightbox-close svg { width: 14px; height: 14px; }
 
@@ -696,7 +745,9 @@ a { color: inherit; text-decoration: none; }
   white-space: nowrap;
   transition: color .25s var(--ease-spring);
 }
-.case-toc a:hover { color: var(--theme-text); }
+@media (hover: hover) {
+  .case-toc a:hover { color: var(--theme-text); }
+}
 .case-toc a[aria-current="true"] { color: var(--theme-text); }
 /* A 2px rust underline, the same weight the system uses for any active mark. */
 .case-toc a[aria-current="true"]::after {
@@ -728,7 +779,7 @@ a { color: inherit; text-decoration: none; }
 /* Clears the sticky tab bar when an anchor jumps here. */
 .case-section[id] { scroll-margin-top: 72px; }
 .case-sh {
-  font-family: var(--font-serif);
+  font-family: var(--font-display);
   font-weight: 700;
   font-size: var(--text-subheading-size);
   letter-spacing: var(--text-subheading-tracking);
@@ -741,7 +792,7 @@ a { color: inherit; text-decoration: none; }
 .case-pairs { display: flex; flex-direction: column; gap: 24px; margin: 0; }
 .case-pairs div { display: flex; flex-direction: column; gap: 6px; }
 .case-pairs dt {
-  font-family: var(--font-mono);
+  font-family: var(--font-display);
   font-size: var(--text-body-size);
   font-weight: 400;
   letter-spacing: var(--text-body-tracking);
@@ -750,7 +801,7 @@ a { color: inherit; text-decoration: none; }
 }
 .case-pairs dd {
   margin: 0;
-  font-family: var(--font-mono);
+  font-family: var(--font-display);
   font-size: var(--text-caption-size);
   letter-spacing: var(--text-caption-tracking);
   line-height: 1.7;
@@ -760,7 +811,7 @@ a { color: inherit; text-decoration: none; }
 .case-list {
   margin: 0;
   padding-left: 1.1em;
-  font-family: var(--font-mono);
+  font-family: var(--font-display);
   font-size: var(--text-caption-size);
   letter-spacing: var(--text-caption-tracking);
   line-height: 1.9;
@@ -768,8 +819,6 @@ a { color: inherit; text-decoration: none; }
   max-width: 68ch;
 }
 .case-list li::marker { color: var(--theme-accent); }
-
-.about-list { display: flex; flex-direction: column; gap: 20px; }
 
 @media (prefers-reduced-motion: reduce) {
   .shell > .site-bar,
@@ -802,6 +851,19 @@ a { color: inherit; text-decoration: none; }
   flex-wrap: wrap;
   gap: 8px 16px;
 }
+/* The current page carried aria-current and nothing visible, on the argument
+   that the ground colour answers the question. It does not answer it inside
+   the nav — and the language switch two inches away marks its current item,
+   so the bar was making opposite decisions about the same thing. This is the
+   section tabs' mark, not a new one: a 2px accent rule under the label. */
+.site-nav a[aria-current="page"] { position: relative; }
+.site-nav a[aria-current="page"]::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: -4px;
+  height: 2px;
+  background: var(--theme-accent);
+}
 /* margin-inline-start:auto rather than justify-content alone: once the bar
    wraps, a lone item on the second line would otherwise fall to the leading
    edge and stop reading as the opposite corner of the same bar. */
@@ -826,8 +888,10 @@ a { color: inherit; text-decoration: none; }
   text-decoration-thickness: from-font;
   text-underline-offset: 2px;
 }
-.lang-switch a:hover,
 .lang-switch a:focus-visible { color: var(--theme-accent); }
+@media (hover: hover) {
+  .lang-switch a:hover { color: var(--theme-accent); }
+}
 
 /* ---------- about: one line, held at the reference's height ---------- */
 /* 40.3vh is where the line sits in the mock (322.5 of 800). The nav above it
@@ -879,11 +943,22 @@ a { color: inherit; text-decoration: none; }
   font-size: clamp(1.75rem, 2.8vw, 2.5rem);
   line-height: 1.05;
   letter-spacing: -.01em;
+  /* The caps live here, not in the markup. The name was typed VLADISLAV
+     SAPELIN on all fourteen pages, which some screen readers spell out letter
+     by letter — and it is the one string on the site that has to be heard
+     correctly. */
+  text-transform: uppercase;
   color: var(--theme-text);
 }
 .identity-contacts {
   display: flex;
   flex-direction: column;
+  /* 8px, not 0. The rows sat 17.6px apart centre to centre, under the 24px
+     WCAG 2.5.8 asks between adjacent targets when the targets themselves are
+     smaller than that. The nav clears it on width (81px between centres) and
+     the language switch on its own gap; this stack was the one place that did
+     not. Measured: 6px gets to 23.6 and still fails, 8px to 25.6. */
+  gap: 8px;
   margin: 8px 0 0;
 }
 .identity-contacts div { display: flex; gap: 0; }
@@ -891,6 +966,19 @@ a { color: inherit; text-decoration: none; }
    column rather than trailing their labels at ragged offsets. */
 .identity-contacts dt { width: 92px; flex: none; color: var(--theme-text); }
 .identity-contacts dd { margin: 0; color: var(--theme-text); }
+/* The value is a link and the label is not, and until 2026-09-04 nothing on
+   screen said so: same size, same weight, same colour, no underline, no
+   background. Contacting the author is what this page is for, and the only
+   way to find the three links was to sweep the pointer over them. Underlined
+   the way .lang-switch already solves the same problem — recession and
+   affordance carried by shape, because the about ground has no tone left to
+   spend on either. */
+.identity-contacts dd a {
+  text-decoration: underline;
+  text-underline-position: from-font;
+  text-decoration-thickness: from-font;
+  text-underline-offset: 2px;
+}
 
 /* ---------- projects: staggered plates ---------- */
 /* Cards sit at the top of their row instead of stretching to the tallest —

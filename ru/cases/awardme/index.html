@@ -22,9 +22,10 @@
 </head>
 <body>
 <div class="shell" id="view-case">
+  <a class="skip-link" href="#main">Перейти к содержимому</a>
   <h1 class="sr-only">AwardMe — Vladislav Sapelin</h1>
   <div class="site-bar mono">
-    <nav class="site-nav" aria-label="Sections">
+    <nav class="site-nav" aria-label="Разделы сайта">
       <a href="../../" class="link-hover">Главная</a>
       <a href="../../projects/" class="link-hover">Проекты</a>
       <a href="../../about/" class="link-hover">О&nbsp;себе</a>
@@ -35,10 +36,10 @@
     </div>
   </div>
 
-  <main class="case">
+  <main id="main" tabindex="-1" class="case">
     <div class="case-lede">
       <p class="case-lang mono" lang="ru">Текст кейса пока на&nbsp;английском. <a class="link-hover" href="../../../cases/awardme/" hreflang="en">Открыть английскую версию</a></p>
-      <div class="case-category mono">RECOGNITION PLATFORM / PRODUCT</div>
+      <div class="case-category mono">Платформа признания / продукт</div>
       <h2 class="case-h">AwardMe</h2>
       <p class="case-prose" lang="en">A corporate recognition platform built at Cloud.ru. Organisations define skill badges, issue them to employees, and publish public badge pages, so a credential earned inside the company still means something to someone outside it. Badges are issued to the Open Badges standard, which is what makes that possible: each one carries embedded metadata naming its issuer, its criteria, the evidence and the date, and can be verified by anyone. Without that metadata a badge is only an internal sticker.</p>
     </div>
@@ -46,17 +47,17 @@
     <dl class="case-meta mono">
       <div><dt>Роль</dt><dd>Продуктовый дизайнер</dd></div>
       <div><dt>Компания</dt><dd>Cloud.ru</dd></div>
-      <div><dt>Scope</dt><dd>36 pages · 489 frames</dd></div>
-      <div><dt>Year</dt><dd>2025</dd></div>
+      <div><dt>Объём</dt><dd>36 страниц · 489 фреймов</dd></div>
+      <div><dt>Год</dt><dd>2025</dd></div>
     </dl>
 
-    <nav class="case-toc mono" aria-label="Product areas">
-      <a href="#dashboard" class="link-hover">Dashboard</a>
+    <nav class="case-toc mono" aria-label="Разделы кейса">
+      <a href="#dashboard" class="link-hover">Главный экран</a>
       <a href="#badge" class="link-hover">Страница бейджа</a>
-      <a href="#creation" class="link-hover">Creation</a>
-      <a href="#organisation" class="link-hover">Organisation</a>
-      <a href="#admin" class="link-hover">Admin</a>
-      <a href="#profile" class="link-hover">Profile</a>
+      <a href="#creation" class="link-hover">Создание</a>
+      <a href="#organisation" class="link-hover">Организация</a>
+      <a href="#admin" class="link-hover">Админка</a>
+      <a href="#profile" class="link-hover">Профиль</a>
     </nav>
 
     <section class="case-section" id="dashboard">
@@ -65,6 +66,7 @@
       <p class="case-prose" lang="en">Recommendations run on declared interests and not on activity, which is why the empty interests tile reads as an invitation instead of a dead end. Below it, skills in high demand and the organisation's other badges give a next step to someone who has just arrived and earned nothing yet.</p>
       <figure class="case-shot">
         <img src="../../../assets/cases/awardme-dash-900.jpg"
+             lang="en"
              srcset="../../../assets/cases/awardme-dash-900.jpg 900w, ../../../assets/cases/awardme-dash-1800.jpg 1800w"
              sizes="(max-width: 840px) 100vw, 800px"
              alt="AwardMe welcome dashboard: a greeting, the most recently earned badge in a large tile with share and edit actions, quick-entry tiles for profile, organisation, interests and settings, and carousels of recommended skills and badges."
@@ -79,6 +81,7 @@
       <p class="case-prose" lang="en">Criteria are listed as discrete steps with their own icons and not as a paragraph, so the requirements can actually be checked. The metadata strip (employees only, free, no expiry, medium difficulty) sits directly under the description, where it qualifies the claim before anyone scrolls.</p>
       <figure class="case-shot">
         <img src="../../../assets/cases/awardme-badge-900.jpg"
+             lang="en"
              srcset="../../../assets/cases/awardme-badge-900.jpg 900w, ../../../assets/cases/awardme-badge-1440.jpg 1440w"
              sizes="(max-width: 840px) 100vw, 800px"
              alt="AwardMe public badge page showing the badge artwork, its issuing organisation, description, related skills and the conditions for earning it."
@@ -93,6 +96,7 @@
       <p class="case-prose" lang="en">Character counters are visible from the first keystroke instead of appearing at the limit, and preview is available before the final step, so an author can check the artefact without committing to it.</p>
       <figure class="case-shot">
         <img src="../../../assets/cases/awardme-create-900.jpg"
+             lang="en"
              srcset="../../../assets/cases/awardme-create-900.jpg 900w, ../../../assets/cases/awardme-create-1440.jpg 1440w"
              sizes="(max-width: 840px) 100vw, 800px"
              alt="AwardMe badge creation form, step one of three, with visibility options described in full sentences, name and description fields with character counters, and an image upload."
@@ -107,6 +111,7 @@
       <p class="case-prose" lang="en">The organisation's own description sits above the tabs. For a visitor who arrived from a badge link, the company is the context that makes the credential legible.</p>
       <figure class="case-shot">
         <img src="../../../assets/cases/awardme-company-900.jpg"
+             lang="en"
              srcset="../../../assets/cases/awardme-company-900.jpg 900w, ../../../assets/cases/awardme-company-1440.jpg 1440w"
              sizes="(max-width: 840px) 100vw, 800px"
              alt="AwardMe organisation page for Cloud.ru with tabs for badges and collections, search, sorting and a paginated grid of badges."
@@ -121,6 +126,7 @@
       <p class="case-prose" lang="en">The pinned block carries an explicit budget, six of ten. Without a cap the featured list turns into an archive within a quarter. Under it, the activity feed records who did what and when, because administration in a shared workspace has to stay attributable, and every entry names its author.</p>
       <figure class="case-shot">
         <img src="../../../assets/cases/awardme-admin-900.jpg"
+             lang="en"
              srcset="../../../assets/cases/awardme-admin-900.jpg 900w, ../../../assets/cases/awardme-admin-1800.jpg 1800w"
              sizes="(max-width: 840px) 100vw, 800px"
              alt="AwardMe administration view with a left rail for organisation, badges, collections, participants and integrations, a pinned block showing six of ten slots used, and an attributed activity feed."
@@ -135,6 +141,7 @@
       <p class="case-prose" lang="en">Privacy is set per badge, not per profile. The lock and hidden-eye markers let someone publish selectively, which is the difference between a profile people maintain and one they abandon after their first internal award. Outbound links to Telegram, a personal site, HeadHunter and LinkedIn treat the profile as something that points outward rather than a closed internal record.</p>
       <figure class="case-shot">
         <img src="../../../assets/cases/awardme-profile-900.jpg"
+             lang="en"
              srcset="../../../assets/cases/awardme-profile-900.jpg 900w, ../../../assets/cases/awardme-profile-1800.jpg 1800w"
              sizes="(max-width: 840px) 100vw, 800px"
              alt="AwardMe user profile: avatar, name, role, biography, join date and location, outbound social links, and a grid of earned badges with issuer, date, a new marker and per-badge privacy icons."
@@ -148,11 +155,11 @@
 
   <footer class="identity">
     <div class="identity-role mono">Продуктовый дизайнер</div>
-    <div class="identity-name">VLADISLAV SAPELIN</div>
+    <div class="identity-name">Vladislav Sapelin</div>
     <dl class="identity-contacts mono">
       <div>
         <dt>Telegram</dt>
-        <dd><a class="link-hover" href="https://t.me/lost_endeavor" target="_blank" rel="noopener" aria-label="Telegram @lost_endeavor, opens in a new tab">@lost_endeavor</a></dd>
+        <dd><a class="link-hover" href="https://t.me/lost_endeavor" target="_blank" rel="noopener" aria-label="Telegram @lost_endeavor, откроется в новой вкладке">@lost_endeavor</a></dd>
       </div>
       <div>
         <dt>Почта</dt>
@@ -160,7 +167,7 @@
       </div>
       <div>
         <dt>HH</dt>
-        <dd><a class="link-hover" href="https://hh.ru/resume/724d9d0aff0cb8b9020039ed1f536366475148?customDomain=1&overRideDomainAreaId=1" target="_blank" rel="noopener" aria-label="Resume on HeadHunter, opens in a new tab">Резюме</a></dd>
+        <dd><a class="link-hover" href="https://hh.ru/resume/724d9d0aff0cb8b9020039ed1f536366475148?customDomain=1&overRideDomainAreaId=1" target="_blank" rel="noopener" aria-label="Резюме на HeadHunter, откроется в новой вкладке">Резюме</a></dd>
       </div>
     </dl>
   </footer>
