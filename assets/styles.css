@@ -608,20 +608,8 @@ html.vt .shell > footer {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: grayscale(1);
+  /* No filter: the file is already two-tone. */
   mix-blend-mode: screen;
-}
-.plate-dots {
-  position: absolute;
-  inset: 0;
-  background-image: radial-gradient(#2b0044 38%, transparent 39%);
-  /* A percentage, not a pixel pitch: the plate ranges 180px to 320px across
-     the clamp, and a fixed 9px screen that reads as print at 320 reads as
-     rubble at 180. 3.2% holds roughly 31 dots across at every size, so the
-     screen looks like one screen rather than three. */
-  background-size: 3.2% 3.2%;
-  mix-blend-mode: multiply;
-  pointer-events: none;
 }
 .plate-tint {
   position: absolute;
@@ -682,7 +670,7 @@ html.vt .shell > footer {
 @media (prefers-reduced-motion: reduce) {
   /* Never plays. The poster frame is already the composition. */
   .plate-media { display: none; }
-  .plate { background-image: url(portrait-poster.jpg); background-size: cover; }
+  .plate { background-image: url(portrait-poster.png); background-size: cover; }
   /* Nothing to pause when nothing plays. */
   .plate-pause { display: none !important; }
 }
