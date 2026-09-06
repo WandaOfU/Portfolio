@@ -746,135 +746,113 @@ html.vt .name-middle .paren,
 html.vt .tagline .line { animation: none; opacity: 1; transform: none; }
 
 /* ---------- PROJECTS INDEX ---------- */
-/* The home page teases three cases in a row; this page is the full index, so
-   each entry gets a wide screen and a line saying what the project is. Two
-   pages showing identical cards would give the second one nothing to do. */
-/* Three across, full bleed. Row gap is five times the column gap (80/16):
-   entries sit shoulder to shoulder but rows stay unmistakably separate, so
-   the eye groups horizontally without needing a rule between them. */
+/* A contents page, not a grid. Four projects never filled three columns — that
+   was a row of three and a stranded fourth — and at list scale the titles do
+   the work the thumbnails were doing badly at a third of the screen.
+
+   The plate is not duplicated for the two readings. One image per project sits
+   inside its row; on a wide pointer screen every plate is lifted into the same
+   reserved column and only the pointed-at one is opaque. No second copy, no
+   script: `:hover` and `:focus-within` on the row are the whole mechanism, so
+   it answers a keyboard exactly as it answers a mouse. */
 .index {
+  position: relative;
   width: 100%;
   max-width: none;
   margin: 0;
   align-self: stretch;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 80px 16px;
-}
-@media (max-width: 900px) {
-  .index { grid-template-columns: repeat(2, 1fr); gap: 56px 16px; }
-}
-@media (max-width: 620px) {
-  .index { grid-template-columns: 1fr; gap: 48px; }
+  display: flex;
+  flex-direction: column;
 }
 .index-item {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  transition: transform .3s var(--ease-spring);
+  padding: 22px 0;
+  border-top: 1px solid var(--theme-hairline);
+  transition: color .25s var(--ease-spring);
 }
-/* Four surfaces rather than one hero: an index entry has to show that the
-   product has range, and a single screen cannot. */
-/* One plate per entry. A 2x2 of thumbnails inside a third-of-the-screen cell
-   puts 24 screenshots on the page at ~110px each — a texture, not evidence.
-   The remaining three stay in the markup (they are decorative, alt="") and
-   come back at the single-column width, where a cell is wide enough to carry
-   them. */
-.index-shots {
-  display: block;
-  margin-bottom: 4px;
+.index-label {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
 }
-/* `> *` rather than `img`: app.js wraps each plate in a .shot, so the child
-   that gets shown or hidden is the wrapper when script has run and the image
-   itself when it has not. Both paths have to hit the same selector.
-   Visibility is owned here and nowhere else — `.shot` deliberately declares no
-   `display`, because at equal specificity it is written later in the file and
-   would win, which is exactly how all four plates once came back at once. */
+.index-num {
+  flex: none;
+  font-family: var(--font-display);
+  font-size: var(--text-caption-size);
+  line-height: 1;
+  letter-spacing: .02em;
+  color: var(--theme-muted);
+  transition: color .25s var(--ease-spring);
+}
+/* The title carries the row now, so it takes the heading step rather than the
+   caption one — and it is still the element the route transition morphs into
+   the case heading, so the name stays. */
+.index-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--text-heading-size);
+  line-height: 1;
+  letter-spacing: var(--text-heading-tracking);
+  color: var(--theme-text);
+  text-wrap: balance;
+  transition: color .25s var(--ease-spring);
+}
+.index-cat { color: var(--theme-muted); text-wrap: pretty; }
+/* `> *` rather than `img`: app.js wraps the plate in a .shot, so the child that
+   has to be a block is the wrapper when script has run and the image itself
+   when it has not. Deleting this with the grid left .shot inline, which meant
+   an aspect-ratio on a 2px-wide box and a preview that never appeared. */
 .index-shots > * { display: block; }
-.index-shots > *:nth-child(n+2) { display: none; }
-/* Four screens in a 350px column would be 169px each — a coloured smudge that
-   proves nothing. One column, and only the first two: the index exists to show
-   range and get a decision, and the case study is where detail belongs.
-   The images are decorative (alt=""), so hiding two costs nothing semantically. */
-@media (max-width: 620px) {
-  /* Single column here, so a cell is the full width of the screen and can
-     carry the pair back. Four would run the entry past two screens. */
-  .index-shots { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .index-shots > *:nth-child(-n+2) { display: block; }
-  .index-shots > *:nth-child(n+3) { display: none; }
-}
 .index-item img {
   width: 100%;
   height: auto;
-  /* Portrait, not landscape. A tall crop reads as a catalogue plate rather
-     than a screenshot, and three of them across fill the row without any
-     one of them dominating. */
-  aspect-ratio: 3 / 4;
+  aspect-ratio: 4 / 3;
   object-fit: cover;
-  /* Left, not centre: a portrait crop of a landscape screenshot loses both
-     sides, and everything that identifies the screen — logo, nav, headline —
-     lives at its left edge. */
   object-position: top left;
   border-radius: 0;
   background-color: var(--theme-fill);
   display: block;
-  /* Product screens are near-white and bleed into the paper ground without an
-     edge. The hairline is the system's existing 8%-ink rule, so the panel
-     gains a boundary without gaining a new border weight. */
   border: 1px solid var(--theme-hairline);
 }
-.index-cat { color: var(--theme-muted); }
-/* Caption size, matching the number beside it: the label is one line of text,
-   not a heading with a figure attached. Tracking goes back to normal — the
-   −0.015em on the heading step was cut for 46px, and at 16px it crowds. */
-.index-title {
-  text-wrap: balance;
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: var(--text-caption-size);
-  letter-spacing: normal;
-  line-height: 1.1;
-  color: var(--theme-text);
-  transition: color .25s var(--ease-spring);
-}
-/* 1.4, not the system's 1.0: that figure is for the 30px reading block, where
-   a paragraph is meant to read as a solid mass. At 16px across three lines it
-   collides — ascenders meet descenders. The 62ch cap is gone: the column is
-   459px wide, so it never bound anything. */
-.index-desc {
-  font-family: var(--font-display);
-  font-size: var(--text-caption-size);
-  letter-spacing: var(--text-caption-tracking);
-  line-height: 1.4;
-  color: var(--theme-muted);
-}
 @media (hover: hover) {
-  .index-item:hover { transform: translateY(-4px); }
+  .index-item:hover .index-title,
+  .index-item:hover .index-num { color: var(--theme-accent); }
 }
-/* Feedback on press, not on release — and faster than the hover lift, which
-   at .3s would make the card feel like it answers late. Touch has no hover
-   at all, so without this the card is silent until the page changes. */
-.index-item:active { transform: scale(.99); transition-duration: .1s; }
-.index-item:focus-visible .index-title { color: var(--theme-accent); }
-@media (hover: hover) {
-  .index-item:hover .index-title { color: var(--theme-accent); }
+.index-item:focus-visible { outline: 2px solid var(--theme-accent); outline-offset: 4px; }
+.index-item:focus-visible .index-title,
+.index-item:focus-visible .index-num { color: var(--theme-accent); }
+
+/* Wide, and a real pointer: the plates leave the flow and share one column. */
+@media (hover: hover) and (min-width: 900px) {
+  .index { padding-right: 490px; }
+  .index-item { gap: 8px; padding: 28px 0; }
+  .index-shots {
+    position: absolute;
+    right: 0;
+    top: 84px;
+    width: 440px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .25s var(--ease-spring);
+  }
+  .index-item:hover .index-shots,
+  .index-item:focus-within .index-shots { opacity: 1; }
 }
-.index-item:focus-visible { outline: 2px solid var(--theme-accent); outline-offset: 8px; }
+@media (prefers-reduced-motion: reduce) {
+  .index-item, .index-shots, .index-title, .index-num { transition: none; }
+}
 /* Spans the row. In a project cell it read as a fourth, unfinished case. */
-/* 1.4, not the 1.1 it inherits from .mono. Measured: this note wraps to three
-   lines at 1440, four at 768 and five at 360, and the system's own rule is
-   that anything past three lines gets reading leading. The chrome step's 1.1
-   is for a label on one line. */
+/* 1.4, not the 1.1 it inherits from .mono — this note wraps to three lines at
+   1440 and five at 360. */
 .index-note {
-  grid-column: 1 / -1;
   margin: 0;
   padding-top: 28px;
   border-top: 1px solid var(--theme-hairline);
   line-height: 1.4;
+  text-wrap: pretty;
   color: var(--theme-muted);
-}
-@media (prefers-reduced-motion: reduce) {
-  .index-item, .index-item:hover, .index-item:active { transform: none; transition: none; }
 }
 
 /* ---------- CASE STUDY ---------- */
@@ -1361,18 +1339,12 @@ html.vt .tagline .line { animation: none; opacity: 1; transform: none; }
   text-underline-offset: 2px;
 }
 
-/* ---------- projects: staggered plates ---------- */
-/* Cards sit at the top of their row instead of stretching to the tallest —
-   with per-project ratios the uneven bottoms are the rhythm, not a fault. */
-.index { align-items: start; }
 
-/* Every project gets the proportion its source can carry. A wide screenshot
-   forced into a portrait crop loses the half that identifies it, so the ratio
-   follows the image rather than the grid. */
-.index-item[data-ratio="tall"]     img { aspect-ratio: 3 / 4; }
-.index-item[data-ratio="portrait"] img { aspect-ratio: 4 / 5; }
-.index-item[data-ratio="square"]   img { aspect-ratio: 1 / 1; }
-.index-item[data-ratio="wide"]     img { aspect-ratio: 16 / 9; }
+/* Per-project crops went with the grid on 2026-09-06. One reserved preview
+   column shows one plate at a time, and a ratio that changed per project made
+   it jump size on every hover — the ragged bottoms that were the point in a
+   grid are noise in a single slot. `data-ratio` stays on the markup: it costs
+   nothing and records what each source actually is. */
 
 /* ---------- index plates: skeleton, then the picture ---------- */
 /* The plate is drawn before the picture exists and never changes size when it
@@ -1381,19 +1353,16 @@ html.vt .tagline .line { animation: none; opacity: 1; transform: none; }
    load is the image's own opacity. Nothing reflows, and a slow connection
    shows a composed page of empty plates rather than a column of gaps.
    Without script there is no .shot and the rules on `.index-item img` above
-   still draw the frame, so the no-JS path is the current design unchanged. */
+   still draw the frame, so the no-JS path is the current design unchanged.
+   The wrapper is what the reveal fades, so it inherits the row's opacity. */
 .index-shots .shot {
   /* No `display` here on purpose — see the visibility rules above. */
   position: relative;
   overflow: hidden;
-  aspect-ratio: 3 / 4;
+  aspect-ratio: 4 / 3;
   background-color: var(--theme-fill);
   border: 1px solid var(--theme-hairline);
 }
-.index-item[data-ratio="tall"]     .shot { aspect-ratio: 3 / 4; }
-.index-item[data-ratio="portrait"] .shot { aspect-ratio: 4 / 5; }
-.index-item[data-ratio="square"]   .shot { aspect-ratio: 1 / 1; }
-.index-item[data-ratio="wide"]     .shot { aspect-ratio: 16 / 9; }
 
 /* The frame now belongs to the wrapper, so the image drops its own border and
    wash — stacked, the two hairlines would double to .51 alpha and read as a
@@ -1433,33 +1402,8 @@ html.vt .tagline .line { animation: none; opacity: 1; transform: none; }
   .index-shots .shot img { transition: none; }
 }
 
-/* The middle column drops. One offset across three columns is enough to break
-   the catalogue read — a second one would just look like a broken grid. */
-.index-item:nth-child(3n+2) { margin-top: 80px; }
 
-/* A caption, not a heading. The number belongs to the label under the picture,
-   the way a plate number does on a wall — above the image it sat behind its own
-   rule, which read as a divider between the number and the thing it names. */
-.index-label {
-  display: flex;
-  align-items: baseline;
-  gap: 12px;
-}
-.index-num {
-  flex: none;
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: var(--text-caption-size);
-  line-height: 1;
-  letter-spacing: normal;
-  color: var(--theme-text);
-}
 
-@media (max-width: 900px) {
-  /* Two columns and one: the offset reads as a mistake rather than a rhythm,
-     because there is no third card to establish the pattern against. */
-  .index-item:nth-child(3n+2) { margin-top: 0; }
-}
 
 /* A Russian page whose case narrative is still English says so at the top and
    offers the English page, instead of letting the reader discover it a
