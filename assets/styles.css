@@ -908,16 +908,6 @@ html.vt .tagline .line { animation: none; opacity: 1; transform: none; }
   .index-item:hover .index-label, .index-item:focus-within .index-label,
   .index-item:hover .index-cat, .index-item:focus-within .index-cat { transform: none; }
 }
-/* Spans the row. In a project cell it read as a fourth, unfinished case. */
-/* 1.4, not the 1.1 it inherits from .mono — this note wraps to three lines at
-   1440 and five at 360. */
-.index-note {
-  margin: 0;
-  padding-top: 28px;
-  line-height: 1.4;
-  text-wrap: pretty;
-  color: var(--theme-muted);
-}
 
 /* ---------- CASE STUDY ---------- */
 /* The shell centres its children, so a flex child shrinks to its content's
@@ -1004,8 +994,9 @@ html.vt .tagline .line { animation: none; opacity: 1; transform: none; }
   max-width: 62ch;
 }
 
-/* Same reason as .index-note — three to four lines of honesty note, not a
-   one-line label. */
+/* 1.4, not the chrome step's 1.1: this is three to four lines of honesty note,
+   not a one-line label. (It once shared this reasoning with .index-note, which
+   went with the projects page's in-progress line on 2026-09-07.) */
 .case-note {
   padding-top: 24px;
   border-top: 1px solid var(--theme-hairline);
