@@ -323,6 +323,40 @@
     });
   }
 
+  /* ---------- the portrait plate: the loop, and the way to stop it ---------- */
+  // The clip loops, which is motion nobody asked for — so WCAG 2.2.2 wants a
+  // mechanism to stop it. The button lives in the markup but ships `hidden`:
+  // revealed only here, so a page without script never offers a control that
+  // could not work. Under reduced motion the video never plays and CSS keeps
+  // the button hidden too; there is nothing to stop.
+  const plateVideo = document.querySelector('.plate-media');
+  const platePause = document.querySelector('.plate-pause');
+  if (plateVideo && platePause && !reduceMotion) {
+    const bars = platePause.querySelector('.pause-bars')?.parentNode
+      ? [...platePause.querySelectorAll('.pause-bars')] : [];
+    const tri = platePause.querySelector('.play-tri');
+    const T2 = RU
+      ? { pause: 'Остановить портрет', play: 'Запустить портрет' }
+      : { pause: 'Pause the portrait', play: 'Play the portrait' };
+
+    const paint = () => {
+      const playing = !plateVideo.paused;
+      bars.forEach((b) => { b.hidden = !playing; });
+      if (tri) tri.hidden = playing;
+      platePause.setAttribute('aria-label', playing ? T2.pause : T2.play);
+    };
+
+    platePause.hidden = false;
+    platePause.addEventListener('click', () => {
+      if (plateVideo.paused) plateVideo.play().catch(() => {}); else plateVideo.pause();
+    });
+    // Autoplay can be refused (a data saver, a per-site setting), so the label
+    // follows the element's real state rather than what we asked it to do.
+    plateVideo.addEventListener('play', paint);
+    plateVideo.addEventListener('pause', paint);
+    paint();
+  }
+
   /* ---------- the name: gooey blur that answers the pointer ---------- */
   // The filter is built here rather than declared in CSS on purpose: a CSS
   // `filter: url(#id)` pointing at a filter that does not exist stops the

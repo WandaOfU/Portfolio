@@ -43,12 +43,15 @@
   <main id="main" tabindex="-1" class="name-middle">
     <span class="paren" aria-hidden="true">(</span>
     <div class="plate" role="img" aria-label="Portrait of Vladislav Sapelin">
-      <video class="plate-media" autoplay muted playsinline preload="none"
+      <video class="plate-media" autoplay muted loop playsinline preload="none"
              poster="assets/portrait-poster.jpg" aria-hidden="true">
         <source src="assets/portrait.mp4" type="video/mp4">
       </video>
       <span class="plate-dots" aria-hidden="true"></span>
       <span class="plate-tint" aria-hidden="true"></span>
+      <button class="plate-pause" type="button" aria-label="Pause the portrait" hidden>
+        <svg viewBox="0 0 12 12" aria-hidden="true"><rect class="pause-bars" x="2" y="1.5" width="3" height="9"/><rect class="pause-bars" x="7" y="1.5" width="3" height="9"/><path class="play-tri" d="M3 1.5 L10.5 6 L3 10.5 Z" hidden/></svg>
+      </button>
     </div>
     <span class="paren" aria-hidden="true">)</span>
     <p class="tagline">
