@@ -799,6 +799,10 @@ html.vt .tagline .line { animation: none; opacity: 1; transform: none; }
   text-wrap: balance;
   transition: color .25s var(--ease-spring);
 }
+/* Rules go BETWEEN rows, not around the set. The border above the first row
+   and the one above the closing note were bracketing the list rather than
+   separating anything. */
+.index-item:first-child { border-top: 0; padding-top: 0; }
 .index-cat { color: var(--theme-muted); text-wrap: pretty; }
 /* `> *` rather than `img`: app.js wraps the plate in a .shot, so the child that
    has to be a block is the wrapper when script has run and the image itself
@@ -849,7 +853,6 @@ html.vt .tagline .line { animation: none; opacity: 1; transform: none; }
 .index-note {
   margin: 0;
   padding-top: 28px;
-  border-top: 1px solid var(--theme-hairline);
   line-height: 1.4;
   text-wrap: pretty;
   color: var(--theme-muted);
