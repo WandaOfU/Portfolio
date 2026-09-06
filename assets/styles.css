@@ -804,6 +804,17 @@ html.vt .tagline .line { animation: none; opacity: 1; transform: none; }
    separating anything. */
 .index-item:first-child { border-top: 0; padding-top: 0; }
 .index-cat { color: var(--theme-muted); text-wrap: pretty; }
+/* The description is in the flow by default — that is the touch and no-hover
+   reading, and the scriptless one. Only where a pointer exists does it collapse
+   and become something the row reveals. */
+.index-desc {
+  display: block;
+  font-size: var(--text-caption-size);
+  line-height: 1.4;
+  max-width: 62ch;
+  text-wrap: pretty;
+  color: var(--theme-muted);
+}
 /* `> *` rather than `img`: app.js wraps the plate in a .shot, so the child that
    has to be a block is the wrapper when script has run and the image itself
    when it has not. Deleting this with the grid left .shot inline, which meant
@@ -832,6 +843,57 @@ html.vt .tagline .line { animation: none; opacity: 1; transform: none; }
 @media (hover: hover) and (min-width: 900px) {
   .index { padding-right: 490px; }
   .index-item { gap: 8px; padding: 28px 0; }
+  /* 0fr -> 1fr is the one way to animate to an automatic height without
+     measuring it in script. The negative margin cancels the flex gap the
+     collapsed row would otherwise still pay for, and animates with it so the
+     row grows in one motion rather than jumping 8px first. */
+  .index-desc-wrap {
+    display: grid;
+    grid-template-rows: 0fr;
+    margin-top: -8px;
+    transition: grid-template-rows .34s var(--ease-spring), margin-top .34s var(--ease-spring);
+  }
+  .index-desc { overflow: hidden; opacity: 0; transform: translateY(-5px);
+    transition: opacity .26s var(--ease-spring) .05s, transform .26s var(--ease-spring) .05s; }
+  .index-item:hover .index-desc-wrap,
+  .index-item:focus-within .index-desc-wrap { grid-template-rows: 1fr; margin-top: 0; }
+  .index-item:hover .index-desc,
+  .index-item:focus-within .index-desc { opacity: 1; transform: none; }
+
+  /* The label leads the row into the reveal: a small displacement, the same
+     4px the index cards used to lift by. */
+  .index-label, .index-cat {
+    transition: transform .3s var(--ease-spring);
+  }
+  .index-item:hover .index-label,
+  .index-item:focus-within .index-label { transform: translateX(6px); }
+  .index-item:hover .index-cat,
+  .index-item:focus-within .index-cat { transform: translateX(6px); }
+
+  /* The plate does not fade in, it is uncovered — a wipe from the top edge,
+     with the picture inside settling back from a slight overscale. Two
+     durations on purpose: the wipe leads, the image lands after it. */
+  /* `.index` on the front of both selectors is load-bearing. The plate's own
+     `.index-shots` rule sits later in this block and the skeleton's
+     `.index-shots .shot img` sits later in the file — either would take the
+     transition back and the plate would appear rather than wipe. Winning on
+     specificity means the order of these blocks stops mattering.
+
+     Both clip endpoints are four values in the same unit: `inset(0 0 100% 0)`
+     computes to `inset(0px 0px 100%)` and `inset(0 0 0 0)` to `inset(0px)`,
+     which are different lengths and do not interpolate. */
+  .index .index-shots {
+    clip-path: inset(0% 0% 100% 0%);
+    transition: clip-path .44s var(--ease-spring), opacity .2s var(--ease-spring);
+  }
+  .index .index-shots .shot img {
+    transform: scale(1.05);
+    transition: opacity .45s var(--ease-spring), transform .62s var(--ease-spring);
+  }
+  .index .index-item:hover .index-shots,
+  .index .index-item:focus-within .index-shots { clip-path: inset(0% 0% 0% 0%); }
+  .index .index-item:hover .index-shots .shot img,
+  .index .index-item:focus-within .index-shots .shot img { transform: none; }
   .index-shots {
     position: absolute;
     right: 0;
@@ -845,7 +907,14 @@ html.vt .tagline .line { animation: none; opacity: 1; transform: none; }
   .index-item:focus-within .index-shots { opacity: 1; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .index-item, .index-shots, .index-title, .index-num { transition: none; }
+  .index-item, .index-shots, .index-shots img, .index-title, .index-num,
+  .index-label, .index-cat, .index-desc, .index-desc-wrap { transition: none; }
+  /* The reveal still happens — it is information, not decoration. It simply
+     arrives rather than travels. */
+  .index .index-shots { clip-path: none; }
+  .index .index-shots .shot img { transform: none; }
+  .index-item:hover .index-label, .index-item:focus-within .index-label,
+  .index-item:hover .index-cat, .index-item:focus-within .index-cat { transform: none; }
 }
 /* Spans the row. In a project cell it read as a fourth, unfinished case. */
 /* 1.4, not the 1.1 it inherits from .mono — this note wraps to three lines at
