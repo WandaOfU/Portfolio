@@ -332,17 +332,14 @@
   const plateVideo = document.querySelector('.plate-media');
   const platePause = document.querySelector('.plate-pause');
   if (plateVideo && platePause && !reduceMotion) {
-    const bars = platePause.querySelector('.pause-bars')?.parentNode
-      ? [...platePause.querySelectorAll('.pause-bars')] : [];
-    const tri = platePause.querySelector('.play-tri');
     const T2 = RU
       ? { pause: 'Остановить портрет', play: 'Запустить портрет' }
       : { pause: 'Pause the portrait', play: 'Play the portrait' };
 
     const paint = () => {
       const playing = !plateVideo.paused;
-      bars.forEach((b) => { b.hidden = !playing; });
-      if (tri) tri.hidden = playing;
+      // A class, not `hidden` — see the note in the stylesheet.
+      platePause.classList.toggle('is-paused', !playing);
       platePause.setAttribute('aria-label', playing ? T2.pause : T2.play);
     };
 

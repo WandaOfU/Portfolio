@@ -599,6 +599,9 @@ html.vt .shell > footer {
   background: #2b0044;
   overflow: hidden;
 }
+/* Holds only the media layers, so the button can sit outside it: a control
+   inside role="img" is presentational and invisible to assistive tech. */
+.plate-figure { position: absolute; inset: 0; }
 .plate-media {
   position: absolute;
   inset: 0;
@@ -654,7 +657,16 @@ html.vt .shell > footer {
   cursor: pointer;
   transition: transform .1s var(--ease-spring);
 }
+/* The icon swaps through a class, NOT the `hidden` attribute. `hidden` is an
+   HTML attribute mapped to display:none by the HTML UA stylesheet, and SVG
+   elements are not HTML: setting `.hidden` on an <rect> writes a JS expando
+   and paints nothing differently. Both glyphs were drawn on top of each other
+   and the control never acknowledged a press. */
 .plate-pause svg { width: 14px; height: 14px; fill: currentColor; }
+.plate-pause .play-tri { display: none; }
+.plate-pause .pause-bars { display: inline; }
+.plate-pause.is-paused .play-tri { display: inline; }
+.plate-pause.is-paused .pause-bars { display: none; }
 .plate-pause:focus-visible { outline: 2px solid var(--c-white); outline-offset: -4px; }
 .plate-pause:active { transform: scale(.94); }
 
