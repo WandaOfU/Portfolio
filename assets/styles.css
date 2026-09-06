@@ -615,7 +615,11 @@ html.vt .shell > footer {
   position: absolute;
   inset: 0;
   background-image: radial-gradient(#2b0044 38%, transparent 39%);
-  background-size: 5px 5px;
+  /* A percentage, not a pixel pitch: the plate ranges 180px to 320px across
+     the clamp, and a fixed 9px screen that reads as print at 320 reads as
+     rubble at 180. 3.2% holds roughly 31 dots across at every size, so the
+     screen looks like one screen rather than three. */
+  background-size: 3.2% 3.2%;
   mix-blend-mode: multiply;
   pointer-events: none;
 }
