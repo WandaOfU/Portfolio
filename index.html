@@ -42,10 +42,14 @@
 
   <main id="main" tabindex="-1" class="name-middle">
     <span class="paren" aria-hidden="true">(</span>
-    <img class="photo"
-         src="assets/photo-256.jpg"
-         srcset="assets/photo-128.jpg 1x, assets/photo-256.jpg 2x, assets/photo-384.jpg 3x"
-         alt="Portrait of Vladislav Sapelin" width="128" height="128" decoding="async">
+    <div class="plate" role="img" aria-label="Portrait of Vladislav Sapelin">
+      <video class="plate-media" autoplay muted playsinline preload="none"
+             poster="assets/portrait-poster.jpg" aria-hidden="true">
+        <source src="assets/portrait.mp4" type="video/mp4">
+      </video>
+      <span class="plate-dots" aria-hidden="true"></span>
+      <span class="plate-tint" aria-hidden="true"></span>
+    </div>
     <span class="paren" aria-hidden="true">)</span>
     <p class="tagline">
       <span class="line">I design products</span>

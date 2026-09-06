@@ -99,20 +99,25 @@
      green measures 1.57:1, which is fine there because their accent sits on
      video rather than on the ground itself. Purple clears 8.11:1 and still
      reads as a colour rather than as the black body text. */
-  --theme-bg: var(--c-green);
-  --theme-text: var(--c-black);
-  --theme-accent: var(--c-purple);
+  /* Re-grounded 2026-09-06. The ground and the accent swap jobs — purple was
+     the accent, green was the ground — so nothing new enters the palette.
+     Measured: white text 9.95:1, green accent 8.11:1. */
+  --theme-bg: var(--c-purple);
+  --theme-text: var(--c-white);
+  --theme-accent: var(--c-green);
   /* The secondary tier, and a real step down from --theme-text rather than a
      copy of it. It was the text colour verbatim in all four themes, which
      collapsed captions, categories, meta labels and the section tabs into the
      body voice and made the tab hover a no-op. Alphas are solved per ground
      for the 4.5:1 floor, not chosen by eye: .60 measures 5.42:1 here. */
-  --theme-muted: rgba(0, 0, 0, .60);
-  --theme-hairline: rgba(0, 0, 0, .35);
-  --theme-fill: rgba(0, 0, 0, .06);
-  /* The pointer wash. White at .055 measured on this ground: black text
-     holds 17.22:1 and the purple accent 8.16:1, both far clear of the floor. */
-  --theme-glow: rgba(255, 255, 255, .055);
+  /* .70, not .60: white on this ground needs it. Measured 5.34:1; .60 gives
+     4.22 and fails. */
+  --theme-muted: rgba(255, 255, 255, .70);
+  --theme-hairline: rgba(255, 255, 255, .30);
+  --theme-fill: rgba(255, 255, 255, .05);
+  /* Re-measured for the new ground, not carried over: white at .045 keeps the
+     green accent at 7.62:1. */
+  --theme-glow: rgba(255, 255, 255, .045);
   /* One token, one face. --font-serif and --font-mono aliased to this until
      2026-09-04; they were the last trace of the two-family system and made
      nine rules claim a mono or a serif the site has not shipped in months. */
@@ -565,15 +570,67 @@ html.vt .shell > footer {
 .paren {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: var(--text-paren-size);
+  /* Sized to bracket the plate, which is taller than the square it replaced. */
+  font-size: clamp(9.5rem, 27vw, 24.5rem);
   color: var(--theme-text);
-  line-height: 1;
+  line-height: .78;
 }
-.photo {
-  width: clamp(72px, 9vw, 128px);
-  height: clamp(72px, 9vw, 128px);
+/* The portrait is a printed dot screen in two flat colours of the palette —
+   no photographic depth and no gradient, which is the only image treatment
+   that obeys the flat, no-shadow rule the rest of the system lives by.
+
+   Four layers, and the order is the whole effect: a dark plate; the portrait
+   in grayscale on `screen`, which maps its blacks to the plate; a radial dot
+   grid on `multiply`, which is the screen; and the accent on `multiply`,
+   which tints what survives. `isolation: isolate` keeps all of it off the
+   page ground.
+
+   The dots are CSS, not baked into the video. Measured both: baking the
+   screen into the file costs 863 KB against 246 KB, because a binary dot
+   pattern is the worst case for a DCT codec, not the best. */
+.plate {
+  position: relative;
+  width: clamp(150px, 19vw, 268px);
+  aspect-ratio: 4 / 5;
+  flex: none;
+  isolation: isolate;
+  background: #2b0044;
+  overflow: hidden;
+}
+.plate-media {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  display: block;
+  object-position: 56% 32%;
+  filter: grayscale(1);
+  mix-blend-mode: screen;
+}
+.plate-dots {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(#2b0044 38%, transparent 39%);
+  background-size: 5px 5px;
+  mix-blend-mode: multiply;
+}
+.plate-tint {
+  position: absolute;
+  inset: 0;
+  background: var(--c-green);
+  mix-blend-mode: multiply;
+}
+/* The clip plays once and holds its last frame. It is a ping-pong, so the
+   last frame is the first — it comes to rest exactly where it started.
+   That is what keeps this an entrance rather than perpetual motion: it does
+   not trip WCAG 2.2.2 (no pause control needed for 4.83s), it does not break
+   The Nothing Moves Unbidden Rule, and it costs a phone nothing after the
+   first five seconds. Add `loop` to the element to change that, and add a
+   pause control at the same time. */
+@media (prefers-reduced-motion: reduce) {
+  /* Never plays. The poster frame is already the composition. */
+  .plate-media { display: none; }
+  .plate { background-image: url(portrait-poster.jpg); background-size: cover; background-position: 56% 32%; }
 }
 .tagline {
   font-family: var(--font-display);
