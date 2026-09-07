@@ -972,6 +972,11 @@ html.vt .tagline .line { animation: none; opacity: 1; transform: none; }
 /* figure carries a UA margin of 1em 40px — left alone it insets every
    screenshot 40px and breaks the left spine against the prose beside it. */
 .case-shot { display: flex; flex-direction: column; gap: 14px; margin: 0; }
+/* Every case screen is a <picture> now — a WebP source ahead of the JPEG, which
+   took the folder from 6.33MB to 2.30MB at the same rendered quality. A
+   <picture> is display: inline, so inside the zoom button it sat on a text
+   baseline and left four pixels of ground under the frame. */
+.case-shot picture { display: block; }
 .case-shot img {
   width: 100%;
   height: auto;
@@ -997,12 +1002,87 @@ html.vt .tagline .line { animation: none; opacity: 1; transform: none; }
 /* 1.4, not the chrome step's 1.1: this is three to four lines of honesty note,
    not a one-line label. (It once shared this reasoning with .index-note, which
    went with the projects page's in-progress line on 2026-09-07.) */
+/* And sentence case, against the Chrome step's caps. The Uppercase Chrome Rule
+   was amended on 2026-09-04 to the principle it was defending — "if text is
+   longer than a line and carries an argument, it is sentence case" — but the
+   list of what counts as chrome still named the closing note, written before
+   the amendment. This is the paragraph that says which data on the page is
+   placeholder: it is the argument, it runs to 291 characters in Russian, and
+   set in caps it was the hardest text on a page whose whole job is being read.
+   The leading fix above had already conceded it reads as sentences. */
 .case-note {
   padding-top: 24px;
   border-top: 1px solid var(--theme-hairline);
   line-height: 1.4;
+  text-transform: none;
   color: var(--theme-muted);
 }
+
+/* The way out of a case. The page ended at the honesty note and the identity
+   block, so the only links under ten to twenty-four screens of reading were
+   three off-site contacts — the site bar is not sticky and had scrolled away
+   twenty-three screens earlier on the Cloud.ru page. A reader who finished a
+   case study had no way to reach the next one, on a site whose first principle
+   is that the work is the hero.
+
+   Two labelled rows on the meta grid's own auto-fit, so the foot of a case is
+   built out of a component the page already uses. The label takes the chrome
+   step and the muted tone; the title takes the reading step at 400, one rung
+   below the section headings above it — a way onward, not a new heading. */
+.case-next {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--theme-hairline);
+}
+.case-next-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: var(--theme-text);
+}
+.case-next-label { color: var(--theme-muted); transition: color .25s var(--ease-spring); }
+.case-next-title {
+  font-family: var(--font-display);
+  font-size: var(--text-body-size);
+  font-weight: 400;
+  letter-spacing: var(--text-body-tracking);
+  line-height: var(--text-body-leading);
+  /* The values in the identity block carry an underline for the same reason:
+     on a ground with no tone left to spend, affordance is carried by shape. */
+  text-decoration: underline;
+  text-underline-offset: .18em;
+  text-decoration-thickness: 1px;
+  transition: color .25s var(--ease-spring);
+}
+@media (hover: hover) {
+  .case-next-item:hover .case-next-title,
+  .case-next-item:hover .case-next-label { color: var(--theme-accent); }
+}
+/* The press state the hover gate shuts out, at the .1s the rest of the site
+   presses at. */
+.case-next-item:active .case-next-title,
+.case-next-item:active .case-next-label {
+  color: var(--theme-accent);
+  transition-duration: .1s;
+}
+.case-next-item:focus-visible { outline: 2px solid var(--theme-accent); outline-offset: 4px; }
+@media (prefers-reduced-motion: reduce) {
+  .case-next-title, .case-next-label { transition: none; }
+}
+
+/* A phone capture is not a small desktop capture, and stretching one to the
+   800px column is how a single figure took eight viewport heights. The
+   Cloud.ru mobile awards page is a 194px-wide full-length capture: at column
+   width it rendered 798 x 7404, more than a third of the whole page, and asked
+   194 pixels of source to fill 1596 device ones. Held at a device-plausible
+   width it costs a screen and a half instead of eight, and the frame reads as
+   what it is — a phone, sitting in a column built for desktop captures. Flush
+   left with the ground beside it, because nothing here centres. The overlay is
+   still the full-length read. */
+.case-shot[data-shape="phone"] picture,
+.case-shot[data-shape="phone"] .zoom { max-width: 360px; }
 
 /* A full desktop capture inside an 800px column puts its UI text near 6px.
    Clicking opens the largest render at viewport scale so the interface can
@@ -1038,7 +1118,13 @@ html.vt .tagline .line { animation: none; opacity: 1; transform: none; }
   overscroll-behavior: contain;
 }
 .lightbox img {
-  width: min(1400px, 100%);
+  /* Capped at twice the source's own pixel width, which app.js measures and
+     publishes. A flat 1400px assumed every capture had 1400px to give: opening
+     the 194px-wide mobile awards page produced a 1392 x 12915 render — a 7.2x
+     upscale, fourteen screens of overlay, on the control that exists so the
+     work can be read. Two times is the line where a screenshot still reads as
+     a screenshot rather than as its own compression artefacts. */
+  width: min(var(--shot-max, 1400px), 1400px, 100%);
   height: auto;
   margin: auto;
   /* Same panel radius as the figures it enlarges — this is
@@ -1185,13 +1271,25 @@ html.vt .tagline .line { animation: none; opacity: 1; transform: none; }
     mask-image: linear-gradient(90deg, transparent 0, black 12px, black calc(100% - 12px), transparent 100%);
   }
   .case-toc::-webkit-scrollbar { display: none; }
+  /* 14px, not 8px. The tab measured 33.6px tall — over the 24px WCAG 2.5.8
+     asks, under the 44px a thumb actually wants, and it sits in a row that
+     scrolls sideways, so a low tap scrolls the bar instead of jumping. 14px
+     takes it to 45.6 and the bar has the height to spend. */
+  .case-toc a { padding-top: 14px; padding-bottom: 14px; }
 }
 
 /* Long-form sections. Headings stay English so the structure is navigable at a
    glance; the body keeps the language it was written in. */
 .case-section { display: flex; flex-direction: column; gap: 20px; }
-/* Clears the sticky tab bar when an anchor jumps here. */
-.case-section[id] { scroll-margin-top: 72px; }
+/* Clears the sticky tab bar when an anchor jumps here. The 72px was a constant
+   measured against a one-row bar, and the bar is not always one row: it wraps
+   at reading width and Russian chrome wraps sooner than English, so on the
+   Yandex case and two of the Russian pages it stands 98.2px tall. Measured,
+   clicking a tab there landed the section heading at top:72 under a bar whose
+   bottom edge was at 98.2 — the page's own navigation sliced its heading in
+   half. app.js publishes the measured height; the fallback is the old constant
+   for the frame before the observer runs and for the no-script path. */
+.case-section[id] { scroll-margin-top: calc(var(--toc-h, 62px) + 10px); }
 .case-sh {
   font-family: var(--font-display);
   font-weight: 700;
@@ -1466,3 +1564,57 @@ html.vt .tagline .line { animation: none; opacity: 1; transform: none; }
 /* Opacity dropped: --theme-muted now carries the recession by itself, and
    stacking .75 on top of it put this under the contrast floor. */
 .case-lang { color: var(--theme-muted); }
+
+/* ---------- PRINT ---------- */
+/* Hiring managers save a case study to PDF and circulate it — that is the one
+   way this site travels without a link. Printed against the shipped rules it
+   came out as a black page (or, with backgrounds off, near-invisible grey on
+   white), with the sticky tab bar stamped into the flow and 21,000px of one
+   document. The room-per-route idea belongs to the screen; on paper the job is
+   the reading. */
+@media print {
+  :root, [data-theme="case"] {
+    --theme-bg: #ffffff;
+    --theme-text: #000000;
+    --theme-muted: #555555;
+    --theme-accent: #000000;
+    --theme-hairline: rgba(0, 0, 0, .35);
+    --theme-fill: rgba(0, 0, 0, .04);
+    --theme-glow: transparent;
+  }
+  html, body { background: #fff; color: #000; }
+
+  /* Screen-only affordances: a skip link, in-page tabs, the language switch and
+     the enlarge overlay all navigate something paper does not have. */
+  .skip-link,
+  .case-toc,
+  .lang-switch,
+  .lightbox { display: none !important; }
+
+  /* No measure and no entrance: the sheet is the measure, and the page is
+     already there. */
+  .shell { padding: 0; display: block; }
+  .shell > .site-bar, .shell > main, .shell > footer {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+  .case { max-width: none; gap: 32px; }
+  .case-prose, .case-caption, .case-pairs dd, .case-list { max-width: none; }
+
+  /* A figure and its caption are one object; a section heading never ends a
+     page. Captions carry the argument, so they must not be orphaned. */
+  .case-shot, .case-shot picture, figure { break-inside: avoid; page-break-inside: avoid; }
+  .case-sh, .case-h { break-after: avoid; page-break-after: avoid; }
+  .case-shot img { cursor: auto; }
+  /* Held well under a portrait page so a full-length capture cannot claim
+     sheets on its own. */
+  .case-shot img { max-height: 20cm; object-fit: contain; object-position: top left; }
+
+  /* Contact and case links are the point of the page and a printed underline
+     leads nowhere, so the destination gets written out. Relative in-page hrefs
+     would print as noise, so only absolute ones are expanded. */
+  .identity-contacts a[href^="http"]::after,
+  .case-lang a[href^="http"]::after { content: " (" attr(href) ")"; font-size: .85em; word-break: break-all; }
+  a[href^="mailto"]::after { content: none; }
+}

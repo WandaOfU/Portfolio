@@ -71,6 +71,14 @@
       // picture sharpens rather than appearing.
       const seed = img.currentSrc || img.src;
       const full = largest ? largest[0] : seed;
+      // How wide the overlay is allowed to go. The descriptors are the source's
+      // real pixel widths, so the largest one is how much picture there
+      // actually is; the stylesheet takes the smaller of twice that and its own
+      // 1400px ceiling. Without it the overlay trusted a flat 1400 and blew a
+      // 194px capture up 7.2x into fourteen screens of overlay.
+      const src = largest ? parseInt(largest[1], 10) : img.naturalWidth;
+      if (src > 0) box.style.setProperty('--shot-max', (src * 2) + 'px');
+      else box.style.removeProperty('--shot-max');
       bigImg.src = seed;
       bigImg.alt = img.alt || '';
       if (full !== seed) {
@@ -143,14 +151,26 @@
       btn.className = 'zoom';
       // Leads with the action; the img's own alt still describes the picture.
       btn.setAttribute('aria-label', img.alt ? T.enlargeThis(img.alt) : T.enlarge);
-      img.parentNode.insertBefore(btn, img);
-      btn.appendChild(img);
+      // The <picture>, not the <img> inside it. Every case screen carries a
+      // WebP source ahead of its JPEG now, and lifting the image out of its
+      // <picture> would strand it: the element only picks a source while it is
+      // that <picture>'s child, so the button has to wrap the pair.
+      const node = img.closest('picture') || img;
+      node.parentNode.insertBefore(btn, node);
+      btn.appendChild(node);
       btn.addEventListener('click', () => openFrom(img));
 
       // The wrapper owns the frame, so it also owns the load state — the same
       // three-state machine the index plates run. These are lazily loaded and
       // the reader scrolls onto them, which is exactly when a hard pop shows.
-      const settleShot = (state) => btn.setAttribute('data-state', state);
+      // A failed capture is hidden by CSS, and a hidden picture must not leave
+      // a live control over it: the button kept its tab stop and its "Enlarge:"
+      // name, so a keyboard or screen-reader user could open the overlay onto
+      // a source that was never going to arrive.
+      const settleShot = (state) => {
+        btn.setAttribute('data-state', state);
+        btn.disabled = state === 'failed';
+      };
       if (img.complete) {
         settleShot(img.naturalWidth > 0 ? 'ready' : 'failed');
       } else {
@@ -207,6 +227,20 @@
   /* ---------- case study section tabs ---------- */
   const toc = document.querySelector('.case-toc');
   if (toc) {
+    // How far an anchor has to scroll to clear the sticky bar, published for
+    // `.case-section[id]`'s scroll-margin. It was a 72px constant, measured
+    // against a bar that fits one row — but the bar wraps at reading width and
+    // Russian chrome wraps sooner than English, so on three of the eight case
+    // pages it stands 98.2px tall and every tab click landed the heading 26px
+    // behind it, sliced in half by the bar that put it there.
+    const publishTocHeight = () => {
+      document.documentElement.style.setProperty(
+        '--toc-h', toc.getBoundingClientRect().height + 'px');
+    };
+    publishTocHeight();
+    if ('ResizeObserver' in window) new ResizeObserver(publishTocHeight).observe(toc);
+    else window.addEventListener('resize', publishTocHeight);
+
     const links = [...toc.querySelectorAll('a[href^="#"]')];
     const sections = links
       .map((a) => document.getElementById(a.getAttribute('href').slice(1)))
@@ -276,9 +310,27 @@
     const KEY = 'vt-title';
 
     const claim = (el) => {
-      document.querySelectorAll('.index-title').forEach((t) => { t.style.viewTransitionName = ''; });
+      document.querySelectorAll('.index-title, .case-next-title')
+        .forEach((t) => { t.style.viewTransitionName = ''; });
+      // `.case-h` holds the name from the stylesheet, so on a case page it has
+      // to be told to let go rather than merely not claimed. Two elements
+      // holding it makes the browser skip the morph and say nothing.
+      const h = document.querySelector('.case-h');
+      if (h) h.style.viewTransitionName =
+        el && el.classList.contains('case-next-title') ? 'none' : '';
       if (el) el.style.viewTransitionName = NAME;
     };
+
+    // Leaving one case for the next. The word that travels is the title just
+    // clicked at the foot of the page — it matches the heading arriving on the
+    // other side exactly, which is the whole test for a shared element. The
+    // link back to the index is left alone: it is going to a grid of four, and
+    // the card it should morph into is chosen over there.
+    document.querySelectorAll('.case-next-item').forEach((link) => {
+      const title = link.querySelector('.case-next-title');
+      if (!title || (link.getAttribute('href') || '').includes('/projects/')) return;
+      link.addEventListener('pointerdown', () => claim(title));
+    });
 
     document.querySelectorAll('a.index-item').forEach((card) => {
       // pointerdown, not click: the snapshot is taken as the navigation starts,
