@@ -793,10 +793,10 @@ html.vt .tagline .line { animation: none; opacity: 1; transform: none; }
   align-items: baseline;
   gap: 12px;
 }
-/* The counter sits on the title's own line now — same size, same weight, same
-   tracking — so `(01) Cloud.ru website` reads as one line of type. It recedes
-   by colour alone; at caption size beside a 46px title it read as a label
-   attached to the heading rather than as part of it. */
+/* The counter sits on the title's own line — same size, same weight, same
+   tracking, same colour — so `(01) CLOUD.RU WEBSITE` reads as one continuous
+   line of type. It briefly recessed by tone; at full strength the number is
+   part of the title rather than a label attached to it. */
 .index-num {
   flex: none;
   font-family: var(--font-display);
@@ -804,7 +804,7 @@ html.vt .tagline .line { animation: none; opacity: 1; transform: none; }
   font-size: var(--text-heading-size);
   line-height: 1;
   letter-spacing: var(--text-heading-tracking);
-  color: var(--theme-muted);
+  color: var(--theme-text);
   transition: color .25s var(--ease-spring);
 }
 /* The title carries the row now, so it takes the heading step rather than the
@@ -813,6 +813,7 @@ html.vt .tagline .line { animation: none; opacity: 1; transform: none; }
 .index-title {
   font-family: var(--font-display);
   font-weight: 500;
+  text-transform: uppercase;
   font-size: var(--text-heading-size);
   line-height: 1;
   letter-spacing: var(--text-heading-tracking);
@@ -974,11 +975,12 @@ html.vt .tagline .line { animation: none; opacity: 1; transform: none; }
   font-size: var(--text-heading-size);
   line-height: var(--text-heading-leading);
   letter-spacing: var(--text-heading-tracking);
-  color: var(--theme-muted);
+  color: var(--theme-text);
 }
 .case-h {
   font-family: var(--font-display);
   font-weight: 500;
+  text-transform: uppercase;
   font-size: var(--text-heading-size);
   letter-spacing: var(--text-heading-tracking);
   line-height: var(--text-heading-leading);
@@ -1091,10 +1093,17 @@ html.vt .tagline .line { animation: none; opacity: 1; transform: none; }
   color: var(--theme-text);
 }
 .case-next-label { color: var(--theme-muted); transition: color .25s var(--ease-spring); }
+/* Uppercase here for the same reason as .index-title and .case-h, not as a
+   style choice of its own: this element carries the case-title view-transition
+   name and morphs into the heading on the page it links to. Leave it in mixed
+   case and the browser cross-fades one set of letterforms into a different
+   one. "All projects" comes along with it, which reads fine — it is a nav
+   label, and the chrome around it is uppercase already. */
 .case-next-title {
   font-family: var(--font-display);
   font-size: var(--text-body-size);
   font-weight: 400;
+  text-transform: uppercase;
   letter-spacing: var(--text-body-tracking);
   line-height: var(--text-body-leading);
   /* The values in the identity block carry an underline for the same reason:
