@@ -1088,7 +1088,10 @@ html.vt .tagline .line { animation: none; opacity: 1; transform: none; }
   font-weight: 400;
   text-transform: uppercase;
   letter-spacing: var(--text-body-tracking);
-  line-height: var(--text-body-leading);
+  /* 1.3, not the reading step's 1.0: this is a case title and titles got long
+     enough to wrap here — "Animating UX at Cloud.ru" takes two lines at 30px,
+     where flat leading collides. */
+  line-height: 1.3;
   /* The values in the identity block carry an underline for the same reason:
      on a ground with no tone left to spend, affordance is carried by shape. */
   text-decoration: underline;
@@ -1354,7 +1357,10 @@ html.vt .tagline .line { animation: none; opacity: 1; transform: none; }
   font-size: var(--text-body-size);
   font-weight: 400;
   letter-spacing: var(--text-body-tracking);
-  line-height: var(--text-body-leading);
+  /* 1.4, matching .case-prose: same face, same size, and these lead-ins wrap.
+     At flat leading the ink of one line clears the next by 2.3px, and Cyrillic
+     descenders close that. Caps chrome keeps 1.1 — it has no descenders. */
+  line-height: 1.4;
   color: var(--theme-text);
 }
 .case-pairs dd {
@@ -1609,7 +1615,9 @@ html.vt .tagline .line { animation: none; opacity: 1; transform: none; }
    paragraph in. */
 /* Opacity dropped: --theme-muted now carries the recession by itself, and
    stacking .75 on top of it put this under the contrast floor. */
-.case-lang { color: var(--theme-muted); }
+/* 1.4 because it wraps: at 16px in the case column this note runs to three
+   lines, and chrome leading of 1.1 is for labels that stay on one. */
+.case-lang { color: var(--theme-muted); line-height: 1.4; }
 
 /* ---------- PRINT ---------- */
 /* Hiring managers save a case study to PDF and circulate it — that is the one
@@ -1622,7 +1630,10 @@ html.vt .tagline .line { animation: none; opacity: 1; transform: none; }
   :root, [data-theme="case"] {
     --theme-bg: #ffffff;
     --theme-text: #000000;
-    --theme-muted: #555555;
+    /* An alpha of the text colour, like the hairline and fill below it and
+     like every other ground — not a hardcoded grey. .667 over white lands on
+     the same rgb(85,85,85) this used to spell out, at 7.46:1 on paper. */
+  --theme-muted: rgba(0, 0, 0, .667);
     --theme-accent: #000000;
     --theme-hairline: rgba(0, 0, 0, .35);
     --theme-fill: rgba(0, 0, 0, .04);
