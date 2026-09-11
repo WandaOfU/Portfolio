@@ -1,5 +1,30 @@
 (() => {
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // Both pointer-reactive effects — the name's blur and the ground's wash —
+  // want a real cursor, and neither may exist without one. Asked once here
+  // rather than separately at each site.
+  const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+  // One pointermove listener for the whole file, and one frame gate behind it.
+  // The two effects above ran a listener and a requestAnimationFrame gate
+  // each, so every mouse move paid the coalescing cost twice and the browser
+  // dispatched the same event to two handlers. They share both now: the event
+  // writes the coordinates, one frame callback hands them to whoever asked.
+  const pointerSubs = [];
+  let ptrX = -9999, ptrY = -9999, ptrQueued = false;
+  const onPointerMove = (fn) => {
+    pointerSubs.push(fn);
+    if (pointerSubs.length > 1) return;
+    window.addEventListener('pointermove', (e) => {
+      ptrX = e.clientX; ptrY = e.clientY;
+      if (ptrQueued) return;
+      ptrQueued = true;
+      requestAnimationFrame(() => {
+        ptrQueued = false;
+        for (let i = 0; i < pointerSubs.length; i++) pointerSubs[i](ptrX, ptrY);
+      });
+    }, { passive: true });
+  };
 
   // Every name this file builds used to be English, on both language trees. A
   // Russian screen reader reads an English aria-label with Russian phonetics,
@@ -412,7 +437,14 @@
   // element being rendered at all, so a script failure would delete the name
   // from the page. Built in JS, the worst case is plain sharp text.
   const nameEl = document.querySelector('.identity-name');
-  if (nameEl && !reduceMotion) {
+  // Gated on a real pointer from 2026-09-11, which is what the ground wash
+  // below has always done and what this should have done with it. Half the
+  // effect is proximity to a cursor a touch screen does not have; the other
+  // half answered scroll, and scrolling is the primary gesture on exactly the
+  // devices where re-running an SVG filter graph per frame costs the most. On
+  // a phone this was paying for the expensive half of a decorative effect
+  // during the one interaction that must never drop a frame.
+  if (nameEl && !reduceMotion && finePointer) {
     // 3, not the 12 the effect was measured from: that figure was cut for a
     // drawn mark with thick strokes and wide counters. Golos 900 caps weld
     // shut well before it — the counters in S and A start closing at 3.2, and
@@ -431,12 +463,19 @@
     const filter = document.createElementNS(NS, 'filter');
     filter.setAttribute('id', 'name-gooey');
     filter.setAttribute('color-interpolation-filters', 'sRGB');
-    // The blur spills far outside the glyphs; without an enlarged region the
-    // browser clips it back to the element box and the edges go square.
-    filter.setAttribute('x', '-150%');
-    filter.setAttribute('y', '-150%');
-    filter.setAttribute('width', '600%');
-    filter.setAttribute('height', '600%');
+    // The blur spills outside the glyphs; without an enlarged region the
+    // browser clips it back to the element box and the edges go square. How
+    // much larger is a measurement, not a guess: a Gaussian is spent by three
+    // standard deviations, so a ceiling of 3 needs about 9px of margin. This
+    // asked for -150%/600% until 2026-09-11 — six times the box in each
+    // direction, thirty-six times the area, every pixel of it filtered on
+    // every frame the effect moved. The name is ~450x42 at its clamped size,
+    // so 10% across and one full height above and below is ~45px and ~42px of
+    // margin: four times the blur's reach, and a tenth of the pixels.
+    filter.setAttribute('x', '-10%');
+    filter.setAttribute('y', '-100%');
+    filter.setAttribute('width', '120%');
+    filter.setAttribute('height', '300%');
 
     const blur = document.createElementNS(NS, 'feGaussianBlur');
     blur.setAttribute('in', 'SourceGraphic');
@@ -504,13 +543,9 @@
       if (v !== applied) { applied = v; blur.setAttribute('stdDeviation', v); }
     }
 
-    window.addEventListener('pointermove', (e) => {
-      px = e.clientX; py = e.clientY;
-      if (!pending) {
-        pending = true;
-        requestAnimationFrame(() => { paint(); pending = false; });
-      }
-    });
+    // Already inside the shared frame callback, so this paints directly rather
+    // than queueing a second frame of its own.
+    onPointerMove((x, y) => { px = x; py = y; paint(); });
     window.addEventListener('scroll', () => {
       const now = performance.now();
       const dt = now - lastT;
@@ -529,21 +564,27 @@
   // exists at all. Gated on a real pointer for the same reason hover is: a
   // touch screen has no cursor to answer, and a wash left lit where a finger
   // last landed is worse than no wash.
-  if (!reduceMotion && matchMedia('(hover: hover) and (pointer: fine)').matches) {
+  if (!reduceMotion && finePointer) {
     const root = document.documentElement;
-    let gx = 0, gy = 0, queued = false;
-    window.addEventListener('pointermove', (e) => {
-      gx = e.clientX; gy = e.clientY;
-      if (queued) return;
-      queued = true;
-      requestAnimationFrame(() => {
-        root.style.setProperty('--glow-x', gx + 'px');
-        root.style.setProperty('--glow-y', gy + 'px');
-        // Lit on the first real movement, never on arrival: the page should
-        // settle before the ground acquires any depth.
-        if (!root.classList.contains('lit')) root.classList.add('lit');
-        queued = false;
-      });
-    }, { passive: true });
+    // Built here rather than declared as a pseudo-element, because the thing
+    // that moves has to be an element a transform can be set on. The old
+    // version wrote --glow-x and --glow-y onto the root once a frame: a custom
+    // property there invalidates style for every element in the document, and
+    // the gradient centre it fed is a paint, so each frame recalculated the
+    // whole page and repainted the whole viewport. This sets a transform on one
+    // element instead — a composited layer moving, no recalc past itself and no
+    // paint at all. The stylesheet owns everything the element looks like.
+    const glow = document.createElement('div');
+    glow.className = 'glow';
+    glow.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(glow);
+    onPointerMove((x, y) => {
+      // translate3d, not translate: the z keeps it on its own layer on the
+      // engines that still want the hint.
+      glow.style.transform = 'translate3d(' + x + 'px, ' + y + 'px, 0)';
+      // Lit on the first real movement, never on arrival: the page should
+      // settle before the ground acquires any depth.
+      if (!root.classList.contains('lit')) root.classList.add('lit');
+    });
   }
 })();

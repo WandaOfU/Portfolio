@@ -328,15 +328,46 @@ a { color: inherit; text-decoration: none; }
    and behind every pixel of content — `.shell` is lifted a layer so nothing
    reads through it. Raise an alpha here and re-measure that ground's text and
    its accent, both. */
+/* The wash is its own element and it MOVES rather than repaints. Until
+   2026-09-11 it was a `body::before` whose gradient centre read two custom
+   properties, and app.js wrote those properties onto `document.documentElement`
+   once per animation frame for as long as the cursor was moving. Both halves of
+   that were expensive: a custom property on the root invalidates style for every
+   element in the document, and a gradient centre is a paint, so each frame
+   recomputed styles site-wide and then repainted the full viewport.
+
+   Now the gradient is static — a 1040px box with the circle at its own centre,
+   which is the same 520px radius the old one declared — and the pointer only
+   sets a transform on it. That is one composited layer moving, no style
+   invalidation past this element and no repaint at all. `will-change` is here
+   rather than left implicit because the element exists only while it is being
+   moved; there is no idle state to spend the layer on.
+
+   app.js builds the element, so a page with no script never gets one. The
+   media query still gates it: a touch screen has no cursor to answer, and a
+   wash left lit where a finger last landed is worse than no wash. */
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  body::before {
-    content: '';
+  .glow {
     position: fixed;
-    inset: 0;
+    left: 0;
+    top: 0;
     z-index: 0;
+    /* 720, not the 1040 the gradient's own radius would suggest. The circle is
+       declared at 520px but its colour is spent at 68% of that — 354px — and
+       every pixel past it is already transparent. Sizing the box to the visible
+       disc rather than to the declared radius halves the layer `will-change`
+       below asks the compositor to keep, at 2x on a wide screen the difference
+       between roughly 17MB and 8MB, and changes nothing on screen: the stops
+       are absolute lengths, so the disc is identical and the box clips it where
+       it had already faded out. */
+    width: 720px;
+    height: 720px;
+    /* Half the box up and left, so a bare translate puts the circle's centre
+       exactly on the pointer instead of its top-left corner. */
+    margin: -360px 0 0 -360px;
     pointer-events: none;
     background: radial-gradient(
-      520px circle at var(--glow-x, 50%) var(--glow-y, 50%),
+      520px circle at center,
       var(--theme-glow, transparent) 0%,
       transparent 68%
     );
@@ -344,11 +375,12 @@ a { color: inherit; text-decoration: none; }
     /* Slower than anything else in the system on purpose. This is weather, not
        feedback: it should never look like it is answering a specific gesture. */
     transition: opacity .8s var(--ease-spring);
+    will-change: transform;
   }
   /* app.js adds the class on the first real pointer movement, so the wash is
      never already lit on arrival and a device that only ever taps never
      acquires it. */
-  html.lit body::before { opacity: 1; }
+  html.lit .glow { opacity: 1; }
 }
 /* The content plane sits above the wash. Without this the ground would print
    through the type. */
@@ -558,12 +590,14 @@ html.vt .shell > footer {
   color: var(--theme-text);
   outline: 2px solid var(--theme-accent);
   outline-offset: 0;
-  transition: top .15s var(--ease-spring);
+  /* No transition, on purpose, and no reduced-motion override to undo one.
+     This slid down over .15s until 2026-09-11. Two things were wrong with
+     that: it animated `top`, which is layout and paint on every frame, and it
+     animated the first Tab press on every one of the fourteen routes. The one
+     control in the system built for speed was the only one that made the
+     keyboard wait for it. It arrives. */
 }
 .skip-link:focus-visible { top: 16px; }
-@media (prefers-reduced-motion: reduce) {
-  .skip-link { transition: none; }
-}
 
 /* ---------- header (projects/about) ---------- */
 
@@ -667,7 +701,11 @@ html.vt .shell > footer {
 .plate-pause.is-paused .play-tri { display: inline; }
 .plate-pause.is-paused .pause-bars { display: none; }
 .plate-pause:focus-visible { outline: 2px solid var(--c-white); outline-offset: -4px; }
-.plate-pause:active { transform: scale(.94); }
+/* .97, not the .94 this pressed to until 2026-09-11: on a 28px control that
+   read as a flinch rather than as a press. Subtle is the point — the band for
+   press feedback is .95 to .98. The .1s it runs at is unchanged and is the
+   timing every other press on the site uses. */
+.plate-pause:active { transform: scale(.97); }
 
 /* The clip loops. It is cut as a ping-pong, so the last frame is the first and
    the seam is invisible. Looping is a deliberate exception to The Nothing
@@ -856,7 +894,15 @@ html.vt .tagline .line { animation: none; opacity: 1; transform: none; }
     display: grid;
     grid-template-rows: 0fr;
     margin-top: -8px;
-    transition: grid-template-rows .34s var(--ease-spring), margin-top .34s var(--ease-spring);
+    /* .26s, down from .34s on 2026-09-11. These two are the only layout
+       properties the system animates, and the row growing reflows every item
+       below it for the whole duration — so the duration is the cost. Hover is
+       seen on every pass down the list, which is the tier the 300ms ceiling
+       exists for; .34s was over it. The technique stays: 0fr -> 1fr is still
+       the only way to reach an automatic height without measuring it in
+       script, and the alternatives (absolute positioning, a permanently
+       reserved row) both change what the contents page looks like at rest. */
+    transition: grid-template-rows .26s var(--ease-spring), margin-top .26s var(--ease-spring);
   }
   .index-desc { overflow: hidden; opacity: 0; transform: translateY(-5px);
     transition: opacity .26s var(--ease-spring) .05s, transform .26s var(--ease-spring) .05s; }
@@ -876,8 +922,14 @@ html.vt .tagline .line { animation: none; opacity: 1; transform: none; }
   .index-item:focus-within .index-cat { transform: translateX(6px); }
 
   /* The plate does not fade in, it is uncovered — a wipe from the top edge,
-     with the picture inside settling back from a slight overscale. Two
-     durations on purpose: the wipe leads, the image lands after it. */
+     with the picture inside settling back from a slight overscale. The wipe
+     leads and the picture lands just behind it.
+
+     Retimed 2026-09-11. The overscale ran .62s and the fade .45s, against a
+     ceiling of .3s for anything seen at hover frequency — more than twice the
+     budget on the motion a reader triggers on every pass down the list. The
+     shape of the move is unchanged, the wipe still leads, and all three
+     properties now finish inside .3s. */
   /* `.index` on the front of both selectors is load-bearing. The plate's own
      `.index-shots` rule sits later in this block and the skeleton's
      `.index-shots .shot img` sits later in the file — either would take the
@@ -889,11 +941,11 @@ html.vt .tagline .line { animation: none; opacity: 1; transform: none; }
      which are different lengths and do not interpolate. */
   .index .index-shots {
     clip-path: inset(0% 0% 100% 0%);
-    transition: clip-path .44s var(--ease-spring), opacity .2s var(--ease-spring);
+    transition: clip-path .26s var(--ease-spring), opacity .2s var(--ease-spring);
   }
   .index .index-shots .shot img {
     transform: scale(1.05);
-    transition: opacity .45s var(--ease-spring), transform .62s var(--ease-spring);
+    transition: opacity .3s var(--ease-spring), transform .3s var(--ease-spring);
   }
   .index .index-item:hover .index-shots,
   .index .index-item:focus-within .index-shots { clip-path: inset(0% 0% 0% 0%); }
@@ -911,8 +963,14 @@ html.vt .tagline .line { animation: none; opacity: 1; transform: none; }
   .index-item:hover .index-shots,
   .index-item:focus-within .index-shots { opacity: 1; }
 }
+/* Reduced motion means fewer and gentler animations, not none: movement goes,
+   colour and opacity stay. `.index-title` and `.index-num` transition nothing
+   but colour and `.index-shots` nothing but opacity, and all three were in
+   this list until 2026-09-11 — which made the list harsher for the readers who
+   asked for calmer, not calmer. What is left here is the transforms and the
+   two layout properties. */
 @media (prefers-reduced-motion: reduce) {
-  .index-item, .index-shots, .index-shots img, .index-title, .index-num,
+  .index-item,
   .index-label, .index-cat, .index-desc, .index-desc-wrap { transition: none; }
   /* The reveal still happens — it is information, not decoration. It simply
      arrives rather than travels. */
@@ -1111,9 +1169,8 @@ html.vt .tagline .line { animation: none; opacity: 1; transform: none; }
   transition-duration: .1s;
 }
 .case-next-item:focus-visible { outline: 2px solid var(--theme-accent); outline-offset: 4px; }
-@media (prefers-reduced-motion: reduce) {
-  .case-next-title, .case-next-label { transition: none; }
-}
+/* Colour only, so it stays under reduced motion — see the note on the index
+   list. Nothing here moves. */
 
 /* A phone capture is not a small desktop capture, and stretching one to the
    800px column is how a single figure took eight viewport heights. The
@@ -1183,9 +1240,9 @@ html.vt .tagline .line { animation: none; opacity: 1; transform: none; }
   transition: opacity .45s var(--ease-spring);
 }
 .lightbox img[data-state="loading"] { opacity: .999; }
-@media (prefers-reduced-motion: reduce) {
-  .lightbox img { transition: none; }
-}
+/* No reduced-motion override: this is an opacity fade that exists to stop the
+   swap to the full-size file landing as a pop, and a reader who asked for less
+   motion is the last one who should get the pop back. */
 /* fixed, not absolute. The overlay is the scroll container, so an absolutely
    positioned control travels with the content: on a tall capture, scrolling to
    the bottom put this button at top:-894px and left the overlay with no
@@ -1253,9 +1310,9 @@ html.vt .tagline .line { animation: none; opacity: 1; transform: none; }
     animation: plate-wait 1.8s ease-in-out infinite;
   }
 }
-@media (prefers-reduced-motion: reduce) {
-  .case-shot .zoom img { transition: none; }
-}
+/* The fade above survives reduced motion for the same reason the overlay's
+   does: it is opacity, and it is what keeps a lazily-loaded capture from
+   snapping in as the reader scrolls onto it. Only the pulse is conditional. */
 .case-shot .zoom:focus-visible { outline: 2px solid var(--theme-accent); outline-offset: 4px; }
 @media (prefers-reduced-motion: reduce) {
   .lightbox { transition: none; }
@@ -1603,9 +1660,8 @@ html.vt .tagline .line { animation: none; opacity: 1; transform: none; }
   0%, 100% { opacity: 1; }
   50%      { opacity: .55; }
 }
-@media (prefers-reduced-motion: reduce) {
-  .index-shots .shot img { transition: none; }
-}
+/* Opacity again, and the load-in fade it carries is the whole reason the
+   skeleton exists. It stays under reduced motion; the pulse above does not. */
 
 
 
