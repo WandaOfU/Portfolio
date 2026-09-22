@@ -388,7 +388,13 @@ a { color: inherit; text-decoration: none; }
 
 .shell {
   width: 100%;
-  padding: 16px;
+  /* The gutter is 16px, or the device's own inset where that is larger. With
+     `viewport-fit=cover` in the meta the ground finally reaches the physical
+     edge of a notched phone instead of being letterboxed away from it — which
+     is the whole premise of this system, the ground being the screen — and
+     these keep the text out from under the notch and the home indicator. */
+  padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right))
+           max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -1730,4 +1736,61 @@ html.vt .tagline .line { animation: none; opacity: 1; transform: none; }
   .identity-contacts a[href^="http"]::after,
   .case-lang a[href^="http"]::after { content: " (" attr(href) ")"; font-size: .85em; word-break: break-all; }
   a[href^="mailto"]::after { content: none; }
+}
+
+/* ---------- INPUT AND ORIENTATION ---------- */
+/* Screen width does not tell you what is pointing at the screen. These two
+   blocks key off the input device and off the room available vertically,
+   which is where a layout sized on viewport *width* falls down. */
+
+/* A finger is not a cursor. Chrome links render 18px tall, which clears
+   WCAG 2.5.8 only through the spacing exception and by half a pixel; on a
+   phone they are a genuinely hard target. Padding takes them to 44px and an
+   equal negative margin gives the space back, so nothing moves on screen.
+   The stacked contact list is deliberately left out of that trick: its rows
+   sit 17.6px apart, so expanding each one would overlap its neighbour, which
+   is worse than a small target. It gets real spacing instead. */
+@media (pointer: coarse) {
+  .site-nav a,
+  .lang-switch a,
+  .lang-switch span,
+  .case-toc a {
+    /* 14, not 13: the chrome line box is 17.6px, so 13 each side lands on
+       43.6 — a target that rounds to 44 in a readout and misses it in fact. */
+    padding-block: 14px;
+    margin-block: -14px;
+  }
+  .identity-contacts div { padding-block: 6px; }
+  .identity-contacts { margin-top: 2px; }
+}
+
+/* Phone landscape. The hero is sized on `vw`, so turning the phone sideways
+   makes the parentheses *bigger* while the room to put them shrinks — 483px
+   of content in a 393px viewport, and the identity block fell below the fold
+   on the one page whose whole idea is that the room is the screen. Height
+   becomes the governing axis here: the parens are capped against it, the
+   tagline goes back on their line where there is now width to spare, and the
+   vertical rhythm tightens. Below 600px wide the tagline has nowhere to sit,
+   so that case keeps scrolling rather than being crushed. */
+@media (orientation: landscape) and (max-height: 560px) and (min-width: 600px) {
+  .shell { gap: 16px; }
+  .paren { font-size: min(clamp(11rem, 31vw, 28rem), 30vh); }
+  .name-middle { flex-wrap: nowrap; }
+  .tagline {
+    order: 0;
+    width: auto;
+    white-space: nowrap;
+    margin-left: 12px;
+    margin-top: 0;
+  }
+  /* The plate is square and sized on width, so it is the tallest thing in the
+     room once the phone turns — 187px of a 393px viewport. Capped against
+     height it stops being the constraint. */
+  .plate { width: min(clamp(180px, 22vw, 320px), 34vh); }
+  /* The coarse-pointer rule above spends 36px here growing the contact rows
+     to a real target size. That is the right trade on a phone held upright
+     and the wrong one with 393px of height to spend, so the rows go back to
+     their spacing and the targets keep the 20px they have always had. */
+  .identity-contacts div { padding-block: 0; }
+  .identity-contacts { margin-top: 4px; }
 }
