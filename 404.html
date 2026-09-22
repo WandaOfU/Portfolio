@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en" data-theme="projects">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Page not found — Vladislav Sapelin</title>
+<meta name="description" content="That address does not exist on this site. The work is on the projects index.">
+<meta name="robots" content="noindex">
+<link rel="icon" href="/Portfolio/favicon.png">
+<link rel="apple-touch-icon" href="/Portfolio/favicon.png">
+<link rel="preload" href="/Portfolio/assets/fonts/golos-text-400-latin.woff2" as="font" type="font/woff2" crossorigin>
+<!-- Every path here is absolute. GitHub Pages serves this one file for a miss
+     at any depth — /Portfolio/cases/typo/ and /Portfolio/ru/x/y/ both land
+     here — so a relative href would resolve against the address that failed. -->
+<link rel="stylesheet" href="/Portfolio/assets/styles.css">
+</head>
+<body>
+<div class="shell" id="view-404">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <h1 class="sr-only">Page not found — Vladislav Sapelin</h1>
+
+  <div class="site-bar mono">
+    <nav class="site-nav" aria-label="Sections">
+      <a href="/Portfolio/" class="link-hover" data-t="nav-home">Home</a>
+      <a href="/Portfolio/projects/" class="link-hover" data-t="nav-projects">Projects</a>
+      <a href="/Portfolio/about/" class="link-hover" data-t="nav-about">About</a>
+    </nav>
+  </div>
+
+  <main id="main" tabindex="-1" class="case">
+    <div class="case-lede">
+      <div class="case-category mono" data-t="cat">404 / Page not found</div>
+      <div class="case-label">
+        <h2 class="case-h" data-t="title">Nothing at this address</h2>
+      </div>
+      <p class="case-prose" data-t="body">The link is wrong, or the page moved. All five cases are on the projects index.</p>
+    </div>
+
+    <nav class="case-next" aria-label="Where to go" data-t-label="where">
+      <a class="case-next-item" href="/Portfolio/projects/">
+        <span class="case-next-label mono" data-t="go-label">Go to</span>
+        <span class="case-next-title" data-t="go-title">All projects</span>
+      </a>
+      <a class="case-next-item" href="/Portfolio/">
+        <span class="case-next-label mono" data-t="home-label">Back to</span>
+        <span class="case-next-title" data-t="home-title">Home</span>
+      </a>
+    </nav>
+  </main>
+
+  <footer class="identity">
+    <div class="identity-role mono" data-t="role">Product designer</div>
+    <div class="identity-name">Vladislav Sapelin</div>
+    <dl class="identity-contacts mono">
+      <div>
+        <dt>Telegram</dt>
+        <dd><a class="link-hover" href="https://t.me/lost_endeavor" target="_blank" rel="noopener" data-t="tg-label">@lost_endeavor</a></dd>
+      </div>
+      <div>
+        <dt data-t="mail">Mail</dt>
+        <dd><a class="link-hover" href="mailto:vladsapelin@mail.ru">vladsapelin@mail.ru</a></dd>
+      </div>
+      <div>
+        <dt>HH</dt>
+        <dd><a class="link-hover" href="https://hh.ru/resume/724d9d0aff0cb8b9020039ed1f536366475148?customDomain=1&overRideDomainAreaId=1" target="_blank" rel="noopener" data-t="hh">Resume</a></dd>
+      </div>
+    </dl>
+  </footer>
+</div>
+
+<script>
+/* One file serves both language trees, and the server cannot tell us which one
+   the visitor was aiming at — so the address does. English is what ships in the
+   markup, which is also what a reader without script gets; a miss under /ru/
+   swaps to Russian before paint. Nothing here is load-bearing: the page is
+   complete and navigable either way. */
+(() => {
+  if (!/\/ru(\/|$)/.test(location.pathname)) return;
+  const RU = {
+    'nav-home': 'Главная', 'nav-projects': 'Проекты', 'nav-about': 'О себе',
+    cat: '404 / Страница не найдена',
+    title: 'По этому адресу ничего нет',
+    body: 'Ссылка неверная или страница переехала. Все пять кейсов собраны в списке проектов.',
+    'go-label': 'Перейти в', 'go-title': 'Все проекты',
+    'home-label': 'Вернуться на', 'home-title': 'Главную',
+    role: 'Продуктовый дизайнер', mail: 'Почта', hh: 'Резюме',
+  };
+  document.documentElement.lang = 'ru';
+  document.title = 'Страница не найдена — Vladislav Sapelin';
+  document.querySelector('.sr-only').textContent = 'Страница не найдена — Vladislav Sapelin';
+  document.querySelector('.skip-link').textContent = 'Перейти к содержимому';
+  document.querySelector('.site-nav').setAttribute('aria-label', 'Разделы сайта');
+  document.querySelector('.case-next').setAttribute('aria-label', 'Куда пойти');
+  for (const [k, v] of Object.entries(RU)) {
+    const el = document.querySelector('[data-t="' + k + '"]');
+    if (el) el.textContent = v;
+  }
+  document.querySelectorAll('a[href^="/Portfolio/"]').forEach((a) => {
+    const p = a.getAttribute('href');
+    if (!p.startsWith('/Portfolio/ru/')) a.setAttribute('href', p.replace('/Portfolio/', '/Portfolio/ru/'));
+  });
+})();
+</script>
+<script src="/Portfolio/assets/app.js"></script>
+</body>
+</html>

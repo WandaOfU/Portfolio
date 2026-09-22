@@ -1043,9 +1043,15 @@ html.vt .tagline .line { animation: none; opacity: 1; transform: none; }
    measured clearance between the ink of one line and the next was 2.3px and
    the face's own box overflowed the line box by 6.8px. A case study exists to
    be read, so the reading step gets reading leading. */
+/* The reading step grows with the viewport while the column stays at 800px, so
+   past about 1600px the measure walks *down* out of range: 48 characters per
+   line at 1440, 41 at 1920 and beyond — under the 45 floor, on the pages whose
+   whole job is to be read, at the width a hiring manager's monitor actually
+   is. Capping the size at 32px holds the measure at 46+ without touching the
+   reading step itself, which the tagline and the paired lead-ins still use. */
 .case-prose {
   font-family: var(--font-display);
-  font-size: var(--text-body-size);
+  font-size: min(var(--text-body-size), 2rem);
   font-weight: 400;
   letter-spacing: var(--text-body-tracking);
   line-height: 1.4;
@@ -1679,7 +1685,16 @@ html.vt .tagline .line { animation: none; opacity: 1; transform: none; }
    stacking .75 on top of it put this under the contrast floor. */
 /* 1.4 because it wraps: at 16px in the case column this note runs to three
    lines, and chrome leading of 1.1 is for labels that stay on one. */
-.case-lang { color: var(--theme-muted); line-height: 1.4; }
+/* Sentence case, against the Uppercase Chrome Rule and for the same reason it
+   already exempts .case-prose: this is a sentence, not a label. Set in caps it
+   was 57 characters of uppercase Russian — and Cyrillic capitals are near-
+   identical rectangles, so the word-shape cue readers use is simply absent.
+   The detector flagged it on all four Russian case pages. */
+.case-lang {
+  color: var(--theme-muted);
+  line-height: 1.4;
+  text-transform: none;
+}
 
 /* ---------- PRINT ---------- */
 /* Hiring managers save a case study to PDF and circulate it — that is the one
