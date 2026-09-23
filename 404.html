@@ -54,7 +54,7 @@
     <dl class="identity-contacts mono">
       <div>
         <dt>Telegram</dt>
-        <dd><a class="link-hover" href="https://t.me/lost_endeavor" target="_blank" rel="noopener" data-t="tg-label">@lost_endeavor</a></dd>
+        <dd><a class="link-hover" href="https://t.me/lost_endeavor" target="_blank" rel="noopener" aria-label="Telegram @lost_endeavor, opens in a new tab" data-t="tg-label">@lost_endeavor</a></dd>
       </div>
       <div>
         <dt data-t="mail">Mail</dt>
@@ -62,7 +62,7 @@
       </div>
       <div>
         <dt>HH</dt>
-        <dd><a class="link-hover" href="https://hh.ru/resume/724d9d0aff0cb8b9020039ed1f536366475148?customDomain=1&overRideDomainAreaId=1" target="_blank" rel="noopener" data-t="hh">Resume</a></dd>
+        <dd><a class="link-hover" href="https://hh.ru/resume/724d9d0aff0cb8b9020039ed1f536366475148?customDomain=1&overRideDomainAreaId=1" target="_blank" rel="noopener" aria-label="Resume on HeadHunter, opens in a new tab" data-t="hh">Resume</a></dd>
       </div>
     </dl>
   </footer>
@@ -80,17 +80,17 @@
     'nav-home': 'Главная', 'nav-projects': 'Проекты', 'nav-about': 'О себе',
     cat: '404 / Страница не найдена',
     title: 'По этому адресу ничего нет',
-    body: 'Ссылка неверная или страница переехала. Все пять кейсов собраны в списке проектов.',
-    'go-label': 'Перейти в', 'go-title': 'Все проекты',
-    'home-label': 'Вернуться на', 'home-title': 'Главную',
+    body: 'Ссылка неверная, или страница переехала. Все пять кейсов собраны в списке проектов.',
+    'go-label': 'Перейти', 'go-title': 'Все проекты',
+    'home-label': 'Вернуться', 'home-title': 'Главная',
     role: 'Продуктовый дизайнер', mail: 'Почта', hh: 'Резюме',
   };
   document.documentElement.lang = 'ru';
-  document.title = 'Страница не найдена — Vladislav Sapelin';
-  document.querySelector('.sr-only').textContent = 'Страница не найдена — Vladislav Sapelin';
+  document.title = 'Страница не найдена — Vladislav Sapelin';
+  document.querySelector('.sr-only').textContent = 'Страница не найдена — Vladislav Sapelin';
   document.querySelector('.skip-link').textContent = 'Перейти к содержимому';
   document.querySelector('.site-nav').setAttribute('aria-label', 'Разделы сайта');
-  document.querySelector('.case-next').setAttribute('aria-label', 'Куда пойти');
+  document.querySelector('.case-next').setAttribute('aria-label', 'Куда перейти');
   for (const [k, v] of Object.entries(RU)) {
     const el = document.querySelector('[data-t="' + k + '"]');
     if (el) el.textContent = v;

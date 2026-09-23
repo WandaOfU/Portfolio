@@ -410,7 +410,7 @@
   const platePause = document.querySelector('.plate-pause');
   if (plateVideo && platePause && !reduceMotion) {
     const T2 = RU
-      ? { pause: 'Остановить портрет', play: 'Запустить портрет' }
+      ? { pause: 'Остановить видео', play: 'Запустить видео' }
       : { pause: 'Pause the portrait', play: 'Play the portrait' };
 
     const paint = () => {
